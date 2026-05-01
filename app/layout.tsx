@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Party Trick",
-  description: "Real-time AI-powered social web app",
+  description: "Describe a moment. Get a cursed image. Pass the phone.",
 };
 
 export default function RootLayout({

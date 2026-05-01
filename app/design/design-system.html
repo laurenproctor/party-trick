@@ -1,0 +1,2011 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Party Trick · Brand System v4.0</title>
+<link rel="stylesheet" href="tokens.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<style>
+  /* ============ SPEC-PAGE-ONLY ============ */
+  .spec-hero {
+    border-bottom: 2px solid var(--ink);
+    padding: var(--s-6) var(--margin) var(--s-6);
+    position: relative;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .spec-hero h1 {
+    margin: 0;
+    font-family: var(--display-black);
+    font-size: clamp(60px, 14vw, 200px);
+    line-height: 0.82; letter-spacing: -0.04em;
+    text-transform: uppercase;
+  }
+  .spec-hero h1 .x { color: var(--red); }
+  .spec-hero .barcode { font-family: var(--term); font-size: 28px; line-height: 1; color: var(--ink); margin-top: 16px; letter-spacing: -0.05em; }
+  .spec-hero .meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 2px solid var(--ink); margin-top: var(--s-5); }
+  .spec-hero .meta-grid > div { padding: 12px 14px; border-right: 1px solid var(--ink); }
+  .spec-hero .meta-grid > div:last-child { border-right: none; }
+  .spec-hero .meta-grid .lbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--red); font-weight: 700; }
+  .spec-hero .meta-grid .val { font-family: var(--display-cond); font-size: 22px; line-height: 1; text-transform: uppercase; margin-top: 4px; }
+
+  /* RUN-ON intro paragraph (Systemantics signature) */
+  .runon-intro {
+    padding: var(--s-7) var(--margin);
+    border-bottom: 2px solid var(--ink);
+    font-family: var(--mono);
+    font-size: clamp(16px, 2.4vw, 28px);
+    line-height: 1.45;
+    background: var(--paper);
+  }
+  .runon-intro a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+  .runon-intro a:hover { background: var(--ink); color: var(--paper); text-decoration: none; padding: 0 3px; }
+  .runon-intro .red { color: var(--red); }
+  .runon-intro .stamp { display: inline-block; border: 2px solid var(--red); color: var(--red); padding: 2px 8px; font-family: var(--display-black); font-size: 0.7em; transform: rotate(-2deg); margin: 0 4px; }
+
+  /* layout */
+  .spec-layout {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 0;
+    max-width: var(--max-w); margin: 0 auto;
+  }
+  @media (max-width: 1000px) {
+    .spec-layout { grid-template-columns: minmax(0, 1fr); }
+    .spec-toc { position: static; height: auto; border-right: none; border-bottom: 2px solid var(--ink); padding: var(--s-4) var(--margin); display: flex; flex-wrap: wrap; gap: var(--s-3); }
+    .spec-toc h6 { width: 100%; margin: 0; }
+    .spec-toc a { padding: 4px 8px; border: 1px solid var(--ink); }
+  }
+  .spec-toc {
+    position: sticky; top: 90px;
+    align-self: start;
+    font-family: var(--mono); font-size: var(--t-cap);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: var(--s-6) var(--s-4) var(--s-6) var(--margin);
+    border-right: 2px solid var(--ink);
+    height: calc(100vh - 90px);
+    overflow-y: auto;
+  }
+  .spec-toc h6 { margin: 0 0 var(--s-3); color: var(--red); font-size: var(--t-micro); }
+  .spec-toc a { display: flex; gap: 8px; padding: 4px 0; text-decoration: none; transition: color var(--dur-fast); }
+  .spec-toc a:hover { color: var(--red); }
+  .spec-toc a.active { color: var(--paper); background: var(--ink); padding: 4px 6px; }
+  .spec-toc .num { color: var(--red); font-weight: 700; min-width: 22px; }
+
+  section.spec { padding: var(--s-7) var(--s-6); border-bottom: 2px solid var(--ink); position: relative; min-width: 0; }
+  @media (max-width: 700px) { section.spec { padding: var(--s-6) var(--margin); } }
+  .spec-head { display: flex; align-items: baseline; gap: var(--s-4); margin-bottom: var(--s-5); padding-bottom: var(--s-3); border-bottom: 1px solid var(--ink); }
+  .spec-head .num { font-family: var(--display-black); font-size: 56px; line-height: 0.85; color: var(--red); letter-spacing: -0.04em; }
+  .spec-head h2 { margin: 0; font-family: var(--display-black); font-size: 42px; line-height: 0.9; text-transform: uppercase; letter-spacing: -0.03em; }
+  .spec-head .tag { margin-left: auto; }
+  .spec-intro { max-width: 720px; font-size: 16px; line-height: 1.5; margin-bottom: var(--s-6); font-family: var(--mono); }
+  .spec-intro .annot { font-family: var(--hand); color: var(--red); font-size: 28px; transform: rotate(-1deg); display: inline-block; }
+
+  /* sample */
+  .sample {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: var(--s-5);
+    position: relative;
+    margin-bottom: var(--s-5);
+  }
+  .sample-label {
+    position: absolute; top: -10px; left: var(--s-4);
+    font-family: var(--mono); font-size: var(--t-micro);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    background: var(--paper); padding: 0 8px; color: var(--red); font-weight: 700;
+  }
+  .sample-label::before { content: '[ '; }
+  .sample-label::after { content: ' ]'; }
+  .spec-grid { display: grid; gap: var(--s-5); }
+  .col-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .col-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .col-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 1200px) { .col-3, .col-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .col-2, .col-3, .col-4 { grid-template-columns: 1fr; } }
+
+  /* color swatches — FILE-CARD style */
+  .sw-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 2px solid var(--ink); }
+  @media (max-width: 1200px) { .sw-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .sw-grid { grid-template-columns: 1fr; } }
+  .sw-cell { border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); padding: 0; display: flex; flex-direction: column; }
+  .sw-cell .chip { aspect-ratio: 4/3; border-bottom: 1px solid var(--ink); }
+  .sw-cell .info { padding: 12px; }
+  .sw-cell .name { font-family: var(--display-black); font-size: 18px; text-transform: uppercase; line-height: 1; letter-spacing: -0.01em; }
+  .sw-cell .hex { font-family: var(--mono); font-size: 11px; color: var(--red); margin-top: 4px; letter-spacing: 0.05em; }
+  .sw-cell .role { font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); margin-top: 6px; line-height: 1.4; text-transform: uppercase; letter-spacing: 0.04em; }
+  .sw-cell .num { font-family: var(--mono); font-size: 9px; color: var(--red); letter-spacing: 0.15em; padding: 4px 8px; background: var(--paper); border-bottom: 1px solid var(--ink); font-weight: 700; }
+
+  /* type specimens */
+  .tspec { padding: var(--s-5) 0; border-top: 1px solid var(--ink); display: grid; grid-template-columns: 220px 1fr; gap: var(--s-5); align-items: baseline; }
+  .tspec:first-child { border-top: none; }
+  .tspec .lbl { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.15em; text-transform: uppercase; line-height: 1.6; }
+  .tspec .lbl b { color: var(--red); display: block; font-size: 12px; margin-bottom: 2px; }
+  .tspec .demo { line-height: 1; }
+  .tspec .meta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--ink-soft); margin-top: 8px; text-transform: uppercase; }
+
+  /* spacing */
+  .space-row { display: flex; align-items: center; gap: var(--s-4); padding: var(--s-2) 0; border-bottom: 1px dashed var(--ink); }
+  .space-row .name { font-family: var(--mono); font-size: var(--t-cap); width: 60px; letter-spacing: 0.05em; font-weight: 700; }
+  .space-row .bar { background: var(--ink); height: 14px; }
+  .space-row .px { font-family: var(--mono); font-size: var(--t-cap); margin-left: auto; color: var(--red); font-weight: 700; }
+
+  /* code snip */
+  pre.snip {
+    font-family: var(--mono); font-size: 12px;
+    background: var(--ink); color: var(--paper);
+    padding: var(--s-4); margin: 0;
+    border-left: 4px solid var(--red);
+    overflow-x: auto;
+    line-height: 1.6;
+    border-radius: 0;
+  }
+  pre.snip .k { color: var(--red); }
+  pre.snip .c { color: #888; }
+
+  /* preview */
+  .preview { padding: var(--s-5); border: 2px solid var(--ink); background: var(--paper-2); display: flex; align-items: center; justify-content: center; min-height: 120px; gap: var(--s-3); flex-wrap: wrap; position: relative; }
+  .preview-dark { background: var(--ink); }
+  .preview::before {
+    content: 'PREVIEW'; position: absolute; top: -10px; right: 14px;
+    background: var(--paper); padding: 0 8px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--red); font-weight: 700;
+  }
+  .preview-dark::before { background: var(--ink); }
+
+  /* anatomy */
+  .anatomy { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); margin-top: var(--s-4); display: flex; gap: var(--s-5); flex-wrap: wrap; padding: var(--s-3); border: 1px dashed var(--ink); }
+  .anatomy span b { color: var(--red); margin-right: 4px; }
+
+  /* icons */
+  .icon-demo { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 0; border: 2px solid var(--ink); }
+  @media (max-width: 1100px) { .icon-demo { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .icon-demo .ic { aspect-ratio: 1; border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 32px; color: var(--ink); position: relative; background: var(--paper); }
+  .icon-demo .ic .lab { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+
+  /* motion */
+  .motion-demo { display: flex; gap: var(--s-5); flex-wrap: wrap; }
+  .motion-card { width: 180px; height: 100px; border: 2px solid var(--ink); display: flex; align-items: center; justify-content: center; font-family: var(--display-black); text-transform: uppercase; cursor: pointer; transition: all var(--dur-base) var(--ease-out); background: var(--paper); font-size: 18px; }
+  .motion-card.m-shake:hover { animation: shake 0.4s ease; background: var(--red); color: var(--paper); }
+  .motion-card.m-snap:hover { transform: translate(-4px, -4px); box-shadow: 6px 6px 0 var(--red); }
+  .motion-card.m-flip:hover { transform: rotate(-3deg) scale(1.04); background: var(--ink); color: var(--red); }
+  @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px) rotate(-1deg);} 75%{transform:translateX(4px) rotate(1deg);} }
+
+  /* layout templates */
+  .layout-thumb { aspect-ratio: 4/5; border: 2px solid var(--ink); padding: 8px; background: var(--paper); display: flex; flex-direction: column; gap: 4px; font-family: var(--mono); font-size: 8px; }
+  .layout-thumb .row { background: var(--ink); height: 4px; }
+  .layout-thumb .row.r { background: var(--red); }
+  .layout-thumb .big { background: var(--ink); flex: 1; }
+  .layout-thumb .big.outline { background: transparent; border: 1px dashed var(--ink); }
+  .layout-thumb .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; flex: 1; }
+  .layout-thumb .small { background: var(--ink); }
+  .layout-thumb .lab { font-family: var(--display-black); font-size: 11px; line-height: 1; text-transform: uppercase; margin-bottom: 4px; }
+
+  .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4); margin-top: var(--s-4); }
+  @media (max-width: 700px) { .do-dont { grid-template-columns: 1fr; } }
+  .do-dont .item { padding: var(--s-4); border: 2px solid var(--ink); position: relative; }
+  .do-dont .item.dont { border-color: var(--red); background: rgba(227, 6, 19, 0.04); }
+  .do-dont .item .stamp-lbl { position: absolute; top: -10px; left: 14px; padding: 0 8px; background: var(--paper); font-family: var(--display-black); font-size: 14px; text-transform: uppercase; }
+  .do-dont .item.do .stamp-lbl { color: var(--ink); }
+  .do-dont .item.do .stamp-lbl::before { content: '✓ '; color: var(--ink); }
+  .do-dont .item.dont .stamp-lbl { color: var(--red); }
+  .do-dont .item.dont .stamp-lbl::before { content: '✗ '; }
+
+  .pill-row { display: flex; gap: var(--s-3); flex-wrap: wrap; align-items: center; }
+
+  /* terminal block */
+  .terminal {
+    background: var(--ink); color: var(--paper);
+    padding: var(--s-5);
+    font-family: var(--term); font-size: 18px; line-height: 1.4;
+    border: 2px solid var(--ink);
+    position: relative;
+  }
+  .terminal::before {
+    content: '● ● ●'; position: absolute; top: 8px; left: 12px;
+    font-family: var(--body); color: var(--paper); opacity: 0.4; font-size: 12px;
+  }
+  .terminal .head { color: var(--red); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-top: 16px; }
+  .terminal .out { color: var(--paper); }
+  .terminal .err { color: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- ============ INLINE SVG DEFS (filters) ============ -->
+<svg width="0" height="0" style="position:absolute;" aria-hidden="true">
+  <defs>
+    <!-- rough/drip filter for headlines -->
+    <filter id="drip-rough" x="-5%" y="-5%" width="110%" height="130%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03 0.08" numOctaves="2" seed="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <!-- spray/halo filter -->
+    <filter id="spray" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="5" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/>
+      <feGaussianBlur stdDeviation="0.4"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- ============ SYSTEM BAR ============ -->
+<div class="pt-sysbar">
+  <span class="blink">●</span>
+  <span>SYSTEM</span><span class="sep">/</span><span>v4.0</span>
+  <span class="sep">/</span>
+  <span>BRAND.MANUAL</span>
+  <span class="sep">/</span>
+  <span style="color: var(--red);">PARTY.TRICK.NYC</span>
+  <span class="right">
+    <span>EDITION 01</span>
+    <span class="sep">/</span>
+    <span>NYC</span>
+    <span class="sep">/</span>
+    <span class="blink">LIVE</span>
+  </span>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="pt-nav">
+  <div>
+    <a href="index.html" class="logo">PART<span class="x">Y</span>·TRICK<sup>™</sup></a>
+    <div class="pt-runon">
+      a souvenir engine <a href="product.html">→ how it works</a>, <a href="#">party mode</a>, <a href="#">pricing</a> · about: <a href="about.html">manifesto</a>, <a href="#">press kit</a> · <span class="red">→</span> <a href="design-system.html"><b>system v2.0</b></a> · contact: <a href="mailto:hi@partytrick.nyc">hi@partytrick.nyc</a>
+    </div>
+  </div>
+  <a href="#" class="btn btn-red">START · $1 <span class="arrow">→</span></a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="spec-hero">
+  <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+    <span class="badge badge-red">FILE 001</span>
+    <span class="badge badge-blue">EDITION 01</span>
+    <span class="badge">BRAND.SYSTEM</span>
+    <span class="badge badge-yellow">v4.0</span>
+    <span class="badge badge-ink">PARTY TRICK™</span>
+  </div>
+  <h1>PART<span class="x">Y</span><br/>TRI<span class="x">CK</span><br/>SYSTEM<span class="x">.</span></h1>
+  <div class="barcode">||| || |||| | || ||||| | ||| || |||| || |||  ||||||  || ||| | ||||| || ||| 0 0 1 · N Y C · S O U V E N I R · E N G I N E</div>
+  <div class="meta-grid">
+    <div><div class="lbl">EDITION</div><div class="val">01 / 01</div></div>
+    <div><div class="lbl">FONTS</div><div class="val">9 LOADED</div></div>
+    <div><div class="lbl">SIGNALS</div><div class="val">GRN + BLU</div></div>
+    <div><div class="lbl">SECTIONS</div><div class="val">19 LIVE</div></div>
+  </div>
+</header>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span>↯ DRAW MY NIGHT</span><span class="red">●</span>
+    <span>$1 PER HIT</span><span class="red">●</span>
+    <span>NO ALGORITHM · YES VIBES</span><span class="red">●</span>
+    <span>SEND TO GROUP CHAT</span><span class="red">●</span>
+    <span>REGENERATE TIL IT HITS</span><span class="red">●</span>
+    <span>PARTY MODE / 4 PPL</span><span class="red">●</span>
+    <span>↯ DRAW MY NIGHT</span><span class="red">●</span>
+    <span>$1 PER HIT</span><span class="red">●</span>
+    <span>NO ALGORITHM · YES VIBES</span><span class="red">●</span>
+    <span>SEND TO GROUP CHAT</span><span class="red">●</span>
+    <span>REGENERATE TIL IT HITS</span><span class="red">●</span>
+    <span>PARTY MODE / 4 PPL</span><span class="red">●</span>
+  </div>
+</div>
+
+<!-- ============ RUN-ON INTRO ============ -->
+<div class="runon-intro">
+  <span class="stamp">READ ME</span> Party Trick is a <a href="#">souvenir engine</a> for nights you'd otherwise <span class="crossed">remember</span> forget. This document defines the complete brand system — <a href="#principles">principles</a>, <a href="#color">color</a>, <a href="#type">type</a>, <a href="#components">components</a>, <a href="#expression">expression</a>, <a href="#voice">voice</a> — for every marketing surface (landing, product, about, pricing, FAQ). Brutalist spine: <span class="red">hard borders</span>, <span class="red">monospace body</span>, <span class="red">terminal chrome</span>. Punk in the rotated <a href="#stickers">stickers</a>, dripping headlines, and <a href="#voice">strikethroughs</a>. Y2K in the <a href="#motion">marquee</a>, the cursor blink, the run-on prose you're reading right now. Signal <span class="hl-red">green</span> for live state &amp; CTAs; <span class="hl-blue">electric blue</span> for pop. <span class="hl-yellow">If you can read this, the system is loaded.</span>
+</div>
+
+<!-- ============ LAYOUT WITH TOC ============ -->
+<div class="spec-layout">
+
+  <aside class="spec-toc">
+    <h6>↳ CONTENTS</h6>
+    <a href="#principles"><span class="num">00</span>PRINCIPLES</a>
+    <a href="#color"><span class="num">01</span>COLOR</a>
+    <a href="#type"><span class="num">02</span>TYPE</a>
+    <a href="#scale"><span class="num">03</span>SCALE</a>
+    <a href="#space"><span class="num">04</span>SPACE</a>
+    <a href="#buttons"><span class="num">05</span>BUTTONS</a>
+    <a href="#forms"><span class="num">06</span>FORMS</a>
+    <a href="#cards"><span class="num">07</span>CARDS</a>
+    <a href="#stickers"><span class="num">08</span>STICKERS</a>
+    <a href="#rules"><span class="num">09</span>RULES</a>
+    <a href="#imagery"><span class="num">10</span>IMAGERY</a>
+    <a href="#icons"><span class="num">11</span>ICONS</a>
+    <a href="#expression"><span class="num">12</span>EXPRESSION</a>
+    <a href="#scribbles"><span class="num">13</span>SCRIBBLES</a>
+    <a href="#motion"><span class="num">14</span>MOTION</a>
+    <a href="#chrome"><span class="num">15</span>CHROME</a>
+    <a href="#layout"><span class="num">16</span>LAYOUT</a>
+    <a href="#voice"><span class="num">17</span>VOICE</a>
+    <a href="#components"><span class="num">18</span>TERMINAL</a>
+  </aside>
+
+  <main>
+
+    <!-- 00 PRINCIPLES -->
+    <section class="spec" id="principles">
+      <div class="spec-head"><span class="num">00</span><h2>PRINCIPLES</h2><span class="badge tag">READ FIRST</span></div>
+      <p class="spec-intro">Six rules that define everything else. The system is the spine; the brand is what gets <em>applied on top</em>. <span class="scrawl scrawl-blue scrawl-sm" style="transform: rotate(-2deg);">break only on purpose →</span></p>
+
+      <div class="spec-grid col-3">
+        <div class="card card-numbered" data-num="01"><h3 class="t-d3 mt-2">SYSTEM-FIRST.<br/>FEELING-LAST.</h3><p class="t-body mt-3">The page reads like a manual. Mono everywhere. Brackets, slashes, prompts. Then we apply the feeling — a sticker, a scrawl, a strikethrough — <em>onto</em> the system.</p></div>
+        <div class="card card-numbered" data-num="02"><h3 class="t-d3 mt-2">HARD<br/>EDGES.</h3><p class="t-body mt-3">Borders are 2px solid black. No rounded corners. No drop shadows except as <em>offset blocks</em> (Memphis-style). Every container has a clear edge.</p></div>
+        <div class="card card-numbered" data-num="03"><h3 class="t-d3 mt-2">2 SIGNALS<br/>+ MARK.</h3><p class="t-body mt-3">Off-white paper. Ink black. <span style="color: var(--red);">Bright green</span> as primary signal. <span style="color: var(--accent);">Electric blue</span> for pop. Acid-lime highlighter for annotations. Nothing else.</p></div>
+        <div class="card card-numbered" data-num="04"><h3 class="t-d3 mt-2">RUN-ON<br/>NAVIGATION.</h3><p class="t-body mt-3">Links live <em>inside sentences</em>. Reading the nav <em>is</em> reading the brand. No icon-only menus. No "Home / About / Pricing" trios.</p></div>
+        <div class="card card-numbered" data-num="05"><h3 class="t-d3 mt-2">STICKER<br/>OVERLAY.</h3><p class="t-body mt-3">Brand applies <em>on top of</em> the layout — taped corners, rotated stamps, hand annotations. The system is the page; the brand is the sticker.</p></div>
+        <div class="card card-tilt-l" style="background: var(--ink); color: var(--paper); border-color: var(--ink);">
+          <div class="t-cap" style="color: var(--red); font-weight: 700;">[ 06 ]</div>
+          <h3 class="t-d3 mt-2" style="color: var(--paper);">DON'T BE <span style="color: var(--red);">CUTE.</span></h3>
+          <p class="t-body mt-3" style="opacity: 0.85;">Anti-references: pastels, kawaii, hand-drawn flowers, "girlboss" cursive on pink. Party Trick is messy, late, sexy, specific. <em>Not adorable.</em></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 01 COLOR -->
+    <section class="spec" id="color">
+      <div class="spec-head"><span class="num">01</span><h2>COLOR</h2><span class="badge tag">4 BASE · 4 SIGNAL · 1 MARK</span></div>
+      <p class="spec-intro">Pure white paper. Heavy ink. One signal <span style="color:var(--red);">green</span> for live state. <span style="color:var(--accent);">Electric blue</span> for pop. Acid lime as a highlighter only — never a fill.</p>
+
+      <div class="sw-grid">
+        <div class="sw-cell"><div class="num">[ 01 / FILL · BG ]</div><div class="chip" style="background:#ffffff;"></div><div class="info"><div class="name">PAPER</div><div class="hex">#FFFFFF · --paper</div><div class="role">DEFAULT BG · PURE WHITE</div></div></div>
+        <div class="sw-cell"><div class="num">[ 02 / FILL · ALT ]</div><div class="chip" style="background:#f0f0ec;"></div><div class="info"><div class="name">PAPER 2</div><div class="hex">#F0F0EC · --paper-2</div><div class="role">SECOND SURFACE · ALT-ROW</div></div></div>
+        <div class="sw-cell"><div class="num">[ 03 / TEXT · LINE ]</div><div class="chip" style="background:#0a0a0a;"></div><div class="info"><div class="name" style="color: var(--ink);">INK</div><div class="hex">#0A0A0A · --ink</div><div class="role">BODY TEXT · ALL BORDERS</div></div></div>
+        <div class="sw-cell"><div class="num">[ 04 / TEXT · MUTE ]</div><div class="chip" style="background:#555;"></div><div class="info"><div class="name">INK SOFT</div><div class="hex">#555555 · --ink-soft</div><div class="role">CAPTIONS · METADATA</div></div></div>
+        <div class="sw-cell"><div class="num">[ 05 / SIGNAL · PRIMARY ]</div><div class="chip" style="background:#00d647;"></div><div class="info"><div class="name" style="color: var(--red);">GREEN</div><div class="hex">#00D647 · --red</div><div class="role">SIGNAL · CTA · LIVE STATE</div></div></div>
+        <div class="sw-cell"><div class="num">[ 06 / SIGNAL · DEEP ]</div><div class="chip" style="background:#009a32;"></div><div class="info"><div class="name">GREEN DEEP</div><div class="hex">#009A32 · --red-deep</div><div class="role">PRESSED STATE ONLY</div></div></div>
+        <div class="sw-cell"><div class="num">[ 07 / ACCENT · POP ]</div><div class="chip" style="background:#0044ff;"></div><div class="info"><div class="name" style="color: var(--accent);">ELEC. BLUE</div><div class="hex">#0044FF · --accent</div><div class="role">POP · SECONDARY SIGNAL</div></div></div>
+        <div class="sw-cell"><div class="num">[ 08 / ACCENT · DEEP ]</div><div class="chip" style="background:#0030b8;"></div><div class="info"><div class="name">BLUE DEEP</div><div class="hex">#0030B8 · --accent-deep</div><div class="role">PRESSED · ACCENT</div></div></div>
+        <div class="sw-cell"><div class="num">[ 09 / MARK · HI ]</div><div class="chip" style="background:#e6ff3d;"></div><div class="info"><div class="name">ACID LIME</div><div class="hex">#E6FF3D · --hi-yellow</div><div class="role">HIGHLIGHTER · ANNOTATIONS</div></div></div>
+        <div class="sw-cell"><div class="num">[ 10 / TEXTURE ]</div><div class="chip halftone" style="background:var(--paper);"></div><div class="info"><div class="name">HALFTONE</div><div class="hex">radial-gradient · 6px</div><div class="role">PHOTO OVERLAY · GRAIN</div></div></div>
+      </div>
+
+      <div class="rule-equals"></div>
+
+      <div class="do-dont">
+        <div class="item do"><span class="stamp-lbl">DO</span><p style="margin: 6px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.5;">Use green on <span class="hl-red">one</span> word per headline. Use <span class="hl-blue">blue</span> for secondary signal — a stat, a date, a pop accent. Strikethrough clichéd words. Highlight an aside in <span class="hl-yellow">acid lime</span>.</p></div>
+        <div class="item dont"><span class="stamp-lbl">DON'T</span><p style="margin: 6px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.5;">Don't paint a hero green. Don't tint imagery. Don't use green and blue in the same word. Don't use yellow as a fill. Don't introduce a fourth hue.</p></div>
+      </div>
+    </section>
+
+    <!-- 02 TYPE -->
+    <section class="spec" id="type">
+      <div class="spec-head"><span class="num">02</span><h2>TYPE</h2><span class="badge tag">9 FACES · LOUD vs LEGIBLE</span></div>
+      <p class="spec-intro">Two custom faces ground the system: <b style="color:var(--red);">Slaters Duct Tape</b> and <b style="color:var(--red);">Poesing</b>. Everything else exists to make those two readable in context. Pair every loud face with a quiet one — chicken-scratch headlines next to crisp neo-grotesque body, sharpie tape-titles next to clean humanist captions. <span class="annot">never use two loud faces in the same paragraph.</span></p>
+
+      <!-- ============ LOUD STACK ============ -->
+      <div class="t-cap mt-6" style="color: var(--red); padding-top: 24px; border-top: 2px solid var(--ink);">// LOUD STACK — display + hand · for shouting</div>
+
+      <div class="tspec"><div class="lbl"><b>HERO · TAPE</b>Slaters Duct Tape · 400<br/><span style="color:var(--ink-soft);">primary loud · custom</span></div><div class="demo" style="font-family: var(--hero-tape); font-size: 88px; line-height: 0.92; color: var(--ink); transform: rotate(-2deg); display: inline-block;">PARTY TRICK<div class="meta" style="transform: rotate(2deg); margin-top: 16px;">USE FOR: hero · gig posters · big shouts · venue marquees · campaign mastheads</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>HAND · PRIMARY</b>Poesing · 400<br/><span style="color:var(--ink-soft);">handwritten · custom · the only hand</span></div><div class="demo" style="font-family: var(--hand); font-weight: 400; font-size: 56px; line-height: 1; color: var(--red); transform: rotate(-2deg); display: inline-block;">drunk text energy<div class="meta" style="transform: rotate(2deg); margin-top: 12px;">USE FOR: margin scrawls · hero overlays · annotations · "RAGE"-style</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>HAND · NOTE</b>Poesing · 400 · smaller<br/><span style="color:var(--ink-soft);">captions · receipts · long-form</span></div><div class="demo" style="font-family: var(--hand); font-size: 28px; line-height: 1.2; color: var(--red); transform: rotate(-1deg); display: inline-block;">notes in the margin — long-form annotation, errors, receipts<div class="meta" style="transform: rotate(1deg); margin-top: 10px;">USE FOR: captions · form errors · receipts · long-form annotation</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>HAND · STAMP</b>Poesing · 700 · UPPERCASE<br/><span style="color:var(--ink-soft);">stickers · stamps · marker callouts</span></div><div class="demo" style="font-family: var(--hand); font-weight: 700; font-size: 44px; line-height: 1; color: var(--red); text-transform: uppercase; letter-spacing: 0.04em; transform: rotate(-3deg); display: inline-block;">PAID · APPROVED · NEW!<div class="meta" style="transform: rotate(3deg); margin-top: 10px;">USE FOR: stickers · stamps · fat-marker callouts (Poesing uppercase + bold)</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>DISPLAY · BLACK</b>Archivo Black · 900</div><div class="demo" style="font-family: var(--display-black); font-size: 56px; line-height: 0.85; text-transform: uppercase; letter-spacing: -0.02em;">EVIDENCE.<sup style="font-size: 0.3em; color: var(--red);">™</sup><div class="meta">USE FOR: secondary masthead · big section heads · "evidence" / weight moments</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>DISPLAY · COND</b>Anton · 400</div><div class="demo" style="font-family: var(--display-cond); font-size: 80px; line-height: 0.82; letter-spacing: -0.04em; text-transform: uppercase;">DRAW MY NIGHT.<div class="meta">USE FOR: hero megaword · marquee strips · scrolling tickers</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>DISPLAY · BEBAS</b>Bebas Neue · 400</div><div class="demo" style="font-family: var(--display-bebas); font-size: 64px; line-height: 0.9; letter-spacing: 0.02em; text-transform: uppercase;">VENUE · 21+ · $8 ADV<div class="meta">USE FOR: tickets · gig sub-heads · admit-one chrome</div></div></div>
+
+
+      <!-- ============ LEGIBLE STACK ============ -->
+      <div class="t-cap mt-6" style="color: var(--accent); padding-top: 32px; border-top: 2px solid var(--ink);">// LEGIBLE STACK — keeps the punk readable</div>
+
+      <div class="tspec"><div class="lbl"><b>SANS · BODY</b>Inter · 400/500/700<br/><span style="color:var(--ink-soft);">DEFAULT BODY</span></div><div class="demo" style="font-family: var(--sans); font-size: 17px; line-height: 1.55; max-width: 540px;">The default paragraph face. Humanist sans, friendly without being cute. Reads cleanly under any chaos happening around it — exactly the point. <b>Bold</b>, <em>italic</em>, and weights all work without losing legibility.<div class="meta">USE FOR: paragraphs · lede · long-form · forms · UI labels</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>HEADER · GROT</b>Space Grotesk · 500/700<br/><span style="color:var(--ink-soft);">clean neo-grotesque</span></div><div class="demo" style="font-family: var(--grot); font-weight: 700; font-size: 38px; line-height: 1.05; letter-spacing: -0.01em;">How it works. What it costs. Why it matters.<div class="meta">USE FOR: secondary headers · UI · navigation · subsection titles</div></div></div>
+
+
+
+      <!-- ============ MACHINE STACK ============ -->
+      <div class="t-cap mt-6" style="color: var(--ink); padding-top: 32px; border-top: 2px solid var(--ink);">// MACHINE STACK — typed · receipts · terminal</div>
+
+      <div class="tspec"><div class="lbl"><b>MONO · SYSTEM</b>IBM Plex Mono · 400/500/700</div><div class="demo" style="font-family: var(--mono); font-size: 14px; line-height: 1.55;">// the system's voice<br/>For code, receipts, captions, and anywhere the page wants to feel like an instruction manual. Mono spaces every letter equally — that's the point.<div class="meta">USE FOR: code · captions · system bar · run-on nav · metadata · `[ tags ]`</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>TYPED · MECH</b>Special Elite · 400<br/><span style="color:var(--ink-soft);">RECEIPT FACE · KEPT</span></div><div class="demo" style="font-family: var(--typed); font-size: 18px; line-height: 1.4;">RECEIPT · 04/30/26 · 02:14 AM<br/>1× BAD DRAWING ............... $1.00<br/>1× MEMORY UPGRADE ............. $0.00<br/>SUBTOTAL ........................ $1.00<div class="meta">USE FOR: receipts · confirmations · retro-mech moments · ticket stubs</div></div></div>
+
+      <div class="tspec"><div class="lbl"><b>TERMINAL · Y2K</b>VT323 · 400</div><div class="demo" style="font-family: var(--term); font-size: 36px; line-height: 1; color: var(--red);">&gt; CONNECTING_<div class="meta" style="color: var(--ink-soft);">USE FOR: barcode-zone · system bar · terminal blocks · ascii rules</div></div></div>
+
+
+      <!-- ============ PAIRING DEMO ============ -->
+      <div class="t-cap mt-6" style="color: var(--red); padding-top: 32px; border-top: 2px solid var(--ink);">// PAIRING DEMO — loud + legible together</div>
+      <div class="spec-grid col-2 mt-4" style="gap: 32px;">
+        <div style="border: 2px solid var(--ink); padding: 28px;">
+          <div style="font-family: var(--hero-tape); font-size: 56px; line-height: 0.95; color: var(--ink); transform: rotate(-1deg); display: inline-block;">EVIDENCE</div>
+          <p style="font-family: var(--sans); font-size: 15px; line-height: 1.55; margin-top: 16px; max-width: 380px;">A photo, a voice note, a description. Send the moment. We'll turn it into a cursed little portrait you'll keep forever.</p>
+          <div class="t-cap mt-4" style="color: var(--ink-soft);">SLATERS DUCT TAPE × INTER</div>
+        </div>
+        <div style="border: 2px solid var(--ink); padding: 28px;">
+          <div style="font-family: var(--hand-ball); font-size: 38px; line-height: 1.1; color: var(--red); transform: rotate(-1deg); display: inline-block;">we kept the receipts</div>
+          <p style="font-family: var(--grot); font-size: 16px; line-height: 1.55; margin-top: 16px; max-width: 380px; font-weight: 500;">Every souvenir comes with a printed timestamp and a one-line incident report. The bad drawing is the front; the receipt is the back.</p>
+          <div class="t-cap mt-4" style="color: var(--ink-soft);">POESING × SPACE GROTESK</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 SCALE -->
+    <section class="spec" id="scale">
+      <div class="spec-head"><span class="num">03</span><h2>SCALE</h2><span class="badge tag">CONTRAST-DRIVEN</span></div>
+      <p class="spec-intro">Big jumps. No soft middle. Each level has a job.</p>
+      <div>
+        <div class="tspec"><div class="lbl"><b>--t-mega</b>180 / 0.78 / -0.05em<br/>display-cond · UC</div><div class="demo t-mega" style="font-size: 96px;">DRAW IT</div></div>
+        <div class="tspec"><div class="lbl"><b>--t-d1</b>96 / 0.82 / -0.03em<br/>display-cond · UC</div><div class="demo t-d1" style="font-size: 64px;">A SOUVENIR ENGINE</div></div>
+        <div class="tspec"><div class="lbl"><b>--t-d2</b>56 / 0.92 / -0.02em<br/>display-cond · UC</div><div class="demo t-d2" style="font-size: 44px;">HOW IT WORKS</div></div>
+        <div class="tspec"><div class="lbl"><b>--t-d3</b>36 / 1 / 0<br/>display-cond · UC</div><div class="demo t-d3">SECTION HEADER</div></div>
+        <div class="tspec"><div class="lbl"><b>--t-d4</b>22 / 1.1 / 0.02em<br/>mono · 700 · UC</div><div class="demo t-d4">CARD TITLE</div></div>
+        <div class="tspec"><div class="lbl"><b>--t-lede</b>18 / 1.55<br/>mono</div><div class="demo t-lede">Lede paragraph in mono. Slows the reader down on purpose.</div></div>
+        <div class="tspec"><div class="lbl"><b>--t-body</b>14 / 1.6<br/>mono</div><div class="demo t-body">Default body text in IBM Plex Mono. Comfortable on any background. Reads at arm's length on phone, desk distance on laptop. Don't go below this.</div></div>
+        <div class="tspec"><div class="lbl"><b>--t-cap</b>11 / 0.12em / UC<br/>mono</div><div class="demo t-cap">CAPTION · METADATA · LABEL</div></div>
+        <div class="tspec"><div class="lbl"><b>--t-micro</b>10 / 0.18em / UC<br/>mono</div><div class="demo t-micro">FOOTER · LEGAL · TIMESTAMP</div></div>
+      </div>
+    </section>
+
+    <!-- 04 SPACE -->
+    <section class="spec" id="space">
+      <div class="spec-head"><span class="num">04</span><h2>SPACE</h2><span class="badge tag">8PX BASE · MULTIPLIED</span></div>
+      <p class="spec-intro">Tight margins inside containers. Generous air around hero. Brutalist density elsewhere.</p>
+      <div>
+        <div class="space-row"><span class="name">--s-1</span><span class="bar" style="width:4px;"></span><span class="px">4PX</span></div>
+        <div class="space-row"><span class="name">--s-2</span><span class="bar" style="width:8px;"></span><span class="px">8PX</span></div>
+        <div class="space-row"><span class="name">--s-3</span><span class="bar" style="width:12px;"></span><span class="px">12PX</span></div>
+        <div class="space-row"><span class="name">--s-4</span><span class="bar" style="width:16px;"></span><span class="px">16PX</span></div>
+        <div class="space-row"><span class="name">--s-5</span><span class="bar" style="width:24px;"></span><span class="px">24PX</span></div>
+        <div class="space-row"><span class="name">--s-6</span><span class="bar" style="width:32px;"></span><span class="px">32PX</span></div>
+        <div class="space-row"><span class="name">--s-7</span><span class="bar" style="width:48px;"></span><span class="px">48PX</span></div>
+        <div class="space-row"><span class="name">--s-8</span><span class="bar" style="width:64px;"></span><span class="px">64PX</span></div>
+        <div class="space-row"><span class="name">--s-9</span><span class="bar" style="width:96px;"></span><span class="px">96PX</span></div>
+        <div class="space-row"><span class="name">--s-10</span><span class="bar" style="width:144px;"></span><span class="px">144PX</span></div>
+      </div>
+    </section>
+
+    <!-- 05 BUTTONS -->
+    <section class="spec" id="buttons">
+      <div class="spec-head"><span class="num">05</span><h2>BUTTONS</h2><span class="badge tag">4 TYPES · 3 SIZES</span></div>
+      <p class="spec-intro">Hard borders. Hover offsets up-left and casts a hard block shadow. <span class="annot">no rounded corners. ever.</span></p>
+
+      <div class="preview">
+        <a href="#" class="btn">PRIMARY <span class="arrow">→</span></a>
+        <a href="#" class="btn btn-secondary">SECONDARY</a>
+        <a href="#" class="btn btn-ghost">GHOST</a>
+        <a href="#" class="btn btn-red">SIGNAL · CTA</a>
+        <a href="#" class="btn btn-blue">ACCENT · BLUE</a>
+      </div>
+
+      <div class="preview">
+        <a href="#" class="btn btn-sm">SMALL</a>
+        <a href="#" class="btn">DEFAULT</a>
+        <a href="#" class="btn btn-lg">LARGE — $1 TO START <span class="arrow">→</span></a>
+      </div>
+
+      <div class="anatomy">
+        <span><b>HOVER</b>translate(-3,-3) + 6px ink shadow + red fill</span>
+        <span><b>ACTIVE</b>translate(0,0)</span>
+        <span><b>FOCUS</b>2px red outline · 2px offset</span>
+        <span><b>DISABLED</b>opacity 0.4 · cursor not-allowed</span>
+      </div>
+    </section>
+
+    <!-- 06 FORMS -->
+    <section class="spec" id="forms">
+      <div class="spec-head"><span class="num">06</span><h2>FORMS</h2><span class="badge tag">TERMINAL-STYLE</span></div>
+      <p class="spec-intro">Inputs are hard-bordered. Labels are mono caps with a <span style="color:var(--red);">{ &gt; }</span> prompt. Errors scrawled in red Poesing.</p>
+
+      <div class="spec-grid col-2">
+        <div>
+          <div class="field"><label class="field-label">YOUR NAME <span class="req">★</span></label><input class="input" type="text" placeholder="like, your real one" /><div class="field-help">we'll only use it on the receipt</div></div>
+          <div class="field"><label class="field-label">TELL US ABOUT THE NIGHT</label><textarea class="textarea" placeholder="who, where, what got broken"></textarea><div class="field-error">don't lie. we'll know.</div></div>
+          <div class="flex gap-5 items-center" style="flex-wrap: wrap;">
+            <label class="checkbox"><input type="checkbox" checked /> opt me in to the chaos</label>
+            <label class="radio"><input type="radio" name="x" /> single image</label>
+            <label class="radio"><input type="radio" name="x" checked /> comic strip</label>
+          </div>
+        </div>
+        <div>
+          <div class="field"><label class="field-label">PHOTO · AUDIO · TEXT</label><div class="ph" data-id="UPLOAD" style="padding: 32px 16px; border-style: dashed;">DROP A POLAROID HERE OR CLICK</div><div class="field-help">we love bad photos. blurry is best.</div></div>
+          <div class="field"><label class="field-label">MOOD</label><select class="select"><option>– PICK ONE –</option><option>REGRETFUL</option><option>VICTORIOUS</option><option>MILDLY CURSED</option><option>CAN'T BE PHOTOGRAPHED</option></select></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07 CARDS -->
+    <section class="spec" id="cards">
+      <div class="spec-head"><span class="num">07</span><h2>CARDS</h2><span class="badge tag">STRUCTURAL · STAMPED</span></div>
+      <p class="spec-intro">Cards are sheets clipped from a binder. Hard 2px border. Numbered with a bracket-tag. <span class="annot">tilt is a feature.</span></p>
+
+      <div class="spec-grid col-3">
+        <div class="card card-numbered" data-num="A.01"><h3 class="t-d3 mt-2">DEFAULT</h3><p class="t-small mt-3">Solid 2px border. Bracketed file-tag at top-left. Default for any structured content block.</p></div>
+        <div class="card card-numbered card-tilt-r" data-num="A.02"><div class="card-stamp">★ HOT</div><h3 class="t-d3 mt-2">STAMPED + TILT</h3><p class="t-small mt-3">Use sparingly: pricing highlight, "most popular", featured drop. ONE per page max.</p></div>
+        <div style="background: var(--ink); color: var(--paper); padding: var(--s-5); border: 2px solid var(--ink); position: relative;">
+          <div style="font-family: var(--mono); font-size: 9px; color: var(--red); letter-spacing: 0.15em; font-weight: 700;">[ A.03 / INK ]</div>
+          <h3 class="t-d3 mt-2" style="color: var(--paper);">DARK <span style="color: var(--red);">VARIANT</span></h3>
+          <p class="t-small mt-3" style="opacity: 0.85;">Inverted. Use for testimonials, manifesto callouts, "live" status messages.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08 STICKERS -->
+    <section class="spec" id="stickers">
+      <div class="spec-head"><span class="num">08</span><h2>STICKERS</h2><span class="badge tag">APPLIED ON TOP</span></div>
+      <p class="spec-intro">Badges = inline. Stickers = rotated &amp; <em>applied onto</em> the layout. The brand lives in the sticker — the system lives underneath.</p>
+
+      <div class="preview">
+        <span class="badge">DEFAULT</span>
+        <span class="badge badge-red">● LIVE</span>
+        <span class="badge badge-blue">● ACCENT</span>
+        <span class="badge badge-ink">INK</span>
+        <span class="badge badge-yellow">YELLOW · ALPHA</span>
+        <span class="badge"><span style="color:var(--red);">●</span> ONLINE</span>
+      </div>
+      <div class="preview" style="gap: var(--s-6); padding: var(--s-7) var(--s-5);">
+        <span class="sticker">PARTY MODE</span>
+        <span class="sticker sticker-yellow">$1 EACH</span>
+        <span class="sticker sticker-blue">NEW DROP</span>
+        <span class="sticker sticker-stamp">EST. 2026</span>
+        <span class="sticker sticker-hand">limited drop</span>
+      </div>
+    </section>
+
+    <!-- 09 RULES -->
+    <section class="spec" id="rules">
+      <div class="spec-head"><span class="num">09</span><h2>RULES &amp; MARKS</h2></div>
+      <p class="spec-intro">Dividers do real work. Different magnitudes for different breaks.</p>
+
+      <div class="sample"><span class="sample-label">.rule-thin · same-section</span><hr class="rule-thin" /></div>
+      <div class="sample"><span class="sample-label">.rule-dashed · soft break</span><hr class="rule-dashed" /></div>
+      <div class="sample"><span class="sample-label">.rule-fat · MAJOR break</span><hr class="rule-fat" /></div>
+      <div class="sample"><span class="sample-label">.rule-fat-red · marquee · once per page</span><hr class="rule-fat-red" /></div>
+      <div class="sample"><span class="sample-label">.rule-ascii · terminal break</span><div class="rule-ascii"></div></div>
+      <div class="sample"><span class="sample-label">.rule-equals · y2k red break</span><div class="rule-equals"></div></div>
+
+      <h4 class="t-d4 mt-6" style="color: var(--red);">// HAND-MARKS</h4>
+      <div class="preview">
+        <span class="t-d3 hl-yellow">HIGHLIGHTED</span>
+        <span class="t-d3 hl-red">SIGNAL·MARK</span>
+        <span class="t-d3 hl-blue">ACCENT·MARK</span>
+        <span class="t-d3 crossed">CROSSED·OUT</span>
+        <span class="t-d3 bracketed">BRACKETED</span>
+        <span class="t-d3 prompt">PROMPTED</span>
+      </div>
+    </section>
+
+    <!-- 10 IMAGERY -->
+    <section class="spec" id="imagery">
+      <div class="spec-head"><span class="num">10</span><h2>IMAGERY</h2><span class="badge tag">REAL TAPE · POLAROIDED · GRUNGED</span></div>
+      <p class="spec-intro">Images are <em>physical artifacts</em>. Held to the page with <b style="color:var(--red);">real glossy tape</b> — wrinkles, highlights, torn edges, all from macro photographs. Pinned as polaroids. Photocopied 'til they bleed. <span class="annot">treat every photo like it survived a night out.</span></p>
+
+      <!-- ============ TAPE LIBRARY ============ -->
+      <div class="t-cap mt-2" style="color: var(--red); padding-top: 16px; border-top: 2px solid var(--ink); margin-bottom: 32px;">// TAPE LIBRARY — real photographs, white keyed out, 11 strips</div>
+
+      <div class="spec-grid col-2" style="gap: 32px; row-gap: 48px; margin-bottom: 80px;">
+        <div style="background: var(--paper-2); padding: 56px 40px 40px; position: relative; min-height: 120px;">
+          <div class="tape tape-md tape-black tape-l3" style="top: 24px; left: 32px; position: absolute;"></div>
+          <div class="tape tape-md tape-black-2 tape-r3" style="top: 24px; right: 32px; position: absolute;"></div>
+          <div class="t-cap" style="color: var(--ink-soft); position: absolute; bottom: 16px; left: 40px;"><b style="color:var(--red);">.tape-black</b> · .tape-black-2 · .tape-black-3 · gloss</div>
+        </div>
+        <div style="background: var(--paper-2); padding: 56px 40px 40px; position: relative; min-height: 120px;">
+          <div class="tape tape-md tape-red tape-l3" style="top: 24px; left: 32px; position: absolute;"></div>
+          <div class="tape tape-md tape-red-2 tape-r3" style="top: 24px; right: 32px; position: absolute;"></div>
+          <div class="t-cap" style="color: var(--ink-soft); position: absolute; bottom: 16px; left: 40px;"><b style="color:var(--red);">.tape-red</b> · .tape-red-2 · vinyl</div>
+        </div>
+        <div style="background: var(--paper-2); padding: 56px 40px 40px; position: relative; min-height: 120px;">
+          <div class="tape tape-md tape-blue tape-l3" style="top: 24px; left: 32px; position: absolute;"></div>
+          <div class="tape tape-md tape-blue-2 tape-r3" style="top: 24px; right: 32px; position: absolute;"></div>
+          <div class="t-cap" style="color: var(--ink-soft); position: absolute; bottom: 16px; left: 40px;"><b style="color:var(--red);">.tape-blue</b> · .tape-blue-2 · electric</div>
+        </div>
+        <div style="background: var(--paper-2); padding: 56px 40px 40px; position: relative; min-height: 120px;">
+          <div class="tape tape-md tape-green tape-l3" style="top: 24px; left: 32px; position: absolute;"></div>
+          <div class="tape tape-md tape-green-2 tape-r3" style="top: 24px; right: 32px; position: absolute;"></div>
+          <div class="t-cap" style="color: var(--ink-soft); position: absolute; bottom: 16px; left: 40px;"><b style="color:var(--red);">.tape-green</b> · .tape-green-2 · signal</div>
+        </div>
+        <div style="background: var(--ink); padding: 56px 40px 40px; position: relative; min-height: 120px;">
+          <div class="tape tape-md tape-white tape-l3" style="top: 24px; left: 32px; position: absolute;"></div>
+          <div class="tape tape-md tape-white-2 tape-r3" style="top: 24px; right: 32px; position: absolute;"></div>
+          <div class="t-cap" style="color: rgba(255,255,255,0.5); position: absolute; bottom: 16px; left: 40px;"><b style="color: var(--red);">.tape-white</b> · .tape-white-2 · on dark only</div>
+        </div>
+        <div style="background: var(--paper-2); padding: 56px 40px 40px; position: relative; min-height: 120px;">
+          <div class="tape tape-lg tape-blue tape-glow tape-l3" style="top: 24px; left: 32px; position: absolute;"></div>
+          <div class="t-cap" style="color: var(--ink-soft); position: absolute; bottom: 16px; left: 40px;"><b style="color: var(--red);">.tape-glow</b> · adds neon halo · use sparingly</div>
+        </div>
+      </div>
+
+      <!-- ============ TAPED PHOTO FRAMES ============ -->
+      <div class="t-cap mt-2" style="color: var(--accent); padding-top: 16px; border-top: 2px solid var(--ink); margin-bottom: 40px;">// TAPED PHOTO FRAMES — paper held to wall by real tape · primary photo treatment</div>
+
+      <div class="spec-grid col-3" style="gap: 64px; row-gap: 96px;">
+        <!-- TF.01 four black corners -->
+        <div>
+          <div class="tape-frame" style="transform: rotate(-1.5deg);">
+            <div class="ph photo-grunge halftone" data-id="TF.01" style="aspect-ratio: 1; width: 220px; filter: contrast(1.15) saturate(0.85);">02:14 AM</div>
+            <span class="tf-tape tape tape-sm tape-black corner-tl"></span>
+            <span class="tf-tape tape tape-sm tape-black-2 corner-tr"></span>
+            <span class="tf-tape tape tape-sm tape-black-3 corner-bl"></span>
+            <span class="tf-tape tape tape-sm tape-black corner-br"></span>
+          </div>
+          <div class="t-cap mt-4" style="color: var(--red); font-weight: 700;">[ TF.01 / FOUR-CORNER ]</div>
+          <div class="t-cap" style="color: var(--ink-soft); margin-top: 4px;">black gloss tape · taped to wall</div>
+        </div>
+
+        <!-- TF.02 single top strip -->
+        <div>
+          <div class="tape-frame" style="transform: rotate(2deg);">
+            <div class="ph photo-grunge photo-xerox" data-id="TF.02" style="aspect-ratio: 1; width: 220px;">PHOTOCOPY · GRADE C</div>
+            <span class="tf-tape tape tape-lg tape-red edge-top"></span>
+          </div>
+          <div class="t-cap mt-4" style="color: var(--red); font-weight: 700;">[ TF.02 / TOP STRIP ]</div>
+          <div class="t-cap" style="color: var(--ink-soft); margin-top: 4px;">single red strip · centered top</div>
+        </div>
+
+        <!-- TF.03 mixed colors -->
+        <div>
+          <div class="tape-frame" style="transform: rotate(-0.5deg);">
+            <div class="ph photo-grunge" data-id="TF.03" style="aspect-ratio: 1; width: 220px; background: var(--ink); color: rgba(255,255,255,0.5); filter: saturate(1.4) contrast(1.2);">NIGHT PHOTO</div>
+            <span class="tf-tape tape tape-sm tape-blue corner-tl"></span>
+            <span class="tf-tape tape tape-sm tape-green corner-br"></span>
+          </div>
+          <div class="t-cap mt-4" style="color: var(--red); font-weight: 700;">[ TF.03 / MIXED COLORS ]</div>
+          <div class="t-cap" style="color: var(--ink-soft); margin-top: 4px;">blue + green · diagonal corners</div>
+        </div>
+
+        <!-- TF.04 torn edge + bottom tape -->
+        <div>
+          <div class="tape-frame torn" style="transform: rotate(-2deg);">
+            <div class="ph photo-grunge photo-overexposed" data-id="TF.04" style="aspect-ratio: 1; width: 220px;">RIPPED PRINT</div>
+            <span class="tf-tape tape tape-md tape-red edge-bottom"></span>
+          </div>
+          <div class="t-cap mt-4" style="color: var(--red); font-weight: 700;">[ TF.04 / TORN EDGE ]</div>
+          <div class="t-cap" style="color: var(--ink-soft); margin-top: 4px;">.tape-frame.torn · hand-ripped bottom</div>
+        </div>
+
+        <!-- TF.05 polaroid + tape -->
+        <div>
+          <div style="position: relative; display: inline-block;">
+            <div class="polaroid polaroid-tilt-r">
+              <div class="ph photo-grunge halftone-heavy" data-id="POL.02" style="aspect-ratio: 1; width: 220px;">WANDA · STAGE</div>
+              <div class="caption">she stayed too long</div>
+            </div>
+            <span class="tape tape-md tape-red" style="position: absolute; top: -16px; left: 50%; transform: translateX(-50%) rotate(3deg);"></span>
+          </div>
+          <div class="t-cap mt-4" style="color: var(--red); font-weight: 700;">[ POL.02 / TAPED ]</div>
+          <div class="t-cap" style="color: var(--ink-soft); margin-top: 4px;">polaroid + red tape · +2.5°</div>
+        </div>
+
+        <!-- TF.06 polaroid bare -->
+        <div>
+          <div class="polaroid">
+            <div class="ph photo-grunge photo-overexposed" data-id="POL.01" style="aspect-ratio: 1; width: 220px;">02:14 AM</div>
+            <div class="caption">karaoke disaster</div>
+          </div>
+          <div class="t-cap mt-4" style="color: var(--red); font-weight: 700;">[ POL.01 / BARE ]</div>
+          <div class="t-cap" style="color: var(--ink-soft); margin-top: 4px;">polaroid · hand caption · -2°</div>
+        </div>
+      </div>
+
+      <!-- ============ TAPE GLOW (DARK SURFACE) ============ -->
+      <div class="t-cap mt-6" style="color: var(--red); padding-top: 32px; border-top: 2px solid var(--ink); margin-bottom: 32px;">// GLOW · neon halo on dark surface · use sparingly</div>
+
+      <div style="background: var(--ink); padding: 96px 56px; position: relative; overflow: hidden; min-height: 320px;">
+        <div class="tape tape-xl tape-red tape-glow" style="top: 24px; left: 8%; position: absolute; transform: rotate(-4deg);"></div>
+        <div class="tape tape-xl tape-blue tape-glow" style="top: 28px; right: 8%; position: absolute; transform: rotate(3deg);"></div>
+        <div class="tape tape-xl tape-green tape-glow" style="bottom: 32px; left: 20%; position: absolute; transform: rotate(2deg);"></div>
+        <div class="tape tape-lg tape-red tape-glow" style="bottom: 36px; right: 24%; position: absolute; transform: rotate(-3deg);"></div>
+        <div style="text-align: center; position: relative; z-index: 1;">
+          <div style="font-family: var(--display-cond); font-size: 80px; line-height: 0.9; color: var(--paper); text-transform: uppercase; letter-spacing: -0.02em;">REAL TAPE.<br/>FAKE NIGHT.</div>
+          <div class="t-cap mt-4" style="color: rgba(255,255,255,0.5);">.tape + .tape-glow · only on dark backgrounds</div>
+        </div>
+      </div>
+
+      <!-- ============ BARE GRUNGE / PHOTO TREATMENTS ============ -->
+      <div class="t-cap mt-6" style="color: var(--ink); padding-top: 32px; border-top: 2px solid var(--ink); margin-bottom: 32px;">// BARE TREATMENTS — no tape · just photo grunge</div>
+
+      <div class="spec-grid col-3" style="gap: 32px;">
+        <div>
+          <div class="ph photo-grunge halftone" data-id="BARE.01" style="aspect-ratio: 1; filter: contrast(1.15) saturate(0.85);">HALFTONE</div>
+          <div class="t-cap mt-3"><b style="color:var(--red);">.photo-grunge.halftone</b></div>
+        </div>
+        <div>
+          <div class="ph photo-grunge photo-xerox" data-id="BARE.02" style="aspect-ratio: 1;">XEROX</div>
+          <div class="t-cap mt-3"><b style="color:var(--red);">.photo-grunge.photo-xerox</b></div>
+        </div>
+        <div>
+          <div class="ph photo-grunge photo-fade" data-id="BARE.03" style="aspect-ratio: 1;">FADED</div>
+          <div class="t-cap mt-3"><b style="color:var(--red);">.photo-grunge.photo-fade</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 EXPRESSION (3D type · grunge · punk · scribbles — the volume knob) -->
+    <section class="spec" id="expression">
+      <div class="spec-head"><span class="num">12</span><h2>EXPRESSION</h2><span class="badge tag">DIAL UP THE VOLUME</span></div>
+      <p class="spec-intro">When the system needs to <em>shout</em>. Hero pages, marketing posters, gig fliers, campaign launches — not the spec pages, settings, tables, or product UI. Four layers applied <em>in order</em>: 3D type, grunge primitives, punk treatments, scribble overlays. <span class="annot">if it looks too tidy, it is.</span></p>
+
+      <!-- 12.A 3D TYPE -->
+      <div class="t-cap mt-6" style="color: var(--red); padding-top: 24px; border-top: 2px solid var(--ink);">// 12.A · 3D TYPE — extruded · stacked · chunky · ONE word per page max</div>
+
+      <div class="spec-grid col-1" style="gap: 64px;">
+        <div>
+          <div class="t-3d" style="font-size: 120px; padding: 12px 0 24px;">DRAW IT</div>
+          <div class="t-cap mt-4"><b style="color: var(--red);">.t-3d</b> · ink + signal stack · 10-layer drop</div>
+        </div>
+        <div>
+          <div class="t-3d-blue" style="font-size: 120px; font-family: var(--display-black); text-transform: uppercase; padding: 12px 0 24px;">PARTY MODE</div>
+          <div class="t-cap mt-4"><b style="color: var(--red);">.t-3d-blue</b> · ink + electric blue stack</div>
+        </div>
+        <div>
+          <div class="t-3d-stack" style="font-size: 120px; font-family: var(--display-cond); text-transform: uppercase; padding: 12px 0 32px;">UPLOAD</div>
+          <div class="t-cap mt-4"><b style="color: var(--red);">.t-3d-stack</b> · 6 ink layers + 1 signal kicker · maximum depth</div>
+        </div>
+        <div style="background: var(--ink); padding: 32px 24px;">
+          <div class="t-3d-glow" style="font-size: 120px; font-family: var(--display-cond); text-transform: uppercase; padding: 12px 0 24px;">LIVE NOW</div>
+          <div class="t-cap mt-4" style="color: var(--paper);"><b style="color: var(--red);">.t-3d-glow</b> · short stack + signal-color glow halo · use on dark bg only</div>
+        </div>
+      </div>
+
+    <!-- 12.B GRUNGE PRIMITIVES -->
+    <div class="t-cap mt-7" style="color: var(--accent); padding-top: 32px; border-top: 2px solid var(--ink);">// 12.B · GRUNGE — wobbly lines · sketchy boxes · paper tears · hand arrows</div>
+      <p class="spec-intro mt-4">Inline SVG primitives. Color-token-aware. <span class="annot">drop them anywhere a perfect line feels too clean.</span></p>
+
+      <div class="spec-grid col-2" style="gap: 48px; row-gap: 64px;">
+        <div>
+          <div style="font-family: var(--mono); font-size: 22px; line-height: 1.5;">
+            we draw your night, <span class="hand-underline">badly on purpose</span>.
+          </div>
+          <div class="t-cap mt-5"><b style="color: var(--red);">.hand-underline</b> · wobbly signal stroke · for emphasis in body copy</div>
+        </div>
+
+        <div>
+          <div style="font-family: var(--mono); font-size: 22px; line-height: 1.5;">
+            <span class="hand-strike">$5/month</span> $1 per hit
+          </div>
+          <div class="t-cap mt-5"><b style="color: var(--red);">.hand-strike</b> · sketchy crossout · for old prices, killed copy</div>
+        </div>
+
+        <div>
+          <div class="hand-box" style="font-family: var(--hand-ball); font-size: 26px; line-height: 1.2; color: var(--ink); transform: rotate(-1deg);">
+            "okay but make it<br/>regretful and a little hot"<br/>
+            <span style="font-family: var(--mono); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.1em;">— customer brief</span>
+          </div>
+          <div class="t-cap mt-5"><b style="color: var(--red);">.hand-box</b> · sketchy rough rectangle · for pull quotes, briefs</div>
+        </div>
+
+        <div>
+          <div class="hand-box hand-box-red" style="font-family: var(--mono); font-size: 14px; line-height: 1.5; color: var(--ink);">
+            <b style="color: var(--red);">[ NOTE ]</b><br/>
+            this section needs a real photo<br/>
+            from wanda's phone before fri.
+          </div>
+          <div class="t-cap mt-5"><b style="color: var(--red);">.hand-box-red</b> · signal-color rough border · for callouts, todos</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <div class="hand-circle" style="color: var(--red);">01</div>
+          <div class="hand-circle" style="color: var(--red);">N°</div>
+          <div class="hand-circle" style="color: var(--red); font-family: var(--hand); font-size: 28px;">!</div>
+          <div class="hand-circle" style="color: var(--red); font-family: var(--hand-brush); font-size: 24px;">YES</div>
+          <div class="t-cap" style="margin-left: auto;"><b style="color: var(--red);">.hand-circle</b><br/>scribble-wrap any glyph</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-family: var(--mono); font-size: 14px;">
+          <span>UPLOAD</span>
+          <span class="hand-arrow"></span>
+          <span>DRAW</span>
+          <span class="hand-arrow"></span>
+          <span>SHARE</span>
+          <div class="t-cap" style="margin-left: auto;"><b style="color: var(--red);">.hand-arrow</b><br/>connector between steps</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <div class="hand-burst"></div>
+          <div class="hand-burst" style="filter: hue-rotate(120deg) saturate(2);"></div>
+          <div class="copy-bleed" style="padding: 14px 22px; font-family: var(--display-cond); font-size: 22px; transform: rotate(-3deg);">XEROX'D</div>
+          <div class="t-cap" style="margin-left: auto;"><b style="color: var(--red);">.hand-burst</b> · <b style="color: var(--red);">.copy-bleed</b><br/>starbursts + photocopy blob</div>
+        </div>
+
+        <div style="background: var(--ink); padding: 20px 24px 28px;" class="paper-tear">
+          <div class="t-cap" style="color: var(--red);">[ PAPER · TEAR ]</div>
+          <div style="font-family: var(--display-cond); font-size: 28px; color: var(--paper); text-transform: uppercase; line-height: 1; margin-top: 6px;">ripped from a zine</div>
+          <div class="t-cap mt-3" style="color: rgba(255,255,255,0.5);"><b style="color: var(--red);">.paper-tear</b> · jagged bottom mask · for section breaks</div>
+        </div>
+      </div>
+
+    <!-- 12.C PUNK ZINE -->
+    <div class="t-cap mt-7" style="color: var(--red); padding-top: 32px; border-top: 2px solid var(--ink);">// 12.C · PUNK — dripping headlines · type crashes · marker corrections · splatter</div>
+      <p class="spec-intro mt-4">The hero treatments. Hero pages, marketing posters, gig fliers — never product UI. <span class="annot">if it looks too tidy, make it sloppier.</span></p>
+
+      <!-- DRIP HEADLINE -->
+      <div style="background: var(--paper); padding: 64px 32px 80px; margin-top: 32px; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); position: relative;" class="splatter">
+        <div class="t-cap" style="color: var(--red);">[ A · DRIP HEADLINE ]</div>
+        <div class="t-drip" style="margin-top: 24px;">EVIDENCE</div>
+        <div class="t-cap mt-6" style="max-width: 480px; line-height: 1.55;"><b style="color: var(--red);">.t-drip</b> · paint-bleed gradient drips beneath each letter. SVG turbulence filter roughens edges. Variants: <b>.t-drip-blue</b> · <b>.t-drip-ink</b>. Use for one hero word per page.</div>
+      </div>
+
+      <!-- TYPE CRASH -->
+      <div style="background: var(--paper); padding: 64px 32px; margin-top: 0; border-bottom: 2px solid var(--ink);">
+        <div class="t-cap" style="color: var(--red);">[ B · TYPE CRASH — single word, letters collide ]</div>
+        <div class="t-crash" style="margin-top: 24px;">
+          <span>P</span><span>A</span><span>R</span><span>T</span><span>Y</span>
+        </div>
+        <div class="t-cap mt-6" style="max-width: 540px; line-height: 1.55;"><b style="color: var(--red);">.t-crash</b> · letters rotate, overlap, alternate ink/signal. Wrap each letter in a <code style="font-family: var(--mono); background: var(--ink); color: var(--red); padding: 1px 4px;">&lt;span&gt;</code>. Heroes only.</div>
+      </div>
+
+      <!-- HANDWRITING-AS-HEADLINE (Omar Apollo) -->
+      <div style="background: var(--paper); padding: 64px 32px; border-bottom: 2px solid var(--ink); position: relative;">
+        <div class="t-cap" style="color: var(--red);">[ C · HANDWRITING-AS-HEADLINE — repeat the word until it sticks ]</div>
+        <div class="t-crash-wrap" style="margin-top: 32px;">
+          <span class="t-crash-line">PARTY TRICK</span>
+          <span class="t-crash-line">party trick</span>
+          <span class="t-crash-line">PARTY TRICK</span>
+          <span class="t-crash-line">party TRICK</span>
+          <span class="t-crash-line">PARTY trick</span>
+          <span class="t-crash-line">PARTY TRICK</span>
+        </div>
+        <div class="t-cap mt-6" style="max-width: 540px; line-height: 1.55;"><b style="color: var(--red);">.t-crash-wrap + .t-crash-line</b> · same word handwritten 5–8 times, scattered. Each line has its own rotation + offset. Pure punk-zine ritual.</div>
+      </div>
+
+      <!-- MARGIN SCRAWL (Willem!!) -->
+      <div style="background: var(--paper); padding: 64px 32px; border-bottom: 2px solid var(--ink);">
+        <div class="t-cap" style="color: var(--red);">[ D · MARGIN SCRAWL — handwriting rotates around the photo ]</div>
+        <div class="margin-scrawl-frame" style="margin: 32px auto 0; max-width: 380px;">
+          <span class="ms-top">styling by cas hagemeier · model parker mgmt · 04.30.26</span>
+          <span class="ms-bottom">photo by wanda · party trick studio · NY · 02:14 AM</span>
+          <span class="ms-left">issue 02 · vol III · the regretful issue · spring 26 · party trick</span>
+          <span class="ms-right">credits: bad drawing · good vibes · cheap thrills · expensive lessons</span>
+          <div class="scrawl-title" style="position: absolute; top: 28px; left: 60px;">Wanda !!</div>
+          <div class="ph photo-grunge xerox-blown" data-id="POL.HERO" style="aspect-ratio: 4/5;">PORTRAIT</div>
+        </div>
+        <div class="t-cap mt-6" style="max-width: 540px; line-height: 1.55;"><b style="color: var(--red);">.margin-scrawl-frame</b> · with <b>.ms-top</b>, <b>.ms-bottom</b>, <b>.ms-left</b>, <b>.ms-right</b> children + <b>.scrawl-title</b>. Handwriting wraps photo on all four sides.</div>
+      </div>
+
+      <!-- SPLATTER + SMEAR -->
+      <div class="spec-grid col-2" style="background: var(--paper); padding: 48px 32px; gap: 32px; border-bottom: 2px solid var(--ink);">
+        <div class="splatter" style="padding: 64px 24px; border: 2px solid var(--ink); position: relative; min-height: 240px;">
+          <div class="t-cap" style="color: var(--red);">[ E · SPLATTER ]</div>
+          <div class="t-d3 mt-3" style="font-family: var(--display-black);">PAINT DROPS</div>
+          <div class="t-body mt-3"><b style="color: var(--red);">.splatter</b> on any container — scattered signal-color drops, multiply blend.</div>
+        </div>
+        <div class="smear" style="padding: 64px 24px; border: 2px solid var(--ink); position: relative; min-height: 240px;">
+          <div class="t-cap" style="color: var(--red);">[ F · SMEAR ]</div>
+          <div class="t-d3 mt-3" style="font-family: var(--display-black);">PAINT SWIPE</div>
+          <div class="t-body mt-3"><b style="color: var(--red);">.smear</b> — long horizontal paint stroke, like a marker that wouldn't stop.</div>
+        </div>
+      </div>
+
+      <!-- MARKER CORRECTIONS -->
+      <div style="background: var(--paper); padding: 64px 32px; border-bottom: 2px solid var(--ink);">
+        <div class="t-cap" style="color: var(--red);">[ G · MARKER CORRECTIONS — visible edits left on the page ]</div>
+        <div class="spec-grid col-2" style="margin-top: 32px; gap: 48px;">
+          <div>
+            <div style="font-family: var(--mono); font-size: 22px; line-height: 1.6;">
+              we make
+              <span class="marker-edit"><span class="replacement">terrible</span><span class="crossed">beautiful</span></span>
+              drawings.
+            </div>
+            <div class="t-cap mt-5"><b style="color: var(--red);">.marker-edit</b> with <b>.crossed</b> + <b>.replacement</b> children. Strike-through plus scribbled correction above.</div>
+          </div>
+          <div>
+            <div style="font-family: var(--mono); font-size: 18px; line-height: 1.7;">
+              click <span class="marker-circle">here</span> to upload your night.<br/><br/>
+              <span style="display: inline-block;">it costs <span class="marker-circle" style="font-family: var(--display-black); font-size: 28px;">$1</span></span>
+            </div>
+            <div class="t-cap mt-5"><b style="color: var(--red);">.marker-circle</b> · scrawled circle around any inline span. Drawn with one continuous stroke.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLLAGE CARDS -->
+      <div style="background: var(--paper2); padding: 64px 32px; border-bottom: 2px solid var(--ink);">
+        <div class="t-cap" style="color: var(--red);">[ H · COLLAGE CARDS — ragged paper, layered ]</div>
+        <div class="spec-grid col-3" style="margin-top: 32px; gap: 48px;">
+          <div class="collage-card tilt-l layered">
+            <div class="t-cap" style="color: var(--red);">[ TORN · TILT LEFT ]</div>
+            <div class="t-d3 mt-3" style="font-family: var(--display-black);">SCRAP 01</div>
+            <div class="t-body mt-3">Ragged-edge clip-path on all four sides. Inked layered shadow behind it.</div>
+            <div class="t-cap mt-4" style="color: var(--ink-soft);">.collage-card.tilt-l.layered</div>
+          </div>
+          <div class="collage-card">
+            <div class="t-cap" style="color: var(--red);">[ TORN · STRAIGHT ]</div>
+            <div class="t-d3 mt-3" style="font-family: var(--display-black);">SCRAP 02</div>
+            <div class="t-body mt-3">Same card without tilt or layered backing — for stacks where rotation reads as accident.</div>
+          </div>
+          <div class="collage-card tilt-r" style="background: var(--ink); color: var(--paper);">
+            <div class="t-cap" style="color: var(--red);">[ INVERTED ]</div>
+            <div class="t-d3 mt-3" style="font-family: var(--display-black); color: var(--paper);">SCRAP 03</div>
+            <div style="font-family: var(--mono); font-size: 13px; line-height: 1.55; margin-top: 12px; color: rgba(255,255,255,0.85);">Black paper. Same torn edges. Use for emphasis cards in collage spreads.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GIG POSTER -->
+      <div style="background: var(--paper); padding: 64px 32px; border-bottom: 2px solid var(--ink);">
+        <div class="t-cap" style="color: var(--red);">[ I · GIG POSTER CARD ]</div>
+        <div class="spec-grid col-3" style="margin-top: 32px; gap: 32px;">
+          <div class="gig-poster">
+            <div class="stamp-head">WANDA<br/><span style="display:block;font-size:32px;">KARAOKE<br/>NIGHT</span><span class="sub">04.30.26 · 11PM · UNRULY</span></div>
+            <div class="photo">[ HIGH-CONTRAST PHOTO ]</div>
+            <div class="meta"><span class="red">$8 ADV / $10 DOOR</span><span>21+</span></div>
+          </div>
+          <div class="gig-poster">
+            <div class="photo" style="filter: contrast(1.6) grayscale(1) brightness(0.85);">[ NIGHT FIELD ]</div>
+            <div class="stamp-head" style="background: var(--accent); color: var(--paper); border-color: var(--ink);">PARTY<br/>TRICK<br/><span class="sub" style="color: var(--paper); opacity: 0.85;">SPRING TOUR · 26 CITIES</span></div>
+            <div class="meta"><span>RSVP @ PARTYTRICK.GG</span><span class="red">SOLD OUT</span></div>
+          </div>
+          <div class="gig-poster" style="background: var(--red); border-color: var(--ink);">
+            <div class="stamp-head" style="background: var(--ink); color: var(--red);">EVERY<br/>NIGHT IS<br/>A SOUVENIR<span class="sub" style="color: var(--red);">$1 PER NIGHT · NO ALGO</span></div>
+            <div class="photo" style="background: var(--red); color: rgba(0,0,0,0.4);">[ FLYER ART ]</div>
+            <div class="meta" style="background: var(--red); color: var(--ink); border-color: var(--ink);"><span>SHOW EVERY THURS</span><span style="color: var(--ink);">★ ★ ★ ★ ★</span></div>
+          </div>
+        </div>
+        <div class="t-cap mt-6" style="max-width: 540px; line-height: 1.55;"><b style="color: var(--red);">.gig-poster</b> with <b>.stamp-head</b>, <b>.photo</b>, <b>.meta</b>. Recombine head/photo/meta order; swap stamp colors. Built for events, drops, announcements.</div>
+      </div>
+
+      <!-- RECEIPT COLLAGE -->
+      <div style="background: var(--paper); padding: 64px 32px; border-bottom: 2px solid var(--ink);">
+        <div class="t-cap" style="color: var(--red);">[ J · RECEIPT COLLAGE — torn paper + barcodes + paint ]</div>
+        <div class="receipt-collage splatter" style="margin-top: 32px; min-height: 320px;">
+          <div class="receipt-strip" style="top: 16px; left: 32px; width: 220px; transform: rotate(-4deg);">
+            <div style="font-weight: 700;">PARTY TRICK · 04/30/26</div>
+            <div>1× BAD DRAWING ........ $1.00</div>
+            <div>1× REGRET ............. $0.00</div>
+            <div>TOTAL ................. $1.00</div>
+            <div class="barcode"></div>
+            <div style="text-align: center; font-family: var(--hand-ball); font-size: 14px; color: var(--red); transform: rotate(-1deg);">— thx for partying —</div>
+          </div>
+          <div class="receipt-strip" style="top: 80px; right: 24px; width: 200px; transform: rotate(3deg); background: var(--ink); color: var(--paper);">
+            <div style="font-weight: 700; color: var(--red);">FLT 808 · ATL→MSY</div>
+            <div>SEAT 16C · GROUP B</div>
+            <div>BOARDING 23:55</div>
+            <div class="barcode" style="background: repeating-linear-gradient(90deg, var(--paper) 0 1px, transparent 1px 2px, var(--paper) 2px 4px, transparent 4px 5px);"></div>
+            <div>GATE: G7</div>
+          </div>
+          <div class="receipt-strip" style="bottom: 24px; left: 80px; width: 240px; transform: rotate(-2deg);">
+            <div style="font-weight: 700;">VENUE · UNRULY · NY</div>
+            <div>★★★★☆ · 4 of 5</div>
+            <div>"STAYED TOO LONG"</div>
+            <div class="barcode"></div>
+            <div>04.30.26 · 02:14 AM · TBL 7</div>
+          </div>
+        </div>
+        <div class="t-cap mt-6" style="max-width: 540px; line-height: 1.55;"><b style="color: var(--red);">.receipt-collage</b> + <b>.receipt-strip</b> · torn paper edges, scattered absolute positioning, paint splatter overlay. Each strip can be inverted (ink bg).</div>
+      </div>
+
+      <!-- CRAYON BACKGROUND -->
+      <div style="margin: 0; border-bottom: 2px solid var(--ink);">
+        <div class="crayon-bg" style="padding: 64px 32px; min-height: 320px; position: relative;">
+          <div class="t-cap" style="color: var(--ink);">[ K · CRAYON BG — blue + scribble ]</div>
+          <div class="crayon-text" style="font-size: clamp(48px, 8vw, 96px); line-height: 0.9; margin-top: 24px;">BORN<br/>FREE<br/>CLUB</div>
+          <div class="crayon-text" style="font-size: clamp(28px, 4vw, 56px); margin-top: 24px; color: var(--ink-2);">P<span style="margin: 0 -2px;">○</span>WD<span style="display: inline-block; transform: rotate(-8deg);">E</span>R</div>
+          <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; color: var(--ink); position: absolute; bottom: 20px; right: 24px; transform: rotate(-2deg);">ADOPT · 20.10</div>
+          <div class="t-cap" style="color: var(--ink); position: absolute; top: 12px; right: 24px;"><b>.crayon-bg + .crayon-text</b></div>
+        </div>
+      </div>
+
+      <!-- 100TH-GEN XEROX -->
+      <div style="background: var(--paper); padding: 64px 32px; border-bottom: 2px solid var(--ink);">
+        <div class="t-cap" style="color: var(--red);">[ L · 100TH-GEN XEROX ]</div>
+        <div class="spec-grid col-3" style="margin-top: 32px; gap: 32px;">
+          <div>
+            <div class="ph photo-xerox" data-id="GEN.10" style="aspect-ratio: 1;">CLEAN COPY</div>
+            <div class="t-cap mt-3"><b style="color: var(--red);">.photo-xerox</b> · gen-10</div>
+          </div>
+          <div>
+            <div class="ph photo-grunge xerox-blown" data-id="GEN.50" style="aspect-ratio: 1;">DEGRADED</div>
+            <div class="t-cap mt-3"><b style="color: var(--red);">.xerox-blown</b> · gen-50</div>
+          </div>
+          <div>
+            <div class="ph photo-grunge xerox-blown splatter" data-id="GEN.100" style="aspect-ratio: 1;">RUINED</div>
+            <div class="t-cap mt-3"><b style="color: var(--red);">.xerox-blown.splatter</b> · gen-100</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHOUT QUOTE -->
+      <div style="background: var(--paper); padding: 64px 32px;">
+        <div class="t-cap" style="color: var(--red);">[ M · SHOUT QUOTE ]</div>
+        <div class="shout" style="margin-top: 32px; max-width: 880px;">
+          we draw your night, <span class="signal underline">badly on purpose</span>. we ship <span class="signal">at 02:14 AM</span>. we accept no notes from anyone <span class="signal">SOBER</span>.
+        </div>
+        <div class="t-cap mt-7" style="max-width: 540px; line-height: 1.55;"><b style="color: var(--red);">.shout</b> · scribble-handwriting headline-paragraph. Use sparingly — 1 per page max.</div>
+      </div>
+    </section>
+
+    <!-- 11 ICONS -->
+    <section class="spec" id="icons">
+      <div class="spec-head"><span class="num">11</span><h2>ICONS</h2><span class="badge tag">SYMBOL-FIRST</span></div>
+      <p class="spec-intro">Real keyboard symbols. ASCII glyphs. Bracketed tags. <span class="annot">no SVG illustrations of apps.</span></p>
+
+      <div class="icon-demo">
+        <div class="ic">★<span class="lab">★ STAR</span></div>
+        <div class="ic">●<span class="lab">● DOT</span></div>
+        <div class="ic">↳<span class="lab">↳ FOLLOW</span></div>
+        <div class="ic">×<span class="lab">× CLOSE</span></div>
+        <div class="ic">→<span class="lab">→ NEXT</span></div>
+        <div class="ic">↯<span class="lab">↯ ZAP</span></div>
+        <div class="ic">♥<span class="lab">♥ HEART</span></div>
+        <div class="ic">¶<span class="lab">¶ PILCROW</span></div>
+        <div class="ic">§<span class="lab">§ SECTION</span></div>
+        <div class="ic" style="font-family: var(--display-cond); font-size: 28px;">N°<span class="lab">N° NUMERO</span></div>
+        <div class="ic">＊<span class="lab">＊ ASTERISK</span></div>
+        <div class="ic" style="font-family: var(--term); color: var(--red);">[!]<span class="lab" style="color:var(--ink-soft);">[!] WARN</span></div>
+        <div class="ic" style="font-family: var(--term); color: var(--red);">{}<span class="lab" style="color:var(--ink-soft);">{} CODE</span></div>
+        <div class="ic" style="font-family: var(--term); color: var(--red);">/&gt;<span class="lab" style="color:var(--ink-soft);">/&gt; TAG</span></div>
+        <div class="ic" style="font-family: var(--hand); color: var(--red); font-size: 30px;">XX<span class="lab" style="font-family: var(--mono); color: var(--ink-soft);">XX HAND</span></div>
+        <div class="ic" style="font-family: var(--term); color: var(--red);">█<span class="lab" style="color:var(--ink-soft);">█ CURSOR</span></div>
+      </div>
+    </section>
+
+    <!-- 14 MOTION -->
+    <section class="spec" id="motion">
+      <div class="spec-head"><span class="num">14</span><h2>MOTION</h2><span class="badge tag">SNAP · SHAKE · TILT · BLINK · MARQUEE</span></div>
+      <p class="spec-intro">Five motions. <span class="scrawl scrawl-sm" style="transform: rotate(-2deg);">hover the cards →</span> Use sparingly. Never decorative.</p>
+
+      <div class="motion-demo">
+        <div class="motion-card m-snap">SNAP</div>
+        <div class="motion-card m-shake">SHAKE</div>
+        <div class="motion-card m-flip">TILT</div>
+        <div class="motion-card" style="font-family: var(--term); font-size: 28px; color: var(--red);">BLINK<span class="cursor"></span></div>
+      </div>
+      <div class="anatomy">
+        <span><b>SNAP</b>translate -4,-4 + 6px red shadow · 160ms</span>
+        <span><b>SHAKE</b>±4px rotate ±1° · 400ms · errors / live</span>
+        <span><b>TILT</b>rotate -3° + scale 1.04 · 160ms · stickers</span>
+        <span><b>BLINK</b>1s steps · cursor / live indicator</span>
+        <span><b>MARQUEE</b>30s linear infinite · once per page</span>
+      </div>
+    </section>
+
+    <!-- 15 CHROME -->
+    <section class="spec" id="chrome">
+      <div class="spec-head"><span class="num">15</span><h2>NAV · CHROME</h2></div>
+      <p class="spec-intro">System bar (terminal status), main nav (logo + run-on), footer (terminal colofon). Three layers of system always visible.</p>
+
+      <div class="sample" style="padding: 0; overflow: hidden;">
+        <span class="sample-label">.pt-sysbar · status</span>
+        <div class="pt-sysbar" style="position: static;">
+          <span class="blink">●</span>
+          <span>SYSTEM</span><span class="sep">/</span><span>v2.0</span>
+          <span class="sep">/</span><span style="color: var(--red);">DESIGN.MANUAL</span>
+          <span class="right"><span>04.30.2026</span><span class="sep">/</span><span class="blink">REC</span></span>
+        </div>
+      </div>
+
+      <div class="sample" style="padding: 0; overflow: hidden;">
+        <span class="sample-label">.pt-nav · run-on inline navigation</span>
+        <nav class="pt-nav" style="position: static; top: auto;">
+          <div>
+            <a href="#" class="logo">PART<span class="x">Y</span>·TRICK<sup>™</sup></a>
+            <div class="pt-runon">
+              a souvenir engine <a href="#">→ how it works</a>, <a href="#">party mode</a>, <a href="#">pricing</a> · about: <a href="#">manifesto</a>, <a href="#">press kit</a> · contact: <a href="#">hi@partytrick.nyc</a>
+            </div>
+          </div>
+          <a href="#" class="btn btn-red">START · $1 <span class="arrow">→</span></a>
+        </nav>
+      </div>
+
+      <div class="sample" style="padding: 0; overflow: hidden; background: var(--ink);">
+        <span class="sample-label" style="background: var(--ink); color: var(--red);">.pt-foot · terminal colofon</span>
+        <footer class="pt-foot" style="margin-top: 0;">
+          <div>
+            <div class="colofon">PART<span class="x">Y</span>·TRICK<sup style="font-family: var(--mono); font-size: 12px; color: var(--red); vertical-align: super;">™</sup></div>
+            <div class="ascii">+--------------+
+| BAD DRAWINGS |
+| ONLY · 2026  |
++--------------+</div>
+          </div>
+          <div><h5>↳ PRODUCT</h5><a>How it works</a><a>Party Mode</a><a>Pricing</a><a>FAQ</a></div>
+          <div><h5>↳ COMPANY</h5><a>About</a><a>Manifesto</a><a>Press kit</a><a>Jobs</a></div>
+          <div><h5>↳ SOCIAL</h5><a>@partytrick</a><a>TikTok</a><a>Newsletter</a></div>
+        </footer>
+        <div class="pt-foot-bar">
+          <span><span class="blink">●</span> 2026 · NYC · ALPHA</span>
+          <span>VOL. 001 / ISS. APR / DESIGN MANUAL</span>
+          <span>NO ALGORITHM · YES VIBES</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16 LAYOUT -->
+    <section class="spec" id="layout">
+      <div class="spec-head"><span class="num">16</span><h2>LAYOUTS</h2><span class="badge tag">5 SPREADS</span></div>
+      <p class="spec-intro">Pages are spreads. Pick a spread, then break the grid <em>on purpose</em>.</p>
+
+      <div class="spec-grid col-4" style="gap: var(--s-4);">
+        <div>
+          <div class="layout-thumb">
+            <div class="lab">A · MASTHEAD</div>
+            <div class="row r"></div><div class="big"></div><div class="row"></div><div class="row" style="width: 60%;"></div>
+          </div>
+          <div class="t-cap mt-3" style="color: var(--red); font-weight: 700;">[ A ]</div>
+          <div class="t-cap">masthead<br/><span style="color:var(--ink-soft);">→ landing.html</span></div>
+        </div>
+        <div>
+          <div class="layout-thumb">
+            <div class="lab">B · TWO-UP</div>
+            <div class="row"></div><div class="grid2"><div class="big"></div><div class="big outline"></div></div><div class="row r" style="width: 40%;"></div>
+          </div>
+          <div class="t-cap mt-3" style="color: var(--red); font-weight: 700;">[ B ]</div>
+          <div class="t-cap">two-up<br/><span style="color:var(--ink-soft);">→ product.html</span></div>
+        </div>
+        <div>
+          <div class="layout-thumb">
+            <div class="lab">C · LONG SCROLL</div>
+            <div class="row r"></div><div class="row"></div><div class="row" style="width: 80%;"></div><div class="big outline"></div><div class="row" style="width: 60%;"></div><div class="row"></div>
+          </div>
+          <div class="t-cap mt-3" style="color: var(--red); font-weight: 700;">[ C ]</div>
+          <div class="t-cap">long scroll<br/><span style="color:var(--ink-soft);">→ about.html</span></div>
+        </div>
+        <div>
+          <div class="layout-thumb">
+            <div class="lab">D · GRID</div>
+            <div class="row" style="width: 50%;"></div>
+            <div class="grid2" style="grid-template-columns: 1fr 1fr 1fr;"><div class="small" style="height: 100%;"></div><div class="small" style="height: 100%; background: var(--red);"></div><div class="small" style="height: 100%;"></div></div>
+            <div class="grid2" style="grid-template-columns: 1fr 1fr 1fr;"><div class="small" style="height: 100%;"></div><div class="small" style="height: 100%;"></div><div class="small" style="height: 100%;"></div></div>
+          </div>
+          <div class="t-cap mt-3" style="color: var(--red); font-weight: 700;">[ D ]</div>
+          <div class="t-cap">pricing grid<br/><span style="color:var(--ink-soft);">→ /pricing</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 SCRIBBLES -->
+    <section class="spec" id="scribbles">
+      <div class="spec-head"><span class="num">13</span><h2>SCRIBBLES</h2><span class="badge tag">CIRCLES · ARROWS · GLYPHS · ANNOTATIONS</span></div>
+      <p class="spec-intro">Hand-drawn marks layered on top of the system. <span class="scrawl scrawl-sm scrawl-blue" style="margin-left: 8px;">← like this!</span> Use scribbles to <em>react</em> to the system, not replace it.</p>
+
+      <!-- Reusable SVG scribbles, inline so colors update with --red / --accent -->
+      <h4 class="t-d4 mt-3">// CIRCLES &amp; UNDERLINES</h4>
+      <div class="preview" style="padding: var(--s-7) var(--s-5); gap: var(--s-7); flex-wrap: wrap;">
+        <div class="circled">
+          <span class="t-d3" style="font-family: var(--display-black);">CIRCLED</span>
+          <svg class="circle-svg" viewBox="0 0 200 80" preserveAspectRatio="none">
+            <ellipse cx="100" cy="40" rx="92" ry="32" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 0"
+              transform="rotate(-2 100 40)" />
+          </svg>
+        </div>
+        <div class="circled">
+          <span class="t-d3" style="font-family: var(--display-black);">DOUBLE</span>
+          <svg class="circle-svg" viewBox="0 0 200 80" preserveAspectRatio="none">
+            <ellipse cx="100" cy="40" rx="92" ry="32" fill="none" stroke="var(--accent)" stroke-width="3" />
+            <ellipse cx="100" cy="42" rx="88" ry="28" fill="none" stroke="var(--accent)" stroke-width="2" transform="rotate(2 100 40)" />
+          </svg>
+        </div>
+        <span class="t-d3 underline-marker" style="font-family: var(--display-black);">MARKER</span>
+        <span class="t-d3 underline-marker underline-marker-blue" style="font-family: var(--display-black);">UNDER</span>
+        <span class="t-d3 strike-marker" style="font-family: var(--display-black); color: var(--ink-soft);">SHARPIE-STRIKE</span>
+      </div>
+
+      <h4 class="t-d4 mt-6">// ARROWS &amp; LEADERS</h4>
+      <div class="preview" style="padding: var(--s-7) var(--s-5); gap: var(--s-8); flex-wrap: wrap; align-items: center;">
+        <!-- curly arrow -->
+        <svg width="120" height="80" viewBox="0 0 120 80">
+          <path d="M 10 20 Q 30 10, 50 30 T 90 50" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round" />
+          <path d="M 80 42 L 90 50 L 80 58" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <!-- jagged lightning -->
+        <svg width="60" height="80" viewBox="0 0 60 80">
+          <polyline points="30,5 18,35 35,35 22,75" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" />
+        </svg>
+        <!-- big punk arrow -->
+        <svg width="160" height="60" viewBox="0 0 160 60">
+          <path d="M 5 30 L 140 30" stroke="var(--red)" stroke-width="5" stroke-linecap="round" />
+          <path d="M 120 12 L 150 30 L 120 48" fill="none" stroke="var(--red)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <!-- spiral -->
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <path d="M 40 40 m 0 0 a 4 4 0 1 0 8 0 a 8 8 0 1 0 -16 0 a 14 14 0 1 0 28 0 a 22 22 0 1 0 -34 0" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linecap="round" />
+        </svg>
+        <!-- bracket emphasis -->
+        <svg width="100" height="80" viewBox="0 0 100 80">
+          <path d="M 15 10 L 5 10 L 5 70 L 15 70" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M 85 10 L 95 10 L 95 70 L 85 70" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <h4 class="t-d4 mt-6">// PUNK GLYPHS</h4>
+      <div class="preview" style="gap: var(--s-7); padding: var(--s-7) var(--s-5); flex-wrap: wrap;">
+        <!-- skull -->
+        <svg class="glyph" width="56" height="56" viewBox="0 0 56 56">
+          <path d="M 12 24 Q 12 8, 28 8 Q 44 8, 44 24 Q 44 34, 38 38 L 38 46 L 32 46 L 32 42 L 24 42 L 24 46 L 18 46 L 18 38 Q 12 34, 12 24 Z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="22" cy="24" r="3" fill="var(--red)"/>
+          <circle cx="34" cy="24" r="3" fill="var(--red)"/>
+          <path d="M 26 32 L 30 32" stroke="var(--ink)" stroke-width="2"/>
+        </svg>
+        <!-- star -->
+        <svg class="glyph" width="56" height="56" viewBox="0 0 56 56">
+          <polygon points="28,5 34,22 52,22 38,32 44,50 28,40 12,50 18,32 4,22 22,22"
+            fill="var(--red)" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+        <!-- big X -->
+        <svg class="glyph" width="56" height="56" viewBox="0 0 56 56">
+          <path d="M 8 8 L 48 48" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
+          <path d="M 48 8 L 8 48" stroke="var(--accent)" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+        <!-- heart -->
+        <svg class="glyph" width="56" height="56" viewBox="0 0 56 56">
+          <path d="M 28 48 C 28 48, 6 32, 6 18 C 6 10, 14 6, 20 10 C 24 12, 26 16, 28 20 C 30 16, 32 12, 36 10 C 42 6, 50 10, 50 18 C 50 32, 28 48, 28 48 Z"
+            fill="var(--red)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+        <!-- exclamation triangle -->
+        <svg class="glyph" width="56" height="56" viewBox="0 0 56 56">
+          <polygon points="28,5 52,50 4,50" fill="var(--hi-yellow)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M 28 20 L 28 36" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="28" cy="42" r="2" fill="var(--ink)"/>
+        </svg>
+        <!-- anarchy circle-A -->
+        <svg class="glyph" width="56" height="56" viewBox="0 0 56 56">
+          <circle cx="28" cy="28" r="22" fill="none" stroke="var(--ink)" stroke-width="3"/>
+          <path d="M 14 40 L 28 12 L 42 40" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M 18 32 L 38 32" stroke="var(--ink)" stroke-width="3"/>
+        </svg>
+        <!-- zigzag -->
+        <svg class="glyph" width="80" height="40" viewBox="0 0 80 40">
+          <polyline points="4,20 16,8 28,32 40,8 52,32 64,8 76,20" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
+        <!-- sticker burst -->
+        <svg class="glyph" width="80" height="80" viewBox="0 0 80 80">
+          <polygon points="40,4 47,22 66,18 56,34 76,40 56,46 66,62 47,58 40,76 33,58 14,62 24,46 4,40 24,34 14,18 33,22"
+            fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/>
+          <text x="40" y="46" text-anchor="middle" font-family="var(--display-black)" font-size="11" fill="var(--paper)" font-weight="900">NEW!</text>
+        </svg>
+      </div>
+
+      <h4 class="t-d4 mt-6">// HANDWRITTEN ANNOTATIONS</h4>
+      <div class="spec-grid col-3" style="margin-top: var(--s-4);">
+        <div class="card" style="position: relative; padding: var(--s-6) var(--s-5);">
+          <div class="t-cap" style="color: var(--ink-soft);">PRICING</div>
+          <div class="t-d2" style="font-family: var(--display-cond); margin-top: 8px;">$1<span style="color: var(--ink-soft);">.00</span></div>
+          <span class="scrawl scrawl-wiggle" style="position: absolute; top: 12px; right: 14px;">cheap!!</span>
+          <svg style="position: absolute; bottom: -20px; left: 30px; width: 80px; height: 50px;" viewBox="0 0 80 50">
+            <path d="M 70 5 Q 60 25, 30 30" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M 36 24 L 28 30 L 35 36" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="card" style="position: relative; padding: var(--s-6) var(--s-5);">
+          <div class="t-cap" style="color: var(--ink-soft);">SPEED</div>
+          <div class="t-d2" style="font-family: var(--display-cond); margin-top: 8px;"><span class="strike-marker">10s</span> <span style="color: var(--accent);">3s</span></div>
+          <span class="scrawl scrawl-blue" style="position: absolute; bottom: 14px; right: 14px; transform: rotate(4deg);">faster now</span>
+        </div>
+        <div class="card" style="position: relative; padding: var(--s-6) var(--s-5); transform: rotate(-1deg);">
+          <div class="t-cap" style="color: var(--ink-soft);">VIBE</div>
+          <div style="font-family: var(--display-black); font-size: 28px; line-height: 1; margin-top: 8px;">REGRETFUL <span class="circled" style="color: var(--red);">/<svg class="circle-svg" viewBox="0 0 30 50" preserveAspectRatio="none"><ellipse cx="15" cy="25" rx="12" ry="22" fill="none" stroke="var(--red)" stroke-width="3"/></svg></span> VICTORIOUS</div>
+          <span class="scrawl scrawl-ink scrawl-sm" style="position: absolute; top: -8px; left: 14px; background: var(--paper); padding: 0 6px;">pick one →</span>
+        </div>
+      </div>
+
+      <hr class="rule-fat" />
+
+      <h4 class="t-d4">// USAGE</h4>
+      <div class="do-dont">
+        <div class="item do"><span class="stamp-lbl">DO</span>
+          <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.5;">One scribble per moment. Layer it on top of an already-finished system block. Use the signal color (green) for emphasis, blue for secondary, ink for asides. Tilt 2–6° max.</p>
+        </div>
+        <div class="item dont"><span class="stamp-lbl">DON'T</span>
+          <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.5;">Don't draw illustrations of products, hands, devices, faces. Don't use scribbles as decoration on every section — they lose meaning. Don't mix more than two scribble colors per page.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 VOICE -->
+    <section class="spec" id="voice">
+      <div class="spec-head"><span class="num">17</span><h2>VOICE</h2><span class="badge tag">HOW IT SOUNDS · TONE · COPY</span></div>
+      <p class="spec-intro">Drunk art-school friend with good instincts, not a polished software product. Funny, slightly mean, culturally literate, fast, specific. <span class="scrawl scrawl-blue scrawl-sm" style="transform: rotate(-2deg); top: 4px;">stands in the room. takes notes.</span></p>
+
+      <!-- ============ 15.A · CORE TENSION ============ -->
+      <div style="border: 2px solid var(--red); padding: 28px 32px; background: rgba(227, 6, 19, 0.04); position: relative; margin-bottom: 32px;">
+        <div class="t-cap" style="position: absolute; top: -10px; left: 16px; background: var(--paper); padding: 0 8px; color: var(--red);">[ ☠ RULE ZERO ]</div>
+        <div class="t-cap" style="color: var(--ink-soft);">// THE ONE THING WE NEVER SAY</div>
+        <div class="t-d3 mt-3" style="font-family: var(--display-black); text-transform: none;">Never name the technology.</div>
+        <p class="t-body mt-3" style="font-family: var(--mono); max-width: 680px;">Party Trick is not <span class="crossed">an AI tool</span>, <span class="crossed">an AI portrait generator</span>, <span class="crossed">AI-powered</span>, or <span class="crossed">a machine learning product</span>. It's a witness. A souvenir engine. A bad friend with a sketchpad. We <em>are</em> Party Trick — a character with taste and grudges — not a model behind a button.</p>
+      </div>
+
+      <div style="border: 2px solid var(--ink); padding: 40px 32px; background: var(--paper2); position: relative; margin-bottom: 56px;">
+        <div class="t-cap" style="position: absolute; top: -10px; left: 16px; background: var(--paper2); padding: 0 8px; color: var(--red);">[ A · CORE TENSION ]</div>
+        <div class="t-cap" style="color: var(--ink-soft);">// THE LINE THE WHOLE BRAND PIVOTS ON</div>
+        <div class="t-d2 mt-3" style="font-family: var(--display-black); text-transform: none; letter-spacing: -0.02em;">Party Trick turns a moment into evidence.</div>
+        <div class="rule-dotted" style="margin: 28px 0;"></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
+          <div>
+            <div class="t-cap" style="color: var(--red);">NOT THIS</div>
+            <ul class="t-body mt-3" style="list-style: none; padding: 0; margin: 0; font-family: var(--mono); line-height: 2;">
+              <li><span class="crossed">"capture your night"</span></li>
+              <li><span class="crossed">"create a portrait"</span></li>
+              <li><span class="crossed">"generate a memory"</span></li>
+            </ul>
+          </div>
+          <div>
+            <div class="t-cap" style="color: var(--ink);">THIS</div>
+            <div class="t-d4 mt-3" style="font-family: var(--display-cond); font-size: 32px; line-height: 1.1;">"You were there.<br/>Unfortunately, now there's <span class="hl-red">art</span>."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ 15.B · FOUR PRINCIPLES ============ -->
+      <div class="t-cap" style="color: var(--red);">[ B · VOICE PRINCIPLES — IN PRACTICE ]</div>
+      <div class="t-d3 mt-2" style="font-family: var(--display-black);">FOUR DIALS, ALWAYS ON.</div>
+
+      <div class="spec-grid col-2 mt-5" style="gap: 24px;">
+        <!-- 1 -->
+        <div class="card card-numbered" data-num="01" style="padding: 24px;">
+          <h4 class="t-d4 mt-2">SPECIFIC BEATS GENERIC.</h4>
+          <p class="t-small mt-2" style="color: var(--ink-soft);">If you can swap the noun for any other product, it's too generic. Name the outfit, the drink, the exact facial expression.</p>
+          <div class="do-dont mt-4" style="margin-top: 16px; gap: 12px;">
+            <div class="item dont" style="padding: 12px;"><span class="stamp-lbl">BAD</span><p style="margin: 6px 0 0; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--red);">Turn your party moments into funny AI art.</p></div>
+            <div class="item do" style="padding: 12px;"><span class="stamp-lbl">BETTER</span><p style="margin: 6px 0 0; font-family: var(--mono); font-size: 12px; line-height: 1.5;">Upload the voice note. We'll identify the vibe, the outfit, the social damage, and the exact facial expression that ruined the night.</p></div>
+          </div>
+        </div>
+        <!-- 2 -->
+        <div class="card card-numbered" data-num="02" style="padding: 24px;">
+          <h4 class="t-d4 mt-2">MEAN — NOT CRUEL.</h4>
+          <p class="t-small mt-2" style="color: var(--ink-soft);">Roast the situation. Never the person. The reader should laugh, not flinch.</p>
+          <div class="do-dont mt-4" style="margin-top: 16px; gap: 12px;">
+            <div class="item dont" style="padding: 12px;"><span class="stamp-lbl">BAD</span><p style="margin: 6px 0 0; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--red);">You looked insane.</p></div>
+            <div class="item do" style="padding: 12px;"><span class="stamp-lbl">BETTER</span><p style="margin: 6px 0 0; font-family: var(--mono); font-size: 12px; line-height: 1.5;">You had the posture of someone explaining natural wine to a captive audience.</p></div>
+          </div>
+        </div>
+        <!-- 3 -->
+        <div class="card card-numbered" data-num="03" style="padding: 24px;">
+          <h4 class="t-d4 mt-2">PARTY TRICK HAS<br/>OPINIONS.</h4>
+          <p class="t-small mt-2" style="color: var(--ink-soft);">Never neutral. Party Trick has taste, grudges, and a minor drinking problem. Write every line like it's the funniest person at the table — never like a tool announcing what it just did.</p>
+          <div class="do-dont mt-4" style="margin-top: 16px; gap: 12px;">
+            <div class="item dont" style="padding: 12px;"><span class="stamp-lbl">BAD</span><p style="margin: 6px 0 0; font-family: var(--mono); font-size: 12px; line-height: 1.5; color: var(--red);">Your image is being generated.</p></div>
+            <div class="item do" style="padding: 12px;"><span class="stamp-lbl">BETTER</span><p style="margin: 6px 0 0; font-family: var(--mono); font-size: 12px; line-height: 1.5;">The machine is deciding what kind of person orders a double vodka soda after asking about Sancerre.</p></div>
+          </div>
+        </div>
+        <!-- 4 -->
+        <div class="card card-numbered" data-num="04" style="padding: 24px;">
+          <h4 class="t-d4 mt-2">NIGHTLIFE<br/>ANTHROPOLOGY.</h4>
+          <p class="t-small mt-2" style="color: var(--ink-soft);">Humor comes from social observation, not random absurdity. Six lenses, used on rotation:</p>
+          <table style="width: 100%; margin-top: 16px; border-collapse: collapse; font-family: var(--mono); font-size: 12px;">
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 6px 0; font-weight: 700; width: 38%;">Outfit read</td><td style="padding: 6px 0; color: var(--ink-soft);">"Wearing a top that says 'I didn't plan this' but somehow did."</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 6px 0; font-weight: 700;">Drink psych</td><td style="padding: 6px 0; color: var(--ink-soft);">"Ordered tequila like it was a personality assessment."</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 6px 0; font-weight: 700;">Group role</td><td style="padding: 6px 0; color: var(--ink-soft);">"Friend who says 'one more' and means four."</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 6px 0; font-weight: 700;">Venue energy</td><td style="padding: 6px 0; color: var(--ink-soft);">"Basement bar lighting with lawsuit potential."</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 6px 0; font-weight: 700;">Emotional state</td><td style="padding: 6px 0; color: var(--ink-soft);">"Performing casualness at a dangerous volume."</td></tr>
+            <tr><td style="padding: 6px 0; font-weight: 700;">Social crime</td><td style="padding: 6px 0; color: var(--ink-soft);">"Explaining the playlist to someone who did not ask."</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="rule-equals" style="margin: 64px 0;"></div>
+
+      <!-- ============ 15.C · COPY PATTERNS ============ -->
+      <div class="t-cap" style="color: var(--red);">[ C · COPY PATTERNS — APPLIED ]</div>
+      <div class="t-d3 mt-2" style="font-family: var(--display-black);">EVERY SURFACE HAS A LINE.</div>
+
+      <!-- HERO copy -->
+      <div class="mt-6" style="background: var(--ink); color: var(--paper); padding: 40px 32px;">
+        <div class="t-cap" style="color: var(--red);">// HERO · 4 OPTIONS · pick one per campaign</div>
+        <div class="spec-grid col-2 mt-4" style="gap: 32px;">
+          <div>
+            <div class="t-cap" style="color: var(--paper); opacity: 0.6;">OPT 01 · default</div>
+            <div class="t-d3 mt-2" style="font-family: var(--display-black); color: var(--paper);">Bad portraits<br/>of good nights.</div>
+            <p class="t-small mt-3" style="font-family: var(--mono); color: var(--paper); opacity: 0.85;">Send us the moment. We'll turn it into a cursed little illustration you'll keep forever.</p>
+          </div>
+          <div>
+            <div class="t-cap" style="color: var(--paper); opacity: 0.6;">OPT 02 · concrete</div>
+            <div class="t-d3 mt-2" style="font-family: var(--display-black); color: var(--paper);">Party evidence,<br/>illustrated badly.</div>
+            <p class="t-small mt-3" style="font-family: var(--mono); color: var(--paper); opacity: 0.85;">Upload a photo, voice note, or description. Party Trick turns the scene into a funny, slightly incriminating portrait.</p>
+          </div>
+          <div>
+            <div class="t-cap" style="color: var(--paper); opacity: 0.6;">OPT 03 · long-form</div>
+            <div class="t-d3 mt-2" style="font-family: var(--display-black); color: var(--paper);">Your night, as<br/>remembered by<br/>the worst witness.</div>
+            <p class="t-small mt-3" style="font-family: var(--mono); color: var(--paper); opacity: 0.85;">Absurd illustrated portraits from the things people say, wear, drink, and do when they think no one is documenting it.</p>
+          </div>
+          <div>
+            <div class="t-cap" style="color: var(--paper); opacity: 0.6;">OPT 04 · short</div>
+            <div class="t-d3 mt-2" style="font-family: var(--display-black); color: var(--paper);">A souvenir<br/>for whatever<br/>just happened.</div>
+            <p class="t-small mt-3" style="font-family: var(--mono); color: var(--paper); opacity: 0.85;">Text, talk, upload, or confess. We'll make the portrait.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA copy -->
+      <div class="mt-6">
+        <div class="t-cap" style="color: var(--red);">// CTA BUTTONS · the verbs we use, the verbs we don't</div>
+        <div class="spec-grid col-2 mt-3" style="gap: 24px;">
+          <div style="border: 2px solid var(--ink); padding: 20px; background: rgba(227, 6, 19, 0.04); border-color: var(--red);">
+            <div class="t-cap" style="color: var(--red);">✗ NEVER</div>
+            <div class="pill-row mt-3">
+              <span class="badge"><span class="crossed">Get Started</span></span>
+              <span class="badge"><span class="crossed">Generate Image</span></span>
+              <span class="badge"><span class="crossed">Create Portrait</span></span>
+              <span class="badge"><span class="crossed">Submit</span></span>
+              <span class="badge"><span class="crossed">Try Free</span></span>
+            </div>
+          </div>
+          <div style="border: 2px solid var(--ink); padding: 20px;">
+            <div class="t-cap">✓ ALWAYS</div>
+            <div class="pill-row mt-3">
+              <span class="badge" style="background: var(--ink); color: var(--paper);">Make the Evidence</span>
+              <span class="badge" style="background: var(--ink); color: var(--paper);">Document the Incident</span>
+              <span class="badge" style="background: var(--ink); color: var(--paper);">Generate the Damage</span>
+              <span class="badge" style="background: var(--ink); color: var(--paper);">Roast the Moment</span>
+              <span class="badge" style="background: var(--ink); color: var(--paper);">Begin the Reconstruction</span>
+              <span class="badge" style="background: var(--ink); color: var(--paper);">Make It Worse</span>
+              <span class="badge" style="background: var(--ink); color: var(--paper);">I Regret Nothing</span>
+              <span class="badge" style="background: var(--ink); color: var(--paper);">Produce the Artifact</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOADING terminal -->
+      <div class="mt-6">
+        <div class="t-cap" style="color: var(--red);">// LOADING STATES · the machine narrates the wait</div>
+        <div class="terminal mt-3">
+          <div class="head">PARTYTRICK_OS · loading_strings.json</div>
+          <div class="out" style="color: var(--paper); opacity: 0.5; text-decoration: line-through;">Loading...</div>
+          <div class="out">[~] Assessing social damage…</div>
+          <div class="out">[~] Identifying the loudest person in the room…</div>
+          <div class="out">[~] Reconstructing the outfit from audio clues…</div>
+          <div class="out">[~] Determining whether this was flirting or networking…</div>
+          <div class="out">[~] Adding one regrettable accessory…</div>
+          <div class="out">[~] Choosing the least flattering lighting…</div>
+          <div class="out">[~] Converting confidence into posture…</div>
+          <div class="out">[~] Checking for performative cigarette energy…</div>
+          <div class="out">[~] Translating the group chat into visual evidence…</div>
+          <div>[~] Making it technically worse, emotionally better<span class="cursor"></span></div>
+        </div>
+      </div>
+
+      <!-- INPUT prompts -->
+      <div class="mt-6">
+        <div class="t-cap" style="color: var(--red);">// INPUT PROMPTS · what the form fields say</div>
+        <div class="spec-grid col-2 mt-3" style="gap: 24px;">
+          <div class="card" style="padding: 20px;">
+            <div class="t-cap">[ PHOTO ]</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6;">Upload the moment. Blurry is fine. Honestly, blurry helps.</p>
+          </div>
+          <div class="card" style="padding: 20px;">
+            <div class="t-cap">[ AUDIO ]</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6;">Send a voice note from the scene. We'll infer the drink order, outfit, vibe, and probable emotional damage.</p>
+          </div>
+          <div class="card" style="padding: 20px;">
+            <div class="t-cap">[ TEXT ]</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6;">Describe what happened. Include the drink, the setting, the outfit, and the part you are trying to minimize.</p>
+          </div>
+          <div class="card" style="padding: 20px;">
+            <div class="t-cap">[ GROUP MODE ]</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6;">Pass the phone around. Everyone gets a turn. No one gets dignity.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- REGENERATION map -->
+      <div class="mt-6">
+        <div class="t-cap" style="color: var(--red);">// REGENERATION · standard buttons, translated</div>
+        <table style="width: 100%; margin-top: 16px; border: 2px solid var(--ink); border-collapse: collapse; font-family: var(--mono); font-size: 13px;">
+          <thead>
+            <tr style="background: var(--ink); color: var(--paper);">
+              <th style="padding: 12px 16px; text-align: left; font-family: var(--display-black); letter-spacing: 0.05em;">STANDARD</th>
+              <th style="padding: 12px 16px; text-align: left; font-family: var(--display-black); letter-spacing: 0.05em;">PARTY TRICK</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 10px 16px; color: var(--ink-soft); text-decoration: line-through;">Regenerate</td><td style="padding: 10px 16px; font-weight: 700;">Make It Worse</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 10px 16px; color: var(--ink-soft); text-decoration: line-through;">Try Again</td><td style="padding: 10px 16px; font-weight: 700;">Reopen the Case</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 10px 16px; color: var(--ink-soft); text-decoration: line-through;">More Funny</td><td style="padding: 10px 16px; font-weight: 700;">Increase the Damage</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 10px 16px; color: var(--ink-soft); text-decoration: line-through;">More Accurate</td><td style="padding: 10px 16px; font-weight: 700;">Unfortunately, More Accurate</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 10px 16px; color: var(--ink-soft); text-decoration: line-through;">More Stylish</td><td style="padding: 10px 16px; font-weight: 700;">Give It Taste</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 10px 16px; color: var(--ink-soft); text-decoration: line-through;">More Chaotic</td><td style="padding: 10px 16px; font-weight: 700;">Remove the Guardrails</td></tr>
+            <tr style="border-bottom: 1px dashed var(--ink-soft);"><td style="padding: 10px 16px; color: var(--ink-soft); text-decoration: line-through;">More Like Me</td><td style="padding: 10px 16px; font-weight: 700;">Make It Personal</td></tr>
+            <tr><td style="padding: 10px 16px; color: var(--ink-soft); text-decoration: line-through;">Less Mean</td><td style="padding: 10px 16px; font-weight: 700;">Be Less Correct</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ERROR states -->
+      <div class="mt-6">
+        <div class="t-cap" style="color: var(--red);">// ERRORS · suspicious, never apologetic</div>
+        <div class="spec-grid col-3 mt-3" style="gap: 16px;">
+          <div class="terminal" style="padding: 16px;">
+            <div class="head">ERR · 01</div>
+            <div class="err mt-2">[!] The machine refused to draw this, which is honestly suspicious.</div>
+            <div class="out mt-2">&gt; try again<span class="cursor"></span></div>
+          </div>
+          <div class="terminal" style="padding: 16px;">
+            <div class="head">ERR · 02</div>
+            <div class="err mt-2">[!] We lost the evidence.</div>
+            <div class="out">[!] Upload it again before anyone changes their story.</div>
+          </div>
+          <div class="terminal" style="padding: 16px;">
+            <div class="head">ERR · 03</div>
+            <div class="err mt-2">[!] This moment exceeded our current humiliation rendering capacity.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRICING voice -->
+      <div class="mt-6">
+        <div class="t-cap" style="color: var(--red);">// PRICING · bar receipt, not SaaS sheet</div>
+        <div class="spec-grid col-2 mt-3" style="gap: 24px;">
+          <div class="card" style="padding: 24px;">
+            <div class="t-cap" style="color: var(--ink-soft);">SINGLE</div>
+            <h4 class="t-d4 mt-2">ONE PORTRAIT.</h4>
+            <p class="t-small mt-2" style="color: var(--ink-soft);">For one person, one moment, one questionable read.</p>
+          </div>
+          <div class="card" style="padding: 24px;">
+            <div class="t-cap" style="color: var(--ink-soft);">REGEN</div>
+            <h4 class="t-d4 mt-2">ONE MORE TRY.</h4>
+            <p class="t-small mt-2" style="color: var(--ink-soft);">Same incident. Different accusation.</p>
+          </div>
+          <div class="card" style="padding: 24px;">
+            <div class="t-cap" style="color: var(--ink-soft);">PACK</div>
+            <h4 class="t-d4 mt-2">THE GROUP CHAT PACK.</h4>
+            <p class="t-small mt-2" style="color: var(--ink-soft);">Enough portraits to ruin several friendships temporarily.</p>
+          </div>
+          <div class="card" style="padding: 24px;">
+            <div class="t-cap" style="color: var(--ink-soft);">LIVE</div>
+            <h4 class="t-d4 mt-2">PARTY MODE.</h4>
+            <p class="t-small mt-2" style="color: var(--ink-soft);">Pass the phone around. Generate portraits in real time. Best used before the night develops a legal department.</p>
+          </div>
+          <div class="card" style="padding: 24px; grid-column: span 2;">
+            <div class="t-cap" style="color: var(--ink-soft);">SUBSCRIPTION</div>
+            <h4 class="t-d4 mt-2">REPEAT OFFENDER.</h4>
+            <p class="t-small mt-2" style="color: var(--ink-soft);">For people who keep having documentable nights.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEEDBACK / SOCIAL -->
+      <div class="mt-6 spec-grid col-2" style="gap: 32px;">
+        <div>
+          <div class="t-cap" style="color: var(--red);">// FEEDBACK MICROCOPY</div>
+          <ul style="list-style: none; padding: 0; margin: 16px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.7;">
+            <li><span class="t-cap" style="color: var(--ink-soft); margin-right: 8px;">AFTER GEN ›</span>"This is not exactly what happened. It is spiritually what happened."</li>
+            <li><span class="t-cap" style="color: var(--ink-soft); margin-right: 8px;">AFTER SAVE ›</span>"Evidence preserved."</li>
+            <li><span class="t-cap" style="color: var(--ink-soft); margin-right: 8px;">AFTER SHARE ›</span>"Sent. The group chat will decide what this means."</li>
+            <li><span class="t-cap" style="color: var(--ink-soft); margin-right: 8px;">AFTER REGEN ›</span>"Revised with less mercy."</li>
+          </ul>
+        </div>
+        <div>
+          <div class="t-cap" style="color: var(--red);">// SOCIAL CAPTIONS</div>
+          <ul style="list-style: none; padding: 0; margin: 16px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.8;">
+            <li>"We asked AI to reconstruct the night. It chose violence."</li>
+            <li>"Not a portrait. A character witness."</li>
+            <li>"Some people take photos. Some people create exhibits."</li>
+            <li>"Party Trick: because the blurry photo did not go far enough."</li>
+            <li>"Your friend said 'I'm not drunk' and now there's an illustration."</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="rule-equals" style="margin: 64px 0;"></div>
+
+      <!-- ============ 15.D · WORD LIST ============ -->
+      <div class="t-cap" style="color: var(--red);">[ D · WORD LIST ]</div>
+      <div class="t-d3 mt-2" style="font-family: var(--display-black);">DICTIONARY OF THE BRAND.</div>
+
+      <div class="spec-grid col-2 mt-5" style="gap: 24px;">
+        <div style="border: 2px solid var(--ink); padding: 24px;">
+          <div class="t-cap">✓ USE OFTEN</div>
+          <div class="pill-row mt-3">
+            <span class="badge" style="background: var(--ink); color: var(--paper);">evidence</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">incident</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">artifact</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">witness</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">reconstruction</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">damage</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">suspicious</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">cursed</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">immortalize</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">document</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">aftermath</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">group chat</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">scene</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">vibe</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">suspect</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">regrettable</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">technically</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">spiritually</span>
+            <span class="badge" style="background: var(--ink); color: var(--paper);">unfortunately</span>
+          </div>
+        </div>
+        <div style="border: 2px solid var(--red); padding: 24px; background: rgba(227, 6, 19, 0.04);">
+          <div class="t-cap" style="color: var(--red);">✗ BANNED · OR USE SPARINGLY</div>
+          <div class="pill-row mt-3">
+            <span class="badge"><span class="crossed">AI</span></span>
+            <span class="badge"><span class="crossed">AI-powered</span></span>
+            <span class="badge"><span class="crossed">generate</span></span>
+            <span class="badge"><span class="crossed">customize</span></span>
+            <span class="badge"><span class="crossed">magical</span></span>
+            <span class="badge"><span class="crossed">memories</span></span>
+            <span class="badge"><span class="crossed">creativity</span></span>
+            <span class="badge"><span class="crossed">seamless</span></span>
+            <span class="badge"><span class="crossed">effortless</span></span>
+            <span class="badge"><span class="crossed">beautiful</span></span>
+            <span class="badge"><span class="crossed">stunning</span></span>
+            <span class="badge"><span class="crossed">personalized</span></span>
+            <span class="badge"><span class="crossed">delight</span></span>
+            <span class="badge"><span class="crossed">unleash</span></span>
+            <span class="badge"><span class="crossed">curate</span></span>
+            <span class="badge"><span class="crossed">elevate</span></span>
+            <span class="badge"><span class="crossed">iconic</span></span>
+            <span class="badge"><span class="crossed">solution</span></span>
+            <span class="badge"><span class="crossed">creator</span></span>
+          </div>
+          <p class="t-small mt-4" style="color: var(--red); font-family: var(--mono);">If you must use one — frame it like Party Trick accidentally said it. <em>"unfortunately, magical."</em></p>
+        </div>
+      </div>
+
+      <div class="rule-equals" style="margin: 64px 0;"></div>
+
+      <!-- ============ 15.E · GENERIC vs PT ============ -->
+      <div class="t-cap" style="color: var(--red);">[ E · TRANSLATIONS — generic SaaS vs Party Trick ]</div>
+      <div class="t-d3 mt-2" style="font-family: var(--display-black);">SAME MEANING. DIFFERENT REGISTER.</div>
+
+      <div class="mt-5" style="display: grid; gap: 24px;">
+        <div class="spec-grid col-2" style="gap: 0; border: 2px solid var(--ink);">
+          <div style="padding: 20px; border-right: 2px solid var(--ink); background: rgba(0,0,0,0.04);">
+            <div class="t-cap" style="color: var(--ink-soft);">GENERIC SAAS</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6; color: var(--ink-soft); text-decoration: line-through;">Upload your photo or audio and generate a funny AI portrait that captures the vibe of your night out.</p>
+          </div>
+          <div style="padding: 20px;">
+            <div class="t-cap">PARTY TRICK</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6;">Upload the photo, voice note, or half-remembered incident. Party Trick turns it into a bad portrait with suspiciously good instincts.</p>
+          </div>
+        </div>
+        <div class="spec-grid col-2" style="gap: 0; border: 2px solid var(--ink);">
+          <div style="padding: 20px; border-right: 2px solid var(--ink); background: rgba(0,0,0,0.04);">
+            <div class="t-cap" style="color: var(--ink-soft);">GENERIC PURCHASE FLOW</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6; color: var(--ink-soft); text-decoration: line-through;">Choose your image style and checkout to receive your generation.</p>
+          </div>
+          <div style="padding: 20px;">
+            <div class="t-cap">PARTY TRICK</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6;">Pick how you want to be misremembered. Pay the machine. Receive the artifact.</p>
+          </div>
+        </div>
+        <div class="spec-grid col-2" style="gap: 0; border: 2px solid var(--ink);">
+          <div style="padding: 20px; border-right: 2px solid var(--ink); background: rgba(0,0,0,0.04);">
+            <div class="t-cap" style="color: var(--ink-soft);">GENERIC SUBSCRIPTION</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6; color: var(--ink-soft); text-decoration: line-through;">Subscribe monthly to receive credits for image generation and regeneration.</p>
+          </div>
+          <div style="padding: 20px;">
+            <div class="t-cap">PARTY TRICK</div>
+            <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.6;">Get monthly credits for recurring incidents, repeat offenses, and nights that somehow become content.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="rule-equals" style="margin: 64px 0;"></div>
+
+      <!-- ============ 15.F · LINE NOT TO CROSS ============ -->
+      <div class="t-cap" style="color: var(--red);">[ F · THE LINE YOU SHOULD NOT CROSS ]</div>
+      <div class="t-d3 mt-2" style="font-family: var(--display-black);">SOCIALLY SHARP. NEVER UGLY.</div>
+      <p class="t-body mt-3" style="max-width: 720px; font-family: var(--mono);">The best Party Trick line is <em>recognition</em>, not humiliation. People should laugh because the portrait is weirdly true — not because they got dunked on.</p>
+
+      <div class="do-dont mt-5">
+        <div class="item do">
+          <span class="stamp-lbl">GOOD</span>
+          <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 14px; line-height: 1.6;">"You were giving 'person who brought a tote bag to the club.'"</p>
+          <p class="t-cap mt-3" style="color: var(--ink-soft);">SPECIFIC · SOCIAL · RECOGNIZABLE</p>
+        </div>
+        <div class="item dont">
+          <span class="stamp-lbl">TOO FAR</span>
+          <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 14px; line-height: 1.6; color: var(--red);">"You look pathetic."</p>
+          <p class="t-cap mt-3" style="color: var(--red);">PERSONAL · BARE-INSULT · NOTHING TO LAUGH AT</p>
+        </div>
+        <div class="item do">
+          <span class="stamp-lbl">GOOD</span>
+          <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 14px; line-height: 1.6;">"That was the laugh of someone hearing their own voicemail."</p>
+          <p class="t-cap mt-3" style="color: var(--ink-soft);">METAPHOR · OBSERVATIONAL · AFFECTIONATE</p>
+        </div>
+        <div class="item dont">
+          <span class="stamp-lbl">TOO FAR</span>
+          <p style="margin: 8px 0 0; font-family: var(--mono); font-size: 14px; line-height: 1.6; color: var(--red);">"You're the embarrassment of the group."</p>
+          <p class="t-cap mt-3" style="color: var(--red);">FLAT · MEAN · NO INSIGHT</p>
+        </div>
+      </div>
+
+      <!-- MORE GOOD LINES — gallery -->
+      <div class="mt-6" style="border: 2px solid var(--ink); padding: 28px 32px; background: var(--paper2);">
+        <div class="t-cap" style="color: var(--red);">// MORE GOOD LINES — by lens</div>
+        <div class="t-d4 mt-2" style="font-family: var(--display-black);">RECOGNITION, NEVER HUMILIATION.</div>
+
+        <div class="spec-grid col-2 mt-4" style="gap: 32px 40px;">
+
+          <!-- OUTFIT READS -->
+          <div>
+            <div class="t-cap" style="color: var(--ink-soft);">OUTFIT READS</div>
+            <ul style="list-style: none; padding: 0; margin: 12px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.7; display: grid; gap: 14px;">
+              <li>"Dressed like she lost a bet but won the night."</li>
+              <li>"That jacket is doing the work of three personality traits."</li>
+              <li>"Boots with a manifesto."</li>
+              <li>"A fit that says 'I left the house with a plan.' The plan: this."</li>
+            </ul>
+          </div>
+
+          <!-- DRINK PSYCHOLOGY -->
+          <div>
+            <div class="t-cap" style="color: var(--ink-soft);">DRINK PSYCHOLOGY</div>
+            <ul style="list-style: none; padding: 0; margin: 12px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.7; display: grid; gap: 14px;">
+              <li>"Ordered an Old Fashioned in the same tone someone discloses a divorce."</li>
+              <li>"Holding a Negroni like it's testifying on his behalf."</li>
+              <li>"That drink was a decision. The next four were a personality."</li>
+              <li>"Espresso martini at 1am: a confession dressed as a coffee."</li>
+            </ul>
+          </div>
+
+          <!-- GROUP ROLE -->
+          <div>
+            <div class="t-cap" style="color: var(--ink-soft);">GROUP ROLE</div>
+            <ul style="list-style: none; padding: 0; margin: 12px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.7; display: grid; gap: 14px;">
+              <li>"The friend who 'knows a place' and is, statistically, sometimes right."</li>
+              <li>"Mom of the group. Currently the most drunk."</li>
+              <li>"The one who DJs from his phone without consent."</li>
+              <li>"Designated narrator. Volunteered. Disputed."</li>
+            </ul>
+          </div>
+
+          <!-- POSTURE / ENERGY -->
+          <div>
+            <div class="t-cap" style="color: var(--ink-soft);">POSTURE / ENERGY</div>
+            <ul style="list-style: none; padding: 0; margin: 12px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.7; display: grid; gap: 14px;">
+              <li>"Standing in the exact spot a photographer would ask him to move from."</li>
+              <li>"Posing like the photo is for a memoir she has not written yet."</li>
+              <li>"Holding her phone the way generals hold maps."</li>
+              <li>"Leaning on the bar like it owes him money."</li>
+            </ul>
+          </div>
+
+          <!-- VENUE / SCENE -->
+          <div>
+            <div class="t-cap" style="color: var(--ink-soft);">VENUE / SCENE</div>
+            <ul style="list-style: none; padding: 0; margin: 12px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.7; display: grid; gap: 14px;">
+              <li>"A bar that pretends not to be a bar. A crowd that pretends not to be trying."</li>
+              <li>"Kitchen lighting. Confessional acoustics."</li>
+              <li>"The smoking-area summit. Foreign policy was discussed."</li>
+              <li>"Last call energy at 11:47."</li>
+            </ul>
+          </div>
+
+          <!-- SOCIAL CRIMES -->
+          <div>
+            <div class="t-cap" style="color: var(--ink-soft);">SOCIAL CRIMES (gentle)</div>
+            <ul style="list-style: none; padding: 0; margin: 12px 0 0; font-family: var(--mono); font-size: 13px; line-height: 1.7; display: grid; gap: 14px;">
+              <li>"Explaining the bar's playlist to the person who hired the DJ."</li>
+              <li>"Networking at a birthday. With handshakes. In 2026."</li>
+              <li>"Making a request to the bartender like it's a small business pitch."</li>
+              <li>"Reading the room — out loud — to the room."</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="rule-dotted" style="margin: 28px 0;"></div>
+
+        <div class="t-cap" style="color: var(--red);">// THE TEST</div>
+        <p class="t-body mt-2" style="max-width: 680px; font-family: var(--mono);">A line is <em>good</em> when the person being roasted laughs first. If you can imagine them screenshotting it for the group chat, ship it. If you can only imagine them quietly closing the app — rewrite.</p>
+      </div>
+
+      <!-- philosophical kicker -->
+      <div class="mt-6" style="border: 2px solid var(--ink); padding: 36px 32px; background: var(--ink); color: var(--paper); position: relative;">
+        <div class="t-cap" style="color: var(--red); position: absolute; top: -10px; left: 16px; background: var(--ink); padding: 0 8px;">[ THE QUESTION UNDER THE PRODUCT ]</div>
+        <div class="t-d4 mt-2" style="font-family: var(--display-cond); font-size: 38px; line-height: 1.1; color: var(--paper); max-width: 780px;">What happens when the <span style="color: var(--red);">inside joke</span> gets a portrait?</div>
+        <div class="rule-dotted" style="margin: 28px 0; opacity: 0.4;"></div>
+        <div class="t-cap" style="color: var(--red); margin-bottom: 12px;">// ALT ANGLES — adjacent ways to frame the same idea</div>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1.9; color: var(--paper); opacity: 0.85;">
+          <li>→ "Whose version of the night gets to be the real one?"</li>
+          <li>→ "What if a souvenir from last night roasted you, gently, and you kept it anyway?"</li>
+          <li>→ "Can a bad drawing tell the truth about a good night better than the photos can?"</li>
+          <li>→ "What does it look like when your night is illustrated by the loudest, most observant friend in the room — and you all agree that's how it actually went?"</li>
+        </ul>
+      </div>
+
+      <div class="rule-equals" style="margin: 64px 0;"></div>
+
+      <!-- ============ 15.G · TONE FORMULA ============ -->
+      <div class="t-cap" style="color: var(--red);">[ G · TONE FORMULA — when in doubt ]</div>
+      <pre class="snip mt-3"><span class="c">// specific noun + social observation + (the part you'd minimize)</span>
+<span class="k">→</span> "Ordered tequila like it was a personality assessment."
+<span class="k">→</span> "Performing casualness at a dangerous volume."
+<span class="k">→</span> "Friend who says 'one more' and means four."
+
+<span class="c">// machine-as-narrator pattern</span>
+<span class="k">→</span> "Reconstructing the incident…"
+<span class="k">→</span> "The machine is deciding what kind of person orders…"
+<span class="k">→</span> "Revised with less mercy."
+
+<span class="c">// the 3-beat headline</span>
+<span class="k">→</span> [adjective insult] + [generous noun] · "Bad portraits of good nights."
+<span class="k">→</span> [object] + [past participle badly] · "Party evidence, illustrated badly."
+<span class="k">→</span> [souvenir framing] + [vague event] · "A souvenir for whatever just happened."</pre>
+    </section>
+
+    <!-- 18 TERMINAL -->
+    <section class="spec" id="components">
+      <div class="spec-head"><span class="num">18</span><h2>TERMINAL · Y2K</h2></div>
+      <p class="spec-intro">Y2K-signature components. Use when you want the page to feel <em>system-aware</em> — confirmations, errors, "live" moments.</p>
+
+      <div class="spec-grid col-2">
+        <div>
+          <div class="terminal">
+            <div class="head">PARTYTRICK_OS · v2.0 · loaded.</div>
+            <div>&gt; submit photo<span class="cursor"></span></div>
+            <div class="out" style="margin-top: 8px;">[OK] image received · 04.30.26 02:14</div>
+            <div class="out">[OK] vibe inferred: regretful</div>
+            <div class="out">[OK] drawing: bad (on purpose)</div>
+            <div class="err">[!]  this one is going to hurt</div>
+          </div>
+        </div>
+        <div>
+          <div style="background: var(--paper); padding: 14px; font-family: var(--typed); font-size: 12px; line-height: 1.6; border: 2px solid var(--ink); position: relative;">
+            <div style="display: flex; justify-content: space-between; padding-bottom: 6px; margin-bottom: 8px; border-bottom: 1px dashed var(--ink); font-weight: 700;">
+              <span>PARTY TRICK · NYC</span>
+              <span>04/30/26 02:14</span>
+            </div>
+            <div style="display: flex; justify-content: space-between;"><span>1× BAD DRAWING</span><span>$1.00</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>3× REGENERATE</span><span>$1.50</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>1× COMIC STRIP</span><span>$3.00</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>PARTY MODE × 4</span><span>$4.00</span></div>
+            <div style="display: flex; justify-content: space-between; border-top: 2px dashed var(--ink); margin-top: 8px; padding-top: 8px; font-family: var(--display-black); font-size: 16px;"><span>TOTAL</span><span>$9.50</span></div>
+            <div style="text-align: center; margin-top: 10px; font-family: var(--hand-ball); font-size: 22px; color: var(--red);">— thx for partying —</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COLOFON / END ============ -->
+    <section class="spec" id="colofon" style="border-top: 6px solid var(--ink);">
+      <div class="spec-head"><span class="num">END</span><h2>COLOFON</h2><span class="badge tag">v4.0 · 04.30.2026</span></div>
+      <p class="spec-intro">Party Trick Brand System · Edition 01 · NYC. <span class="scrawl scrawl-blue scrawl-sm" style="margin-left: 6px;">we kept the receipts →</span></p>
+
+      <div class="spec-grid col-3" style="margin-top: var(--s-6);">
+        <div class="card" style="padding: var(--s-6) var(--s-5);">
+          <div class="t-cap" style="color: var(--ink-soft);">[ TYPEFACES ]</div>
+          <div class="t-d4 mt-3" style="line-height: 1.3;">Slaters Duct Tape · Poesing · Archivo Black · Anton · Bebas Neue · Inter · Space Grotesk · IBM Plex Mono · Special Elite · VT323</div>
+          <div class="t-cap mt-4" style="color: var(--ink-soft);">9 FACES · LOUD vs LEGIBLE vs MACHINE</div>
+        </div>
+        <div class="card" style="padding: var(--s-6) var(--s-5);">
+          <div class="t-cap" style="color: var(--ink-soft);">[ COLOR ]</div>
+          <div class="t-d4 mt-3" style="line-height: 1.3;">PAPER <span style="color: var(--ink-soft);">#FFFFFF</span> · INK <span style="color: var(--ink-soft);">#0A0A0A</span> · <span style="color: var(--red);">GRN #00D647</span> · <span style="color: var(--accent);">BLU #0044FF</span> · ACID LIME <span style="color: var(--ink-soft);">#E6FF3D</span></div>
+          <div class="t-cap mt-4" style="color: var(--ink-soft);">2 SIGNALS · 1 MARK · NO MORE</div>
+        </div>
+        <div class="card card-tilt-l" style="background: var(--ink); color: var(--paper); border-color: var(--ink); padding: var(--s-6) var(--s-5);">
+          <div class="t-cap" style="color: var(--red);">[ INFLUENCES ]</div>
+          <div class="t-d4 mt-3" style="line-height: 1.3; color: var(--paper);">Systemantics · Zukunft · Even/Odd · Room 6×8 · Be Impolite · Dinamo · Edition Ventile · Lebedev Studio · Willem de Ridder · Omar Apollo posters · Born Free Club · gig fliers from any basement show.</div>
+          <div class="t-cap mt-4" style="color: rgba(255,255,255,0.5);">SOURCES · CITED ON THE BACK</div>
+        </div>
+      </div>
+
+      <hr class="rule-fat" />
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: baseline; justify-content: space-between; padding-top: var(--s-4);">
+        <div>
+          <div class="t-cap" style="color: var(--red);">PARTY TRICK<sup>™</sup> · SYSTEM v4.0</div>
+          <div class="t-cap mt-2" style="color: var(--ink-soft);">EDITION 01 / 01 · 04.30.2026 · NYC</div>
+        </div>
+        <div style="font-family: var(--hand); font-size: 36px; line-height: 1; color: var(--red); transform: rotate(-2deg);">end of file.</div>
+        <div class="t-cap" style="color: var(--ink-soft); text-align: right;">DESIGNED IN A BAR<br/>SHIPPED BEFORE LAST CALL</div>
+      </div>
+
+      <div class="barcode" style="margin-top: var(--s-6);">||| || |||| | || ||||| | ||| || |||| || |||  ||||||  || ||| | ||||| || ||| 0 0 1 · E N D · O F · F I L E · v 4 · 0</div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="pt-foot">
+  <div>
+    <div class="colofon">PART<span class="x">Y</span>·TRICK<sup style="font-family: var(--mono); font-size: 12px; color: var(--red); vertical-align: super;">™</sup></div>
+    <div class="ascii">+--------------+
+| BAD DRAWINGS |
+| ONLY · 2026  |
++--------------+</div>
+    <p style="margin-top: 16px; max-width: 280px; opacity: 0.8;">A souvenir engine for nights you'd otherwise <span class="crossed">remember</span> forget. NYC, late.</p>
+  </div>
+  <div><h5>↳ PRODUCT</h5><a href="product.html">How it works</a><a>Party Mode</a><a>Pricing</a><a>FAQ</a></div>
+  <div><h5>↳ COMPANY</h5><a href="about.html">About</a><a>Manifesto</a><a>Press kit</a><a>Jobs</a></div>
+  <div><h5>↳ SOCIAL</h5><a>@partytrick</a><a>TikTok</a><a>Newsletter</a></div>
+</footer>
+<div class="pt-foot-bar">
+  <span><span class="blink">●</span> 2026 · NYC · ALPHA</span>
+  <span>VOL. 001 / ISS. APR / DESIGN MANUAL</span>
+  <span>NO ALGORITHM · YES VIBES</span>
+</div>
+
+<div id="tweaks-root"></div>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "signal": "#00d647",
+  "signalName": "GRN",
+  "signalDeep": "#009a32",
+  "accent": "#0044ff",
+  "accentDeep": "#0030b8",
+  "paper": "#f5f5f2",
+  "ink": "#0a0a0a",
+  "highlight": "#e6ff3d"
+}/*EDITMODE-END*/;
+
+// preset palettes — pick a vibe, all tokens follow
+const PRESETS = {
+  "GREEN + BLUE (default)": { signal: "#00d647", signalDeep: "#009a32", accent: "#0044ff", accentDeep: "#0030b8", highlight: "#e6ff3d", paper: "#f5f5f2", signalName: "GRN" },
+  "RED + BLUE":             { signal: "#e30613", signalDeep: "#a8000d", accent: "#0044ff", accentDeep: "#0030b8", highlight: "#f5e642", paper: "#f5f5f2", signalName: "RED" },
+  "GREEN + MAGENTA":        { signal: "#00d647", signalDeep: "#009a32", accent: "#ff0080", accentDeep: "#b8005c", highlight: "#e6ff3d", paper: "#f5f5f2", signalName: "GRN" },
+  "ACID LIME + BLUE":       { signal: "#b8ff00", signalDeep: "#7dbf00", accent: "#0044ff", accentDeep: "#0030b8", highlight: "#fff200", paper: "#f5f5f2", signalName: "LIME" },
+  "ORANGE + BLUE":          { signal: "#ff6a00", signalDeep: "#c54f00", accent: "#0044ff", accentDeep: "#0030b8", highlight: "#f5e642", paper: "#f5f5f2", signalName: "ORG" },
+  "GREEN + WARM PAPER":     { signal: "#00d647", signalDeep: "#009a32", accent: "#0044ff", accentDeep: "#0030b8", highlight: "#e6ff3d", paper: "#f4f1e8", signalName: "GRN" }
+};
+
+function App() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  // push tokens into :root so every var(--red) etc updates live
+  React.useEffect(() => {
+    const r = document.documentElement.style;
+    r.setProperty('--red', t.signal);
+    r.setProperty('--red-deep', t.signalDeep);
+    r.setProperty('--red-glow', t.signal + '2e');
+    r.setProperty('--accent', t.accent);
+    r.setProperty('--accent-deep', t.accentDeep);
+    r.setProperty('--paper', t.paper);
+    r.setProperty('--ink', t.ink);
+    r.setProperty('--hi-yellow', t.highlight);
+  }, [t.signal, t.signalDeep, t.accent, t.accentDeep, t.paper, t.ink, t.highlight]);
+
+  const applyPreset = (name) => {
+    const p = PRESETS[name];
+    if (p) setTweak(p);
+  };
+
+  return (
+    <TweaksPanel title="Tweaks · System v4.0">
+      <TweakSection label="Palette preset" />
+      <TweakSelect
+        label="Vibe"
+        value={Object.keys(PRESETS).find(k => PRESETS[k].signal.toLowerCase() === t.signal.toLowerCase() && PRESETS[k].accent.toLowerCase() === t.accent.toLowerCase()) || "Custom"}
+        options={[...Object.keys(PRESETS), "Custom"]}
+        onChange={applyPreset}
+      />
+
+      <TweakSection label="Signal (primary)" />
+      <TweakColor label="Signal" value={t.signal} onChange={(v) => setTweak('signal', v)} />
+      <TweakColor label="Signal deep" value={t.signalDeep} onChange={(v) => setTweak('signalDeep', v)} />
+      <TweakText  label="Short name" value={t.signalName} onChange={(v) => setTweak('signalName', v)} />
+
+      <TweakSection label="Accent (pop)" />
+      <TweakColor label="Accent" value={t.accent} onChange={(v) => setTweak('accent', v)} />
+      <TweakColor label="Accent deep" value={t.accentDeep} onChange={(v) => setTweak('accentDeep', v)} />
+
+      <TweakSection label="Surface" />
+      <TweakColor label="Paper" value={t.paper} onChange={(v) => setTweak('paper', v)} />
+      <TweakColor label="Ink" value={t.ink} onChange={(v) => setTweak('ink', v)} />
+      <TweakColor label="Highlight" value={t.highlight} onChange={(v) => setTweak('highlight', v)} />
+
+      <TweakSection label="Reset" />
+      <TweakButton label="Restore defaults" onClick={() => setTweak({
+        signal: "#00d647", signalDeep: "#009a32",
+        accent: "#0044ff", accentDeep: "#0030b8",
+        highlight: "#e6ff3d", paper: "#ffffff", ink: "#0a0a0a", signalName: "GRN"
+      })} />
+    </TweaksPanel>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<App />);
+</script>
+
+<script>
+const tocLinks = document.querySelectorAll('.spec-toc a');
+const sections = document.querySelectorAll('section.spec');
+const setActive = () => {
+  let cur = sections[0]?.id;
+  sections.forEach(s => { if (s.getBoundingClientRect().top < 200) cur = s.id; });
+  tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+};
+window.addEventListener('scroll', setActive, { passive: true });
+setActive();
+</script>
+
+</body>
+</html>
