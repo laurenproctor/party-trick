@@ -1,0 +1,24 @@
+{
+  "name": "party-trick",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@deepgram/sdk": "^5.1.0",
+    "next": "^16.2.4",
+    "openai": "^6.35.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "replicate": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}
