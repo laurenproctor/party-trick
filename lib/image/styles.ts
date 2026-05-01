@@ -1,4 +1,8 @@
-export type StyleName = "bad_courtroom_sketch" | "bar_napkin" | "full_chaos";
+export type StyleName =
+  | "bad_courtroom_sketch"
+  | "bar_napkin"
+  | "full_chaos"
+  | "cinematic_sketch";
 
 export type Style = {
   name: StyleName;
@@ -24,5 +28,11 @@ export const STYLES: Record<StyleName, Style> = {
     descriptor:
       "chaotic mixed-media collage, clashing colors, absurdist composition, fever dream aesthetic, recognizable but wildly exaggerated, intentionally imperfect, not photorealistic",
     negativePrompt: "photorealistic, minimal, clean, subtle",
+  },
+  cinematic_sketch: {
+    name: "cinematic_sketch",
+    descriptor:
+      "dramatic courtroom sketch with cinematic lighting, high contrast chiaroscuro, epic scale applied to mundane subject, editorial illustration with movie-poster gravitas, intentionally imperfect, not photorealistic",
+    negativePrompt: "photorealistic, cheerful, casual, flat lighting",
   },
 };

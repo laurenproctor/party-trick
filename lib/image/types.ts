@@ -20,9 +20,15 @@ export type ScenePacket = {
   mustAvoid: string[];
 };
 
-export type VariationMode = "escalate" | "reframe" | "absurdify" | "localize";
+export type VariationMode =
+  | "default_read"
+  | "truer_read"
+  | "weirder_read"
+  | "roast_harder"
+  | "chaos"
+  | "cinematic";
 
-export type GenerationMode = "first" | "regenerate";
+export type GenerationMode = "first" | "fresh_read";
 
 export type PromptVariant = {
   mode: VariationMode;

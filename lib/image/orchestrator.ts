@@ -1,6 +1,7 @@
 import type { ScenePacket, VariationMode, PromptVariant } from "./types";
+import { interpretScene } from "./interpretation";
 import { buildPrompt } from "./promptBuilder";
-import { resolveProvider } from "./modelRouter";
+import { resolveProvider, resolveStyle } from "./modelRouter";
 import { generateOpenAI } from "./providers/openai";
 import { generateReplicate } from "./providers/replicate";
 
@@ -20,12 +21,14 @@ export async function generateImageFromScenePacket(
 ): Promise<GenerationOutput> {
   const { scenePacket, variationMode } = input;
 
-  const renderedPrompt = buildPrompt(scenePacket, variationMode);
+  const interpreted = interpretScene(scenePacket, variationMode);
+  const style = resolveStyle(variationMode);
+  const renderedPrompt = buildPrompt(interpreted, style, variationMode);
   const provider = resolveProvider(variationMode);
 
   const variant: PromptVariant = {
     mode: variationMode,
-    generationMode: "first",
+    generationMode: "fresh_read",
     scenePacket,
     renderedPrompt,
   };
