@@ -196,7 +196,7 @@ a:hover { color: var(--red); }
 /* ============================================================
    PAGE CHROME
    ============================================================ */
-.pt-sysbar { display: flex; align-items: center; gap: var(--s-4); padding: 4px var(--margin); background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.18em; text-transform: uppercase; border-bottom: 1px solid var(--ink); position: sticky; top: 0; z-index: 101; }
+.pt-sysbar { display: flex; align-items: center; gap: var(--s-4); padding: 4px var(--margin); background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.18em; text-transform: lowercase; border-bottom: 1px solid var(--ink); position: sticky; top: 0; z-index: 101; }
 .pt-sysbar .blink { color: var(--red); animation: blink 1s steps(1) infinite; }
 .pt-sysbar .sep { opacity: 0.4; }
 .pt-sysbar .right { margin-left: auto; display: flex; gap: var(--s-4); align-items: center; }
