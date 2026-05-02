@@ -1,6 +1,6 @@
 "use client";
 
-import { Show, UserButton } from "@clerk/nextjs";
+import SiteNav from "../components/SiteNav";
 
 const QUOTES = [
   "this is painfully accurate",
@@ -21,35 +21,7 @@ const FAQ = [
 export default function PricingPage() {
   return (
     <>
-      {/* sysbar */}
-      <div className="pt-sysbar">
-        <span className="blink">●</span>
-        <span>P<span className="art">ART</span>Y TRICK</span>
-        <span className="sep">/</span>
-        <span>PRICING</span>
-        <span className="right">
-          <Show when="signed-out">
-            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
-            <span className="sep">·</span>
-            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </span>
-      </div>
-
-      {/* nav */}
-      <nav className="pt-nav">
-        <a href="/" className="logo">
-          P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup>™</sup>
-        </a>
-        <div className="pt-links">
-          <a href="/play">Play</a>
-          <a href="/how-it-works">How It Works</a>
-          <a href="/contact">Contact</a>
-        </div>
-      </nav>
+      <SiteNav page="PRICING" />
 
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "var(--s-5) var(--margin) 0" }}>
 
@@ -58,16 +30,15 @@ export default function PricingPage() {
           <div className="tape tape-green tape-l3" style={{ position: "absolute", top: 0, right: 80 }} />
           <div className="tape tape-black tape-r2" style={{ position: "absolute", bottom: 0, left: "20%" }} />
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "end" }}>
+          <div className="grid-2" style={{ gap: "var(--s-10)", alignItems: "end" }}>
             <div>
               <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ PRICING ]</p>
               <h1 className="shout" style={{ marginBottom: "var(--s-5)" }}>
-                Pick Your Version{" "}
-                <span style={{ color: "var(--red)" }}>of the Night</span>
+                Choose Your{" "}
+                <span style={{ color: "var(--red)" }}>Damage.</span>
               </h1>
               <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-body)", lineHeight: 1.6, color: "var(--ink-soft)" }}>
-                Get Party Tricks, or start a party. It only gets worse{" "}
-                <span style={{ fontStyle: "italic" }}>(in a good way).</span>
+                A few Party Tricks or full control of the room. However this night is going, there&apos;s a trick for it.
               </p>
             </div>
 
@@ -99,7 +70,7 @@ export default function PricingPage() {
             Take turns. It gets weird. Then it gets accurate.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-6)" }}>
+          <div className="grid-2" style={{ gap: "var(--s-6)" }}>
 
             {/* Quick Party */}
             <div className="card">
@@ -153,7 +124,7 @@ export default function PricingPage() {
             Try a few versions of yourself.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-6)" }}>
+          <div className="grid-2" style={{ gap: "var(--s-6)" }}>
 
             {/* Quick Tricks */}
             <div className="card">
@@ -232,7 +203,7 @@ export default function PricingPage() {
             You'll know the one.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--s-4)", alignItems: "stretch" }}>
+          <div className="grid-4" style={{ gap: "var(--s-4)", alignItems: "stretch" }}>
             {[
               ["Save / Download HD", "$2.32"],
               ['Lock "This Is Me"', "$1.32"],
@@ -257,7 +228,7 @@ export default function PricingPage() {
             You don't just do this once.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s-6)" }}>
+          <div className="grid-3" style={{ gap: "var(--s-6)" }}>
 
             {/* Basic */}
             <div className="card">
@@ -318,7 +289,7 @@ export default function PricingPage() {
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ HOW THIS WORKS ]</p>
           <h2 className="t-d2" style={{ marginBottom: "var(--s-8)" }}>How This Works</h2>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s-6)" }}>
+          <div className="grid-3" style={{ gap: "var(--s-6)" }}>
             {[
               ["01", "Record audio or choose your own (poorly guided) adventure.", "Turn on your microphone and talk naturally. Party Trick discerns who you are from voice, words, and environmental cues."],
               ["02", "Get a portrait", "Intentionally bad. Specifically you. Not flattering. Accurate."],
