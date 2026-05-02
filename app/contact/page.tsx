@@ -38,6 +38,7 @@ export default function ContactPage() {
         </a>
         <div className="pt-links">
           <a href="/play">Play</a>
+          <a href="/pricing">Pricing</a>
           <a href="/contact" className="active">Contact</a>
         </div>
       </nav>

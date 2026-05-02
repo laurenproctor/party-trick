@@ -236,8 +236,8 @@ export default function HomePage() {
           paddingLeft: "var(--margin)",
           paddingRight: "var(--margin)",
         }}>
-          <div className="tape tape-green tape-l3" style={{ position: "absolute", top: -16, right: "15%" }} />
-          <div className="tape tape-black tape-r3" style={{ position: "absolute", top: -10, left: "25%" }} />
+          <div className="tape tape-green tape-xl tape-l3" style={{ position: "absolute", top: -32, right: "15%" }} />
+          <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -20, left: "25%" }} />
 
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ GO ON THEN ]</p>
 

@@ -38,6 +38,7 @@ export default function PricingPage() {
         <div className="pt-links">
           <a href="/play">Play</a>
           <a href="/pricing" className="active">Pricing</a>
+          <a href="/contact">Contact</a>
         </div>
       </nav>
 
@@ -56,7 +57,7 @@ export default function PricingPage() {
                 <span style={{ color: "var(--red)" }}>of the Night</span>
               </h1>
               <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-body)", lineHeight: 1.6, color: "var(--ink-soft)" }}>
-                Play solo, or start a party. It only gets worse{" "}
+                Get Party Tricks, or start a party. It only gets worse{" "}
                 <span style={{ fontStyle: "italic" }}>(in a good way).</span>
               </p>
             </div>
@@ -64,7 +65,7 @@ export default function PricingPage() {
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-3)", paddingBottom: "var(--s-2)" }}>
               {[
                 { label: "Free", detail: "1 Party Trick · low-res · watermark" },
-                { label: "From $4.32", detail: "Solo packs · 5 or 15 Tricks" },
+                { label: "From $4.32", detail: "Party Trick packs · 5 or 15 Tricks" },
                 { label: "From $6.32", detail: "Party Mode · 5 or 15 minutes" },
                 { label: "From $10/mo", detail: "Subscription · 30–250 Tricks" },
               ].map(({ label, detail }) => (
@@ -75,7 +76,7 @@ export default function PricingPage() {
               ))}
               <div style={{ display: "flex", gap: "var(--s-3)", paddingTop: "var(--s-5)" }}>
                 <a href="/play" className="btn btn-lg btn-red">Start a Party <span className="arrow">→</span></a>
-                <a href="/play" className="btn btn-lg">Try It Solo <span className="arrow">→</span></a>
+                <a href="/play" className="btn btn-lg">Get Party Tricks <span className="arrow">→</span></a>
               </div>
             </div>
           </div>
@@ -135,7 +136,7 @@ export default function PricingPage() {
 
         <div className="rule-fat" style={{ marginBottom: "var(--s-10)" }} />
 
-        {/* ── [03] SOLO ── */}
+        {/* ── [03] GET PARTY TRICKS ── */}
         <section style={{ marginBottom: "var(--s-10)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ NOT READY TO COMMIT? ]</p>
           <h2 className="t-d2" style={{ marginBottom: "var(--s-3)" }}>Not Ready to Commit?</h2>
@@ -310,14 +311,14 @@ export default function PricingPage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s-6)" }}>
             {[
-              ["01", "Describe a moment", "Say what happened. Or just talk."],
-              ["02", "See a version of yourself", "Not always flattering."],
-              ["03", "Try it again", "It gets worse. Or better. Same thing."],
+              ["01", "Record audio or choose your own (poorly guided) adventure.", "Turn on your microphone and talk naturally. Party Trick discerns who you are from voice, words, and environmental cues."],
+              ["02", "Get a portrait", "Intentionally bad. Specifically you. Not flattering. Accurate."],
+              ["03", "Forward accordingly", "Pass the phone. Start an argument. Send it as a postcard. Get it printed on a t-shirt you'll wear ironically and then just wear."],
             ].map(([num, title, desc]) => (
               <div key={num} style={{ borderTop: "2px solid var(--ink)", paddingTop: "var(--s-5)" }}>
                 <span style={{ fontFamily: "var(--display-bebas)", fontSize: "var(--t-d4)", color: "var(--red)", display: "block", marginBottom: "var(--s-3)" }}>{num}</span>
-                <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-body)", fontWeight: 600, marginBottom: "var(--s-2)" }}>{title}</p>
-                <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)" }}>{desc}</p>
+                <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-body)", fontWeight: 700, marginBottom: "var(--s-3)" }}>{title}</p>
+                <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)", lineHeight: 1.6 }}>{desc}</p>
               </div>
             ))}
           </div>
@@ -374,8 +375,8 @@ export default function PricingPage() {
 
         {/* ── [10] FINAL CTA ── */}
         <section style={{ paddingBottom: "var(--s-10)", paddingTop: "var(--s-8)", textAlign: "center", position: "relative", background: "var(--accent-deep)", marginLeft: "calc(var(--margin) * -1)", marginRight: "calc(var(--margin) * -1)", paddingLeft: "var(--margin)", paddingRight: "var(--margin)" }}>
-          <div className="tape tape-black tape-r3" style={{ position: "absolute", top: -20, left: "15%" }} />
-          <div className="tape tape-green tape-l3" style={{ position: "absolute", top: -10, right: "20%" }} />
+          <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -32, left: "15%" }} />
+          <div className="tape tape-green tape-xl tape-l3" style={{ position: "absolute", top: -20, right: "20%" }} />
 
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ YOU'RE PROBABLY CURIOUS ]</p>
 
