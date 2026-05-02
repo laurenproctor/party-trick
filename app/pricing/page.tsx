@@ -46,7 +46,6 @@ export default function PricingPage() {
         </a>
         <div className="pt-links">
           <a href="/play">Play</a>
-          <a href="/pricing" className="active">Pricing</a>
           <a href="/contact">Contact</a>
         </div>
       </nav>
@@ -199,7 +198,7 @@ export default function PricingPage() {
         <div className="rule-fat" style={{ marginBottom: "var(--s-10)" }} />
 
         {/* ── [04] FREE PREVIEW ── */}
-        <section style={{ marginBottom: "var(--s-10)", maxWidth: 640 }}>
+        <section style={{ marginBottom: "var(--s-10)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ JUST CURIOUS? ]</p>
           <h2 className="t-d2" style={{ marginBottom: "var(--s-5)" }}>Just Curious?</h2>
 
@@ -339,23 +338,24 @@ export default function PricingPage() {
         <section style={{ marginBottom: "var(--s-10)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-8)" }}>[ WHAT PEOPLE SAY ]</p>
 
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--s-5)", alignItems: "flex-start" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--s-8)", alignItems: "center", justifyContent: "center" }}>
             {QUOTES.map((quote, i) => {
-              const tilts = ["rotate(-2deg)", "rotate(1.5deg)", "rotate(-1deg)", "rotate(3deg)", "rotate(-2.5deg)"];
+              const tilts = ["-2deg", "1.5deg", "-1deg", "3deg", "-2.5deg"];
               const sizes = [28, 24, 32, 22, 26];
               return (
                 <div
                   key={quote}
-                  className="scrawl"
+                  className="hand-box quote-card"
                   style={{
-                    transform: tilts[i],
+                    ["--quote-tilt" as string]: `rotate(${tilts[i]})`,
+                    transform: `rotate(${tilts[i]})`,
+                    fontFamily: "var(--hand-ball)",
                     fontSize: sizes[i],
-                    display: "inline-block",
-                    padding: "var(--s-4) var(--s-5)",
-                    border: "2px solid var(--ink)",
-                    background: i % 2 === 0 ? "var(--paper)" : "var(--accent-deep)",
-                    color: i % 2 === 0 ? "var(--ink)" : "var(--paper)",
+                    lineHeight: 1.2,
+                    color: "var(--ink)",
+                    textAlign: "center",
                     maxWidth: 280,
+                    padding: "var(--s-6) var(--s-5)",
                   }}
                 >
                   "{quote}"
@@ -368,13 +368,13 @@ export default function PricingPage() {
         <div className="rule-fat" style={{ marginBottom: "var(--s-10)" }} />
 
         {/* ── [09] FAQ ── */}
-        <section style={{ marginBottom: "var(--s-10)", maxWidth: 720 }}>
+        <section style={{ maxWidth: 720, marginBottom: "var(--s-10)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ QUESTIONS ]</p>
           <h2 className="t-d2" style={{ marginBottom: "var(--s-8)" }}>Questions</h2>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
             {FAQ.map(([q, a], i) => (
-              <div key={q} style={{ borderTop: i === 0 ? "2px solid var(--ink)" : "1px solid var(--ink-faint)", borderBottom: i === FAQ.length - 1 ? "2px solid var(--ink)" : "none", padding: "var(--s-5) 0" }}>
+              <div key={q} style={{ borderTop: i === 0 ? "2px solid var(--ink)" : "1px solid var(--ink-faint)", padding: "var(--s-5) 0" }}>
                 <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-body)", fontWeight: 600, marginBottom: "var(--s-2)" }}>{q}</p>
                 <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)" }}>{a}</p>
               </div>
@@ -382,29 +382,29 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* ── [10] FINAL CTA ── */}
-        <section style={{ paddingBottom: "var(--s-10)", paddingTop: "var(--s-8)", textAlign: "center", position: "relative", background: "var(--accent-deep)", marginLeft: "calc(var(--margin) * -1)", marginRight: "calc(var(--margin) * -1)", paddingLeft: "var(--margin)", paddingRight: "var(--margin)" }}>
-          <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -32, left: "15%" }} />
-          <div className="tape tape-green tape-xl tape-l3" style={{ position: "absolute", top: -20, right: "20%" }} />
-
-          <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ YOU'RE PROBABLY CURIOUS ]</p>
-
-          <h2 className="shout" style={{ marginBottom: "var(--s-7)", color: "var(--paper)" }}>
-            You're Probably{" "}
-            <span style={{ color: "var(--red)" }}>Curious</span>
-          </h2>
-
-          <div style={{ display: "flex", gap: "var(--s-4)", justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="/play" className="btn btn-lg btn-red">
-              Start a Party <span className="arrow">→</span>
-            </a>
-            <a href="/play" className="btn btn-lg">
-              Try One First <span className="arrow">→</span>
-            </a>
-          </div>
-        </section>
-
       </main>
+
+      {/* ── [10] FINAL CTA ── */}
+      <section style={{ paddingBottom: "var(--s-10)", paddingTop: "var(--s-8)", textAlign: "center", position: "relative", background: "var(--accent-deep)", paddingLeft: "var(--margin)", paddingRight: "var(--margin)" }}>
+        <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -32, left: "15%" }} />
+        <div className="tape tape-green tape-xl tape-l3" style={{ position: "absolute", top: -20, right: "20%" }} />
+
+        <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ YOU'RE PROBABLY CURIOUS ]</p>
+
+        <h2 className="shout" style={{ marginBottom: "var(--s-7)", color: "var(--paper)" }}>
+          You're Probably{" "}
+          <span style={{ color: "var(--red)" }}>Curious</span>
+        </h2>
+
+        <div style={{ display: "flex", gap: "var(--s-4)", justifyContent: "center", flexWrap: "wrap" }}>
+          <a href="/play" className="btn btn-lg btn-red">
+            Start a Party <span className="arrow">→</span>
+          </a>
+          <a href="/play" className="btn btn-lg">
+            Try One First <span className="arrow">→</span>
+          </a>
+        </div>
+      </section>
 
       {/* footer */}
       <footer>
@@ -431,7 +431,7 @@ export default function PricingPage() {
         <div className="pt-foot">
           <div>
             <div className="colofon">P<span className="art">ART</span>y Tr<span className="x">i</span>ck</div>
-            <div className="ascii">{`>_ the portrait you deserve`}</div>
+            <div className="ascii">{"the portrait you deserve"}</div>
           </div>
           <div>
             <h5>Product</h5>
@@ -443,6 +443,7 @@ export default function PricingPage() {
             <h5>Legal</h5>
             <a href="#">Privacy</a>
             <a href="/terms-of-service">Terms</a>
+            <a href="/refunds">Refunds</a>
           </div>
           <div>
             <h5>Status</h5>

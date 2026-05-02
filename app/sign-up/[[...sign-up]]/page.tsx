@@ -22,7 +22,6 @@ export default function SignUpPage() {
         </a>
         <div className="pt-links">
           <a href="/play">Play</a>
-          <a href="/pricing">Pricing</a>
           <a href="/contact">Contact</a>
         </div>
       </nav>
@@ -55,17 +54,19 @@ export default function SignUpPage() {
         <div className="pt-foot">
           <div>
             <div className="colofon">P<span className="art">ART</span>y Tr<span className="x">i</span>ck</div>
-            <div className="ascii">{`>_ the portrait you deserve`}</div>
+            <div className="ascii">{"the portrait you deserve"}</div>
           </div>
           <div>
             <h5>Product</h5>
             <a href="/play">Play</a>
+            <a href="/pricing">Pricing</a>
             <a href="/contact">Contact</a>
           </div>
           <div>
             <h5>Legal</h5>
-            <a href="#">Privacy</a>
+            <a href="/privacy-policy">Privacy</a>
             <a href="/terms-of-service">Terms</a>
+            <a href="/refunds">Refunds</a>
           </div>
           <div>
             <h5>Status</h5>

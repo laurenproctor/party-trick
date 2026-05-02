@@ -49,7 +49,6 @@ export default function HomePage() {
         </a>
         <div className="pt-links">
           <a href="/play">Play</a>
-          <a href="/pricing">Pricing</a>
           <a href="/contact">Contact</a>
         </div>
       </nav>
@@ -165,7 +164,7 @@ export default function HomePage() {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
             <div className="polaroid" style={{ width: "100%" }}>
-              <div className="ph" style={{ height: 120, background: "var(--accent-deep)", justifyContent: "center", flexDirection: "row", padding: "0 var(--s-5)", alignItems: "center", gap: "var(--s-3)" }}>
+              <div className="ph" style={{ display: "flex", height: 120, background: "var(--accent-deep)", justifyContent: "center", flexDirection: "row", padding: "0 var(--s-5)", alignItems: "center", gap: "var(--s-3)" }}>
                 <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color: "var(--paper)", letterSpacing: "0.03em" }}>QUICK PARTY</span>
                 <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color: "var(--paper)", opacity: 0.6 }}>$6.32</span>
               </div>
@@ -179,7 +178,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="polaroid polaroid-tilt-r" style={{ width: "100%" }}>
-              <div className="ph" style={{ height: 120, background: "var(--red)", justifyContent: "center", flexDirection: "row", padding: "0 var(--s-5)", alignItems: "center", gap: "var(--s-3)" }}>
+              <div className="ph" style={{ display: "flex", height: 120, background: "var(--red)", justifyContent: "center", flexDirection: "row", padding: "0 var(--s-5)", alignItems: "center", gap: "var(--s-3)" }}>
                 <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color: "var(--ink)", letterSpacing: "0.03em" }}>REAL PARTY</span>
                 <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color: "var(--ink)", opacity: 0.6 }}>$8.32</span>
               </div>
@@ -196,7 +195,7 @@ export default function HomePage() {
         </section>
 
         {/* ── EXAMPLES ── */}
-        <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)" }}>
+        <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ REAL MOMENTS. REAL VERDICTS. ]</p>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -233,39 +232,37 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ── FINAL CTA ── */}
-        <section style={{
-          paddingTop: "var(--s-9)",
-          paddingBottom: "var(--s-10)",
-          textAlign: "center",
-          position: "relative",
-          background: "var(--accent-deep)",
-          marginLeft: "calc(var(--margin) * -1)",
-          marginRight: "calc(var(--margin) * -1)",
-          paddingLeft: "var(--margin)",
-          paddingRight: "var(--margin)",
-        }}>
-          <div className="tape tape-green tape-xl tape-l3" style={{ position: "absolute", top: -32, right: "15%" }} />
-          <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -20, left: "25%" }} />
-
-          <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ GO ON THEN ]</p>
-
-          <h2 className="shout" style={{ marginBottom: "var(--s-7)", color: "var(--paper)" }}>
-            The first one is{" "}
-            <span style={{ color: "var(--red)" }}>free.</span>
-          </h2>
-
-          <div style={{ display: "flex", gap: "var(--s-4)", justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="/play" className="btn btn-lg btn-red">
-              Get a Party Trick <span className="arrow">→</span>
-            </a>
-            <a href="/pricing" className="btn btn-lg">
-              See Pricing <span className="arrow">→</span>
-            </a>
-          </div>
-        </section>
-
       </main>
+
+      {/* ── FINAL CTA ── */}
+      <section style={{
+        paddingTop: "var(--s-9)",
+        paddingBottom: "var(--s-10)",
+        textAlign: "center",
+        position: "relative",
+        background: "var(--accent-deep)",
+        paddingLeft: "var(--margin)",
+        paddingRight: "var(--margin)",
+      }}>
+        <div className="tape tape-green tape-xl tape-l3" style={{ position: "absolute", top: -32, right: "15%" }} />
+        <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -20, left: "25%" }} />
+
+        <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ GO ON THEN ]</p>
+
+        <h2 className="shout" style={{ marginBottom: "var(--s-7)", color: "var(--paper)" }}>
+          The first one is{" "}
+          <span style={{ color: "var(--red)" }}>free.</span>
+        </h2>
+
+        <div style={{ display: "flex", gap: "var(--s-4)", justifyContent: "center", flexWrap: "wrap" }}>
+          <a href="/play" className="btn btn-lg btn-red">
+            Get a Party Trick <span className="arrow">→</span>
+          </a>
+          <a href="/pricing" className="btn btn-lg">
+            See Pricing <span className="arrow">→</span>
+          </a>
+        </div>
+      </section>
 
       {/* footer */}
       <footer>
@@ -291,7 +288,7 @@ export default function HomePage() {
         <div className="pt-foot">
           <div>
             <div className="colofon">P<span className="art">ART</span>y Tr<span className="x">i</span>ck</div>
-            <div className="ascii">{`>_ the portrait you deserve`}</div>
+            <div className="ascii">{"the portrait you deserve"}</div>
           </div>
           <div>
             <h5>Product</h5>
@@ -303,6 +300,7 @@ export default function HomePage() {
             <h5>Legal</h5>
             <a href="/privacy-policy">Privacy</a>
             <a href="/terms-of-service">Terms</a>
+            <a href="/refunds">Refunds</a>
           </div>
           <div>
             <h5>Status</h5>

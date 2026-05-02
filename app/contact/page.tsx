@@ -47,15 +47,12 @@ export default function ContactPage() {
         </a>
         <div className="pt-links">
           <a href="/play">Play</a>
-          <a href="/pricing">Pricing</a>
           <a href="/contact" className="active">Contact</a>
         </div>
       </nav>
 
-      <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "var(--s-5) var(--margin) 0" }}>
-
-        {/* ── HERO ── */}
-        <section style={{ marginBottom: "var(--s-9)", position: "relative", background: "var(--accent-deep)", padding: "var(--s-8) var(--margin)" }}>
+      {/* ── HERO ── */}
+      <section style={{ marginBottom: "var(--s-9)", position: "relative", background: "var(--accent-deep)", padding: "var(--s-8) var(--margin)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>
             [SUPPORT / FEEDBACK / EXISTENTIAL QUERIES]
           </p>
@@ -103,15 +100,17 @@ export default function ContactPage() {
               </svg>
             </span>
             {" "}it made you suspicious,{" "}
-            <span style={{ fontStyle: "italic", fontWeight: 700 }}>tell us.</span>
+            <span className="underline-marker-hover" style={{ fontStyle: "italic", fontWeight: 700 }}>tell us.</span>
           </p>
 
           {/* tape decoration */}
           <div className="tape tape-green tape-l3" style={{ position: "absolute", top: -16, right: 80 }} />
-        </section>
+      </section>
+
+      <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 var(--margin)" }}>
 
         {/* ── REASONS ── */}
-        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-6)", marginBottom: "var(--s-5)" }}>
+        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-6)", marginBottom: "var(--s-3)" }}>
           <div>
             <p className="t-d4" style={{ marginBottom: "var(--s-5)" }}>
               We read everything.{" "}
@@ -122,10 +121,10 @@ export default function ContactPage() {
 
             <ul style={{ listStyle: "none", padding: "0 0 0 var(--s-5)", margin: 0, display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
               {[
-                ["Something not working?", "Tell us what happened"],
-                ["Got charged and now questioning your life choices?", "We can help"],
+                ["Something not working?", "Tell us what happened."],
+                ["Got charged and now questioning your life choices?", "We can help."],
                 ["Want to collaborate, invest, or \"take this to the next level\"?", "Bold. Go ahead"],
-                ["Just want to say something cryptic?", "We'll interpret it generously"],
+                ["Just want to say something cryptic?", "We'll interpret it generously."],
               ].map(([situation, response]) => (
                 <li key={situation} style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", display: "flex", gap: "var(--s-3)", alignItems: "flex-start" }}>
                   <svg className="glyph" width="14" height="14" viewBox="0 0 56 56" style={{ flexShrink: 0, marginTop: 3 }}>
@@ -172,18 +171,18 @@ export default function ContactPage() {
               <p className="t-d3" style={{ marginBottom: "var(--s-4)" }}>
                 Sent. <span style={{ color: "var(--red)" }}>✓</span>
               </p>
-              <p className="scrawl scrawl-sm" style={{ transform: "rotate(-1deg)", display: "inline-block", marginTop: "var(--s-3)" }}>
+              <p className="scrawl scrawl-sm" style={{ transform: "rotate(-1deg)", display: "inline-block", marginTop: "var(--s-3)", fontSize: 26 }}>
                 We'll get back to you. Not instantly. But not never.
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--s-6)", paddingTop: "var(--s-7)" }}>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--s-6)" }}>
 
               <label className="field">
                 <span className="field-label">
                   Your email
                 </span>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-micro)", color: "var(--ink-faint)", display: "block", marginBottom: "var(--s-2)", letterSpacing: "0.05em" }}>
+                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-micro)", color: "var(--ink-soft)", display: "block", marginBottom: "var(--s-2)", letterSpacing: "0.05em" }}>
                   (we will only use this for good or neutral purposes)
                 </span>
                 <input className="input" type="email" required placeholder="you@somewhere.com" />
@@ -193,7 +192,7 @@ export default function ContactPage() {
                 <span className="field-label">
                   What happened
                 </span>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-micro)", color: "var(--ink-faint)", display: "block", marginBottom: "var(--s-2)", letterSpacing: "0.05em" }}>
+                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-micro)", color: "var(--ink-soft)", display: "block", marginBottom: "var(--s-2)", letterSpacing: "0.05em" }}>
                   (be honest. the worse it sounds, the better we can fix it)
                 </span>
                 <textarea className="textarea" required placeholder="Start anywhere." />
@@ -240,7 +239,7 @@ export default function ContactPage() {
                     (optional)
                   </span>
                 </span>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-micro)", color: "var(--ink-faint)", display: "block", marginBottom: "var(--s-2)", letterSpacing: "0.05em" }}>
+                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-micro)", color: "var(--ink-soft)", display: "block", marginBottom: "var(--s-2)", letterSpacing: "0.05em" }}>
                   (screenshots, receipts, emotional damage)
                 </span>
                 <input
@@ -262,8 +261,8 @@ export default function ContactPage() {
                 <button className="btn btn-lg btn-red" type="submit">
                   Send it <span className="arrow">→</span>
                 </button>
-                <p className="scrawl scrawl-sm" style={{ transform: "rotate(-1deg)", display: "inline-block", marginTop: "var(--s-3)", marginLeft: 32, color: "#0044ff", fontSize: 20 }}>
-                  We'll get back to you. Not instantly. But not never.
+                <p className="scrawl scrawl-sm" style={{ transform: "rotate(-1deg)", display: "block", marginTop: "var(--s-4)", paddingTop: 5, color: "#0044ff", fontSize: 26 }}>
+                  We'll get back to you. Not instantly. <span style={{ color: "#00d647" }}>But not never.</span>
                 </p>
               </div>
 
@@ -271,29 +270,29 @@ export default function ContactPage() {
           )}
         </section>
 
-        {/* ── FINAL CTA ── */}
-        <section style={{ paddingBottom: "var(--s-10)", paddingTop: "var(--s-8)", textAlign: "center", position: "relative", background: "var(--red)", marginLeft: "calc(var(--margin) * -1)", marginRight: "calc(var(--margin) * -1)", paddingLeft: "var(--margin)", paddingRight: "var(--margin)" }}>
-          <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -32, left: "15%" }} />
-          <div className="tape tape-black-2 tape-xl tape-l6" style={{ position: "absolute", top: -20, right: "20%" }} />
-
-          <p className="t-cap" style={{ marginBottom: "var(--s-4)" }}>[ NOT DONE YET ]</p>
-
-          <h2 className="t-d2" style={{ marginBottom: "var(--s-4)" }}>
-            Most people don't stop at one.
-          </h2>
-
-          <p style={{ fontFamily: "var(--hand)", fontSize: 28, color: "var(--red)", marginBottom: "var(--s-6)", transform: "rotate(-1deg)", display: "inline-block" }}>
-            The next one is usually better. Or worse in a more interesting way.
-          </p>
-
-          <div style={{ marginTop: "var(--s-5)" }}>
-            <a href="/play" className="btn btn-lg btn-blue">
-              Get another Party Trick <span className="arrow">→</span>
-            </a>
-          </div>
-        </section>
-
       </main>
+
+      {/* ── FINAL CTA ── */}
+      <section style={{ paddingBottom: "var(--s-10)", paddingTop: "var(--s-8)", textAlign: "center", position: "relative", background: "var(--red)", paddingLeft: "var(--margin)", paddingRight: "var(--margin)" }}>
+        <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -32, left: "15%" }} />
+        <div className="tape tape-black-2 tape-xl tape-l6" style={{ position: "absolute", top: -20, right: "20%" }} />
+
+        <p className="t-cap" style={{ marginBottom: "var(--s-4)" }}>[ NOT DONE YET ]</p>
+
+        <h2 className="t-d2" style={{ marginBottom: "var(--s-4)" }}>
+          Most people don't stop at one.
+        </h2>
+
+        <p style={{ fontFamily: "var(--hand)", fontSize: 28, color: "var(--red)", marginBottom: "var(--s-6)", transform: "rotate(-1deg)", display: "inline-block" }}>
+          The next one is usually better. Or worse in a more interesting way.
+        </p>
+
+        <div style={{ marginTop: "var(--s-5)" }}>
+          <a href="/play" className="btn btn-lg btn-blue">
+            Get another Party Trick <span className="arrow">→</span>
+          </a>
+        </div>
+      </section>
 
       {/* footer */}
       <footer>
@@ -320,17 +319,19 @@ export default function ContactPage() {
         <div className="pt-foot">
           <div>
             <div className="colofon">P<span className="art">ART</span>y Tr<span className="x">i</span>ck</div>
-            <div className="ascii">{`>_ the portrait you deserve`}</div>
+            <div className="ascii">{"the portrait you deserve"}</div>
           </div>
           <div>
             <h5>Product</h5>
             <a href="/play">Play</a>
+            <a href="/pricing">Pricing</a>
             <a href="/contact">Contact</a>
           </div>
           <div>
             <h5>Legal</h5>
-            <a href="#">Privacy</a>
+            <a href="/privacy-policy">Privacy</a>
             <a href="/terms-of-service">Terms</a>
+            <a href="/refunds">Refunds</a>
           </div>
           <div>
             <h5>Status</h5>

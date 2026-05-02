@@ -180,6 +180,9 @@ a:hover { color: var(--red); }
 
 .underline-marker { position: relative; display: inline-block; padding-bottom: 4px; }
 .underline-marker::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 6px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6'><path d='M0 3 Q 25 0, 50 3 T 100 3 T 150 3 T 200 3' stroke='%2300d647' stroke-width='3' fill='none' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-size: 100% 100%; }
+.underline-marker-hover { position: relative; display: inline-block; padding-bottom: 4px; }
+.underline-marker-hover::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 6px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6'><path d='M0 3 Q 25 0, 50 3 T 100 3 T 150 3 T 200 3' stroke='%2300d647' stroke-width='3' fill='none' stroke-linecap='round'/></svg>"); background-repeat: no-repeat; background-size: 100% 100%; opacity: 0; transition: opacity var(--dur-fast); }
+.underline-marker-hover:hover::after { opacity: 1; }
 .underline-marker-blue::after { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6'><path d='M0 3 Q 25 0, 50 3 T 100 3 T 150 3 T 200 3' stroke='%230044ff' stroke-width='3' fill='none' stroke-linecap='round'/></svg>"); }
 .underline-marker-ink::after  { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 6'><path d='M0 3 Q 25 0, 50 3 T 100 3 T 150 3 T 200 3' stroke='%230a0a0a' stroke-width='3' fill='none' stroke-linecap='round'/></svg>"); }
 
@@ -213,7 +216,7 @@ a:hover { color: var(--red); }
 .runon-intro { font-family: var(--mono); font-size: clamp(16px, 2.4vw, 28px); line-height: 1.45; }
 .runon-intro .stamp { display: inline-block; border: 2px solid var(--red); color: var(--red); padding: 2px 8px; font-family: var(--display-black); font-size: 0.7em; transform: rotate(-2deg); margin: 0 6px 0 0; vertical-align: middle; }
 
-.pt-links { display: flex; gap: var(--s-5); font-family: var(--hand); font-size: var(--t-cap); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.pt-links { display: flex; gap: var(--s-5); font-family: var(--hand); font-size: 22px; line-height: 1.1; font-weight: 400; letter-spacing: 0.02em; text-transform: uppercase; }
 .pt-links a { text-decoration: none; padding: 4px 10px; border: 1px solid transparent; transition: all var(--dur-fast); }
 .pt-links a:hover { border-color: var(--ink); background: var(--ink); color: var(--paper); }
 .pt-links a.active { background: var(--red); color: var(--paper); border-color: var(--red); }
@@ -256,9 +259,9 @@ a:hover { color: var(--red); }
 .field-label { font-family: var(--mono); font-size: var(--t-micro); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); display: block; margin-bottom: var(--s-2); font-weight: 700; }
 .field-label::before { content: '> '; color: var(--red); }
 .field-label .req { color: var(--red); }
-.input, .textarea, .select { width: 100%; font-family: var(--mono); font-size: 14px; line-height: 1.4; padding: 10px 12px; background: var(--paper); border: 2px solid var(--ink); border-radius: 0; color: var(--ink); transition: background var(--dur-fast), border-color var(--dur-fast), box-shadow var(--dur-fast); }
+.input, .textarea, .select { width: 100%; font-family: var(--mono); font-size: 16px; line-height: 1.4; padding: 10px 12px; background: var(--paper); border: 2px solid var(--ink); border-radius: 0; color: var(--ink); transition: background var(--dur-fast), border-color var(--dur-fast), box-shadow var(--dur-fast); }
 .input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--red); background: var(--paper); box-shadow: 4px 4px 0 var(--red); }
-.input::placeholder, .textarea::placeholder { color: var(--ink-faint); }
+.input::placeholder, .textarea::placeholder { color: var(--ink-soft); }
 .textarea { min-height: 120px; resize: vertical; }
 .checkbox, .radio { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: var(--t-body); font-family: var(--mono); }
 .checkbox input, .radio input { appearance: none; width: 20px; height: 20px; border: 2px solid var(--ink); background: var(--paper); margin: 0; position: relative; cursor: pointer; border-radius: 0; }
@@ -414,3 +417,33 @@ a:hover { color: var(--red); }
 .hover-glyph { position: relative; display: inline-block; }
 .hover-glyph .hover-glyph-icon { position: absolute; left: 50%; transform: translateX(-50%); opacity: 0; transition: opacity 0.15s ease; pointer-events: none; }
 .hover-glyph:hover .hover-glyph-icon { opacity: 1; }
+
+/* hand-box — sketchy rough rectangle for pull quotes */
+.hand-box {
+  position: relative; padding: 18px 24px 18px 50px;
+  background: var(--paper);
+}
+.hand-box::before {
+  content: ''; position: absolute; inset: -2px; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'><path d='M2,3 Q15,1 30,2 T60,3 T98,2 L97,30 Q98,50 97,70 T98,98 L70,97 Q50,98 30,97 T2,98 L3,70 Q2,50 3,30 Z' stroke='%230a0a0a' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-size: 100% 100%; background-repeat: no-repeat;
+}
+
+/* 3D sticker quotes */
+@keyframes quote-shake {
+  0%   { transform: var(--quote-tilt) translate(0, 0); }
+  15%  { transform: var(--quote-tilt) translate(-4px, -3px) rotate(-3deg); }
+  30%  { transform: var(--quote-tilt) translate(4px, -2px) rotate(3deg); }
+  45%  { transform: var(--quote-tilt) translate(-3px, 2px) rotate(-2deg); }
+  60%  { transform: var(--quote-tilt) translate(3px, 3px) rotate(2deg); }
+  75%  { transform: var(--quote-tilt) translate(-2px, -1px) rotate(-1deg); }
+  100% { transform: var(--quote-tilt) translate(0, 0); }
+}
+.quote-card {
+  box-shadow: 5px 5px 0 var(--ink);
+  position: relative;
+  cursor: default;
+}
+.quote-card:hover {
+  animation: quote-shake 0.5s ease;
+}

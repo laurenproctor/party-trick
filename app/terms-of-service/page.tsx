@@ -1,3 +1,5 @@
+import { Show, UserButton } from "@clerk/nextjs";
+
 export default function TermsPage() {
   return (
     <>
@@ -8,7 +10,14 @@ export default function TermsPage() {
         <span className="sep">/</span>
         <span>TERMS OF SERVICE</span>
         <span className="right">
-          <span>EST. 2026</span>
+          <Show when="signed-out">
+            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
+            <span className="sep">·</span>
+            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
+          </Show>
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
         </span>
       </div>
 
@@ -215,17 +224,19 @@ export default function TermsPage() {
         <div className="pt-foot">
           <div>
             <div className="colofon">P<span className="art">ART</span>y Tr<span className="x">i</span>ck</div>
-            <div className="ascii">{`>_ the portrait you deserve`}</div>
+            <div className="ascii">{"the portrait you deserve"}</div>
           </div>
           <div>
             <h5>Product</h5>
             <a href="/play">Play</a>
+            <a href="/pricing">Pricing</a>
             <a href="/contact">Contact</a>
           </div>
           <div>
             <h5>Legal</h5>
             <a href="/privacy-policy">Privacy</a>
             <a href="/terms-of-service" className="active">Terms</a>
+            <a href="/refunds">Refunds</a>
           </div>
           <div>
             <h5>Status</h5>
