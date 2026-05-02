@@ -57,7 +57,7 @@ export default function SiteNav({ page, activeLink }: SiteNavProps) {
       {/* mobile overlay */}
       <div className={`pt-nav-overlay${open ? " open" : ""}`}>
         <div className="pt-nav-overlay-header">
-          <a href="/" className="logo" style={{ fontFamily: "var(--punk-idols)", fontSize: 28, textDecoration: "none", color: "var(--ink)", letterSpacing: "-0.02em", textTransform: "lowercase" }}>
+          <a href="/" className="logo">
             P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup style={{ fontFamily: "var(--mono)", fontSize: 9, color: "var(--red)" }}>™</sup>
           </a>
           <button
