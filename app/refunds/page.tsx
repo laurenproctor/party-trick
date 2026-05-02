@@ -47,6 +47,7 @@ export default function RefundPolicyPage() {
         </a>
         <div className="pt-links">
           <a href="/play">Play</a>
+          <a href="/how-it-works">How It Works</a>
           <a href="/contact">Contact</a>
         </div>
       </nav>
@@ -276,6 +277,7 @@ export default function RefundPolicyPage() {
           <div>
             <h5>Product</h5>
             <a href="/play">Play</a>
+          <a href="/how-it-works">How It Works</a>
             <a href="/pricing">Pricing</a>
             <a href="/contact">Contact</a>
           </div>
@@ -293,7 +295,7 @@ export default function RefundPolicyPage() {
         <div className="pt-foot-bar">
           <span>© 2026 P<span className="art">ART</span>y Trick</span>
           <span className="blink">●</span>
-          <span>MADE IN NYC WITH CHAOS & ♥︎</span>
+          <span>MADE IN NYC WITH ♥︎ & CHAOS</span>
         </div>
       </footer>
     </>

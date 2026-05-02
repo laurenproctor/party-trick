@@ -28,29 +28,30 @@ export default function TermsPage() {
         </a>
         <div className="pt-links">
           <a href="/play">Play</a>
+          <a href="/how-it-works">How It Works</a>
           <a href="/contact">Contact</a>
         </div>
       </nav>
 
-      <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "var(--s-5) var(--margin) 0" }}>
+      {/* ── HERO ── */}
+      <section style={{ position: "relative", background: "var(--accent-deep)", padding: "var(--s-8) var(--margin)", marginBottom: "var(--s-9)" }}>
+        <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>
+          [LEGAL / THE PART EVERYONE SKIPS]
+        </p>
 
-        {/* ── HERO ── */}
-        <section style={{ marginBottom: "var(--s-9)", position: "relative", background: "var(--accent-deep)", padding: "var(--s-8) var(--margin)" }}>
-          <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>
-            [LEGAL / THE PART EVERYONE SKIPS]
-          </p>
+        <h1 className="shout" style={{ marginBottom: "var(--s-5)", maxWidth: "100%", color: "var(--paper)" }}>
+          These are the rules.{" "}
+          <span style={{ color: "var(--red)" }}>They're pretty reasonable.</span>
+        </h1>
 
-          <h1 className="shout" style={{ marginBottom: "var(--s-5)", maxWidth: "100%", color: "var(--paper)" }}>
-            These are the rules.{" "}
-            <span style={{ color: "var(--red)" }}>They're pretty reasonable.</span>
-          </h1>
+        <p style={{ fontFamily: "var(--mono)", fontSize: 20, lineHeight: 1.6, margin: 0, color: "rgba(255,255,255,0.5)" }}>
+          Last updated: May 1, 2026
+        </p>
 
-          <p style={{ fontFamily: "var(--mono)", fontSize: 20, lineHeight: 1.6, margin: 0, color: "rgba(255,255,255,0.5)" }}>
-            Last updated: May 1, 2026
-          </p>
+        <div className="tape tape-green tape-l3" style={{ position: "absolute", top: -16, right: 80 }} />
+      </section>
 
-          <div className="tape tape-green tape-l3" style={{ position: "absolute", top: -16, right: 80 }} />
-        </section>
+      <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 var(--margin)" }}>
 
         {/* ── CONTENT ── */}
         <section style={{ maxWidth: 760, marginBottom: "var(--s-10)", display: "flex", flexDirection: "column", gap: "var(--s-8)" }}>
@@ -229,6 +230,7 @@ export default function TermsPage() {
           <div>
             <h5>Product</h5>
             <a href="/play">Play</a>
+          <a href="/how-it-works">How It Works</a>
             <a href="/pricing">Pricing</a>
             <a href="/contact">Contact</a>
           </div>
@@ -246,7 +248,7 @@ export default function TermsPage() {
         <div className="pt-foot-bar">
           <span>© 2026 P<span className="art">ART</span>y Trick</span>
           <span className="blink">●</span>
-          <span>MADE IN NYC WITH CHAOS & ♥︎</span>
+          <span>MADE IN NYC WITH ♥︎ & CHAOS</span>
         </div>
       </footer>
     </>

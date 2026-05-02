@@ -49,6 +49,7 @@ export default function HomePage() {
         </a>
         <div className="pt-links">
           <a href="/play">Play</a>
+          <a href="/how-it-works">How It Works</a>
           <a href="/contact">Contact</a>
         </div>
       </nav>
@@ -244,8 +245,8 @@ export default function HomePage() {
         paddingLeft: "var(--margin)",
         paddingRight: "var(--margin)",
       }}>
-        <div className="tape tape-green tape-xl tape-l3" style={{ position: "absolute", top: -32, right: "15%" }} />
-        <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -20, left: "25%" }} />
+        <div className="tape tape-green tape-xl tape-l3" style={{ position: "absolute", top: -52, left: "var(--margin)" }} />
+        <div className="tape tape-black tape-xl tape-r3" style={{ position: "absolute", top: -40, right: "15%" }} />
 
         <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ GO ON THEN ]</p>
 
@@ -310,7 +311,7 @@ export default function HomePage() {
         <div className="pt-foot-bar">
           <span>© 2026 P<span className="art">ART</span>y Trick</span>
           <span className="blink">●</span>
-          <span>MADE IN NYC WITH CHAOS & ♥︎</span>
+          <span>MADE IN NYC WITH ♥︎ & CHAOS</span>
         </div>
       </footer>
     </>

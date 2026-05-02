@@ -216,7 +216,7 @@ a:hover { color: var(--red); }
 .runon-intro { font-family: var(--mono); font-size: clamp(16px, 2.4vw, 28px); line-height: 1.45; }
 .runon-intro .stamp { display: inline-block; border: 2px solid var(--red); color: var(--red); padding: 2px 8px; font-family: var(--display-black); font-size: 0.7em; transform: rotate(-2deg); margin: 0 6px 0 0; vertical-align: middle; }
 
-.pt-links { display: flex; gap: var(--s-5); font-family: var(--hand); font-size: 22px; line-height: 1.1; font-weight: 400; letter-spacing: 0.02em; text-transform: uppercase; }
+.pt-links { display: flex; gap: 34px; font-family: var(--hand); font-size: 22px; line-height: 1.1; font-weight: 400; letter-spacing: 0.02em; text-transform: uppercase; }
 .pt-links a { text-decoration: none; padding: 4px 10px; border: 1px solid transparent; transition: all var(--dur-fast); }
 .pt-links a:hover { border-color: var(--ink); background: var(--ink); color: var(--paper); }
 .pt-links a.active { background: var(--red); color: var(--paper); border-color: var(--red); }
