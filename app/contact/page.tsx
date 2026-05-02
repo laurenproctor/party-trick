@@ -1,5 +1,7 @@
 "use client";
 
+import { Show, UserButton } from "@clerk/nextjs";
+
 import { useState } from "react";
 
 const URGENCY_OPTIONS = [
@@ -27,7 +29,14 @@ export default function ContactPage() {
         <span className="sep">/</span>
         <span>CONTACT</span>
         <span className="right">
-          <span>EST. 2026</span>
+          <Show when="signed-out">
+            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
+            <span className="sep">·</span>
+            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
+          </Show>
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
         </span>
       </div>
 

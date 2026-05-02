@@ -1,3 +1,5 @@
+import { Show, UserButton } from "@clerk/nextjs";
+
 const PORTRAITS = [
   { src: "/assets/bad-drawings/portrait-j-wine.png", label: "She didn't want wine. She wanted control." },
   { src: null, label: "third date, wrong restaurant" },
@@ -29,7 +31,14 @@ export default function HomePage() {
         <span className="sep">/</span>
         <span>HOME</span>
         <span className="right">
-          <span>EST. 2026</span>
+          <Show when="signed-out">
+            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
+            <span className="sep">·</span>
+            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
+          </Show>
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
         </span>
       </div>
 
