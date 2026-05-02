@@ -292,7 +292,7 @@ export default function ContactPage() {
           <div className="marquee-track">
             {Array.from({ length: 6 }).map((_, i) => (
               <span key={i}>
-                <span>IT READS THE ROOM</span>
+                <span>THE PORTRAIT YOU DESERVE. DRAWN WRONG. READ RIGHT.</span>
                 <span style={{ color: "var(--red)" }}>✦</span>
                 <span>DESCRIBE A MOMENT · GET A CURSED IMAGE</span>
                 <span style={{ color: "var(--red)" }}>✦</span>
@@ -310,7 +310,7 @@ export default function ContactPage() {
         <div className="pt-foot">
           <div>
             <div className="colofon">P<span className="art">ART</span>y Tr<span className="x">i</span>ck</div>
-            <div className="ascii">{`>_ it reads the room`}</div>
+            <div className="ascii">{`>_ the portrait you deserve`}</div>
           </div>
           <div>
             <h5>Product</h5>

@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Party Trick",
-  description: "Describe a moment. Get a cursed image. Pass the phone.",
+  description: "The portrait you deserve. Drawn wrong. Read right.",
 };
 
 export default function RootLayout({
