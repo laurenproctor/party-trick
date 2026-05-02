@@ -1,37 +1,9 @@
-import { Show, UserButton } from "@clerk/nextjs";
+import SiteNav from "../components/SiteNav";
 
 export default function PrivacyPolicyPage() {
   return (
     <>
-      {/* sysbar */}
-      <div className="pt-sysbar">
-        <span className="blink">●</span>
-        <span>P<span className="art">ART</span>Y TRICK</span>
-        <span className="sep">/</span>
-        <span>PRIVACY POLICY</span>
-        <span className="right">
-          <Show when="signed-out">
-            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
-            <span className="sep">·</span>
-            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </span>
-      </div>
-
-      {/* nav */}
-      <nav className="pt-nav">
-        <a href="/" className="logo">
-          P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup>™</sup>
-        </a>
-        <div className="pt-links">
-          <a href="/play">Play</a>
-          <a href="/how-it-works">How It Works</a>
-          <a href="/contact">Contact</a>
-        </div>
-      </nav>
+      <SiteNav page="PRIVACY" />
 
       {/* ── HERO ── */}
       <section style={{ position: "relative", background: "var(--ink)", padding: "var(--s-8) var(--margin)", marginBottom: "var(--s-9)" }}>

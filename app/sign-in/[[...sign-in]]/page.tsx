@@ -1,31 +1,11 @@
 import { SignIn } from "@clerk/nextjs";
 import { clerkAppearance } from "@/lib/clerkAppearance";
+import SiteNav from "../../components/SiteNav";
 
 export default function SignInPage() {
   return (
     <>
-      {/* sysbar */}
-      <div className="pt-sysbar">
-        <span className="blink">●</span>
-        <span>P<span className="art">ART</span>Y TRICK</span>
-        <span className="sep">/</span>
-        <span>SIGN IN</span>
-        <span className="right">
-          <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
-        </span>
-      </div>
-
-      {/* nav */}
-      <nav className="pt-nav">
-        <a href="/" className="logo">
-          P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup>™</sup>
-        </a>
-        <div className="pt-links">
-          <a href="/play">Play</a>
-          <a href="/how-it-works">How It Works</a>
-          <a href="/contact">Contact</a>
-        </div>
-      </nav>
+      <SiteNav page="SIGN IN" />
 
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "var(--s-9) var(--margin)", display: "flex", justifyContent: "center" }}>
         <SignIn appearance={clerkAppearance} />
