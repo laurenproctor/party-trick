@@ -1,6 +1,6 @@
 "use client";
 
-import { Show, UserButton } from "@clerk/nextjs";
+import SiteNav from "../components/SiteNav";
 
 import { useState } from "react";
 
@@ -22,35 +22,7 @@ export default function ContactPage() {
 
   return (
     <>
-      {/* sysbar */}
-      <div className="pt-sysbar">
-        <span className="blink">●</span>
-        <span>P<span className="art">ART</span>Y TRICK</span>
-        <span className="sep">/</span>
-        <span>CONTACT</span>
-        <span className="right">
-          <Show when="signed-out">
-            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
-            <span className="sep">·</span>
-            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </span>
-      </div>
-
-      {/* nav */}
-      <nav className="pt-nav">
-        <a href="/" className="logo">
-          P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup>™</sup>
-        </a>
-        <div className="pt-links">
-          <a href="/play">Play</a>
-          <a href="/how-it-works">How It Works</a>
-          <a href="/contact" className="active">Contact</a>
-        </div>
-      </nav>
+      <SiteNav page="CONTACT" />
 
       {/* ── HERO ── */}
       <section style={{ marginBottom: "var(--s-9)", position: "relative", background: "var(--accent-deep)", padding: "var(--s-8) var(--margin)" }}>
@@ -111,7 +83,7 @@ export default function ContactPage() {
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 var(--margin)" }}>
 
         {/* ── REASONS ── */}
-        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-6)", marginBottom: "var(--s-3)" }}>
+        <section className="grid-2" style={{ gap: "var(--s-6)", marginBottom: "var(--s-3)" }}>
           <div>
             <p className="t-d4" style={{ marginBottom: "var(--s-5)" }}>
               We read everything.{" "}
@@ -143,7 +115,7 @@ export default function ContactPage() {
 
           {/* response time — polaroids: 2 top, 1 centered below */}
           <div style={{ alignSelf: "start", marginTop: "var(--s-7)", display: "flex", flexDirection: "column", gap: 32, alignItems: "center" }}>
-            <div style={{ display: "flex", gap: 32 }}>
+            <div className="contact-polaroids">
               {[
                 { speed: "FAST", cond: "if it's broken", tilt: "polaroid", bg: "var(--red)", color: "var(--ink)" },
                 { speed: "MEDIUM", cond: "if it's interesting", tilt: "polaroid polaroid-tilt-r", bg: "var(--accent)", color: "var(--paper)" },
