@@ -872,6 +872,23 @@ a:hover { color: var(--red); }
 @media (max-width: 900px) {
   :root { --t-mega: 80px; --t-d1: 56px; --t-d2: 38px; --t-d3: 26px; --margin: 16px; --gutter: 16px; }
   .pt-foot { grid-template-columns: 1fr 1fr; gap: var(--s-5); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --t-mega: 56px; --t-d1: 40px; --t-d2: 28px; --t-d3: 20px;
+    --t-d4: 26px; --t-lede: 20px; --t-body: 16px; --t-small: 15px;
+    --margin: 16px; --gutter: 12px;
+  }
+  .pt-foot { grid-template-columns: 1fr 1fr; gap: var(--s-4); }
+  .pt-foot-bar { flex-direction: column; gap: var(--s-2); text-align: center; }
+  .grid-4 { grid-template-columns: 1fr !important; }
+  .grid-3 { grid-template-columns: 1fr !important; }
+  .grid-2 { grid-template-columns: 1fr !important; }
+  .grid-auto-2 { grid-template-columns: 1fr !important; }
+  .shout { font-size: calc(var(--t-d1) * 0.9); }
 }
 
 /* utilities */

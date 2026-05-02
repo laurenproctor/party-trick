@@ -447,3 +447,90 @@ a:hover { color: var(--red); }
 .quote-card:hover {
   animation: quote-shake 0.5s ease;
 }
+
+/* ============================================================
+   RESPONSIVE GRID UTILITIES
+   ============================================================ */
+.grid-2  { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--gutter); }
+.grid-3  { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gutter); }
+.grid-4  { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gutter); }
+.grid-auto-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--gutter); }
+
+/* ============================================================
+   MOBILE NAV
+   ============================================================ */
+.pt-hamburger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.pt-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--paper);
+  z-index: 200;
+  flex-direction: column;
+  padding: var(--s-5) var(--margin);
+}
+
+.pt-nav-overlay.open {
+  display: flex;
+}
+
+.pt-nav-overlay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--s-8);
+}
+
+.pt-nav-overlay-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--ink);
+  line-height: 1;
+  padding: 4px 8px;
+}
+
+.pt-nav-overlay-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-6);
+}
+
+.pt-nav-overlay-links a {
+  font-family: var(--display-cond);
+  font-size: var(--t-d2);
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.pt-nav-overlay-links a:hover {
+  color: var(--red);
+}
+
+.pt-nav-mobile-right {
+  display: none;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+@media (max-width: 600px) {
+  .pt-links { display: none; }
+  .pt-hamburger { display: block; }
+  .pt-nav-mobile-right { display: flex; }
+  .pt-nav .logo { font-size: 28px; }
+  .pt-sysbar { padding: 4px 16px; gap: var(--s-2); font-size: 11px; }
+}
