@@ -1,4 +1,4 @@
-import { Show, UserButton } from "@clerk/nextjs";
+import SiteNav from "./components/SiteNav";
 
 const PORTRAITS = [
   { src: "/assets/bad-drawings/portrait-j-wine.png", label: "She didn't want wine. She wanted control." },
@@ -24,35 +24,7 @@ const HOW_IT_WORKS = [
 export default function HomePage() {
   return (
     <>
-      {/* sysbar */}
-      <div className="pt-sysbar">
-        <span className="blink">●</span>
-        <span>P<span className="art">ART</span>Y TRICK</span>
-        <span className="sep">/</span>
-        <span>HOME</span>
-        <span className="right">
-          <Show when="signed-out">
-            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
-            <span className="sep">·</span>
-            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </span>
-      </div>
-
-      {/* nav */}
-      <nav className="pt-nav">
-        <a href="/" className="logo">
-          P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup>™</sup>
-        </a>
-        <div className="pt-links">
-          <a href="/play">Play</a>
-          <a href="/how-it-works">How It Works</a>
-          <a href="/contact">Contact</a>
-        </div>
-      </nav>
+      <SiteNav page="HOME" />
 
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 var(--margin)" }}>
 
@@ -90,7 +62,7 @@ export default function HomePage() {
         <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ HOW THIS WORKS ]</p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s-6)" }}>
+          <div className="grid-3" style={{ gap: "var(--s-6)" }}>
             {HOW_IT_WORKS.map(([num, title, desc]) => (
               <div key={num} style={{ borderTop: "2px solid var(--ink)", paddingTop: "var(--s-5)" }}>
                 <span style={{ fontFamily: "var(--display-bebas)", fontSize: "var(--t-d4)", color: "var(--red)", display: "block", marginBottom: "var(--s-3)" }}>{num}</span>
@@ -105,7 +77,7 @@ export default function HomePage() {
         <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-7)" }}>[ A RECORD OF MOMENTS, MISREAD CORRECTLY ]</p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--s-7)", alignItems: "start" }}>
+          <div className="grid-4" style={{ gap: "var(--s-7)", alignItems: "start" }}>
             {PORTRAITS.map(({ src, label }, i) => {
               const tilts = ["-1.5deg", "2deg", "-2.5deg", "1deg"];
               const tapes = [
@@ -150,7 +122,7 @@ export default function HomePage() {
         </section>
 
         {/* ── PARTY MODE CALLOUT ── */}
-        <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "center" }}>
+        <section className="grid-2" style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)", gap: "var(--s-10)", alignItems: "center" }}>
           <div>
             <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ BETTER WITH PEOPLE ]</p>
             <h2 className="t-d2" style={{ marginBottom: "var(--s-5)" }}>Pass the phone.</h2>
