@@ -320,7 +320,7 @@ export default function ContactPage() {
           <div>
             <h5>Legal</h5>
             <a href="#">Privacy</a>
-            <a href="#">Terms</a>
+            <a href="/terms-of-service">Terms</a>
           </div>
           <div>
             <h5>Status</h5>
