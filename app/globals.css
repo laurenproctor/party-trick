@@ -555,3 +555,33 @@ a:hover { color: var(--red); }
   .pt-nav .logo { font-size: 28px; }
   .pt-sysbar { padding: 4px 16px; gap: var(--s-2); font-size: 11px; }
 }
+
+/* ── how-it-works steps grid ── */
+.hiw-step {
+  display: grid;
+  grid-template-columns: 120px 1fr 220px;
+  gap: var(--s-6);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .hiw-step { grid-template-columns: 80px 1fr; }
+  .hiw-step > :last-child { display: none; }
+}
+
+@media (max-width: 600px) {
+  .hiw-step { grid-template-columns: 1fr; }
+}
+
+/* ── contact polaroids ── */
+.contact-polaroids {
+  display: flex;
+  gap: var(--s-6);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .contact-polaroids { flex-direction: column; }
+  .contact-polaroids .polaroid,
+  .contact-polaroids .polaroid-tilt-r { width: 100%; max-width: 280px; }
+}

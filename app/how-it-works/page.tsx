@@ -1,4 +1,4 @@
-import { Show, UserButton } from "@clerk/nextjs";
+import SiteNav from "../components/SiteNav";
 
 const STEPS = [
   {
@@ -64,35 +64,7 @@ const FAQS = [
 export default function HowItWorksPage() {
   return (
     <>
-      {/* sysbar */}
-      <div className="pt-sysbar">
-        <span className="blink">●</span>
-        <span>P<span className="art">ART</span>Y TRICK</span>
-        <span className="sep">/</span>
-        <span>HOW IT WORKS</span>
-        <span className="right">
-          <Show when="signed-out">
-            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
-            <span className="sep">·</span>
-            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </span>
-      </div>
-
-      {/* nav */}
-      <nav className="pt-nav">
-        <a href="/" className="logo">
-          P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup>™</sup>
-        </a>
-        <div className="pt-links">
-          <a href="/play">Play</a>
-          <a href="/how-it-works" className="active">How It Works</a>
-          <a href="/contact">Contact</a>
-        </div>
-      </nav>
+      <SiteNav page="HOW IT WORKS" activeLink="how-it-works" />
 
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 var(--margin)" }}>
 
@@ -121,14 +93,11 @@ export default function HowItWorksPage() {
           {STEPS.map(({ num, label, head, body, aside }, i) => (
             <div
               key={num}
+              className="hiw-step"
               style={{
-                display: "grid",
-                gridTemplateColumns: "120px 1fr 220px",
-                gap: "var(--s-6)",
                 paddingTop: "var(--s-7)",
                 paddingBottom: "var(--s-7)",
                 borderBottom: i < STEPS.length - 1 ? "1px solid var(--ink-faint)" : "none",
-                alignItems: "start",
               }}
             >
               {/* number */}
@@ -166,7 +135,7 @@ export default function HowItWorksPage() {
 
         {/* ── THE HONESTY BOX ── */}
         <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "start" }}>
+          <div className="grid-2" style={{ gap: "var(--s-10)", alignItems: "start" }}>
             <div>
               <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ WHAT THIS IS ]</p>
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-3)" }}>
@@ -209,7 +178,7 @@ export default function HowItWorksPage() {
         <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)" }}>
           <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-6)" }}>[ WHY IT WORKS ]</p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--s-6)" }}>
+          <div className="grid-3" style={{ gap: "var(--s-6)" }}>
             {[
               {
                 label: "it commits",
