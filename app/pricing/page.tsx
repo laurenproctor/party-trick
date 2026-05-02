@@ -232,16 +232,16 @@ export default function PricingPage() {
             You'll know the one.
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--s-4)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--s-4)", alignItems: "stretch" }}>
             {[
-              ["Save / Download", "$2.32"],
+              ["Save / Download HD", "$2.32"],
               ['Lock "This Is Me"', "$1.32"],
-              ["Send as a postcard", "—"],
-              ["Put it on something you'll regret later", "—"],
+              ["Send as a postcard", "Coming soon"],
+              ["Put it on something you'll regret later", "Coming soon"],
             ].map(([action, price]) => (
-              <div key={action} style={{ borderTop: "2px solid var(--ink)", paddingTop: "var(--s-4)" }}>
+              <div key={action} style={{ borderTop: "2px solid var(--ink)", paddingTop: "var(--s-4)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", marginBottom: "var(--s-3)", lineHeight: 1.3 }}>{action}</p>
-                <span style={{ fontFamily: "var(--display-bebas)", fontSize: "var(--t-d4)", color: price === "—" ? "var(--ink-faint)" : "var(--ink)" }}>{price}</span>
+                <span style={{ fontFamily: "var(--display-bebas)", fontSize: "var(--t-d4)", color: price === "Coming soon" ? "var(--ink-faint)" : "var(--ink)" }}>{price}</span>
               </div>
             ))}
           </div>
