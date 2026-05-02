@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import WatermarkCanvas from "./WatermarkCanvas";
+import SiteNav from "../components/SiteNav";
 import SignUpGate, { type GateReason } from "./SignUpGate";
 
 type PageState = "input" | "loading" | "result" | "locked";
@@ -59,36 +60,13 @@ export default function PlayPage() {
 
   return (
     <>
-      {/* sysbar */}
-      <div className="pt-sysbar">
-        <span className="blink">●</span>
-        <span>P<span className="art">ART</span>Y TRICK</span>
-        <span className="sep">/</span>
-        <span>PLAY</span>
-        <span className="right">
-          <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
-          <span className="sep">·</span>
-          <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
-        </span>
-      </div>
-
-      {/* nav */}
-      <nav className="pt-nav">
-        <a href="/" className="logo">
-          P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup>™</sup>
-        </a>
-        <div className="pt-links">
-          <a href="/play" className="active">Play</a>
-          <a href="/how-it-works">How It Works</a>
-          <a href="/contact">Contact</a>
-        </div>
-      </nav>
+      <SiteNav page="PLAY" activeLink="play" />
 
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "var(--s-8) var(--margin) var(--s-10)" }}>
 
         {/* ── INPUT STATE ── */}
         {state === "input" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "start" }}>
+          <div className="grid-2" style={{ gap: "var(--s-10)", alignItems: "start" }}>
             <div>
               <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ YOUR MOMENT ]</p>
               <h1 className="shout" style={{ marginBottom: "var(--s-5)", maxWidth: "90%" }}>
@@ -142,7 +120,7 @@ export default function PlayPage() {
 
         {/* ── LOADING STATE ── */}
         {state === "loading" && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "start" }}>
+          <div className="grid-2" style={{ gap: "var(--s-10)", alignItems: "start" }}>
             <div style={{ paddingTop: "var(--s-8)" }}>
               <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ FORMING AN OPINION ]</p>
               <h2 style={{ fontFamily: "var(--display-cond)", fontSize: "var(--t-d2)", textTransform: "uppercase", lineHeight: 1, marginBottom: "var(--s-5)" }}>
@@ -165,7 +143,7 @@ export default function PlayPage() {
 
         {/* ── RESULT STATE ── */}
         {state === "result" && imageUrl && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "start" }}>
+          <div className="grid-2" style={{ gap: "var(--s-10)", alignItems: "start" }}>
             <div>
               <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ FRESH READ ]</p>
               <h2 className="shout" style={{ marginBottom: "var(--s-4)" }}>
