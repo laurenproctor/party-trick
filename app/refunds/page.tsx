@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Show, UserButton } from "@clerk/nextjs";
+import SiteNav from "../components/SiteNav";
 
 const REASONS = [
   { value: "too-accurate", label: "It was too accurate and I wasn't ready" },
@@ -22,35 +22,7 @@ export default function RefundPolicyPage() {
 
   return (
     <>
-      {/* sysbar */}
-      <div className="pt-sysbar">
-        <span className="blink">●</span>
-        <span>P<span className="art">ART</span>Y TRICK</span>
-        <span className="sep">/</span>
-        <span>REFUND POLICY</span>
-        <span className="right">
-          <Show when="signed-out">
-            <a href="/sign-in" style={{ color: "var(--paper)", textDecoration: "none" }}>Sign in</a>
-            <span className="sep">·</span>
-            <a href="/sign-up" style={{ color: "var(--red)", textDecoration: "none" }}>Sign up</a>
-          </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-        </span>
-      </div>
-
-      {/* nav */}
-      <nav className="pt-nav">
-        <a href="/" className="logo">
-          P<span className="art">ART</span>y Tr<span className="x">i</span>ck<sup>™</sup>
-        </a>
-        <div className="pt-links">
-          <a href="/play">Play</a>
-          <a href="/how-it-works">How It Works</a>
-          <a href="/contact">Contact</a>
-        </div>
-      </nav>
+      <SiteNav page="REFUNDS" />
 
       {/* ── HERO ── */}
       <section style={{ position: "relative", background: "var(--accent-deep)", padding: "var(--s-8) var(--margin)", marginBottom: "var(--s-9)" }}>
@@ -71,7 +43,7 @@ export default function RefundPolicyPage() {
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 var(--margin)" }}>
 
         {/* ── POLICY ── */}
-        <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-9)", marginBottom: "var(--s-10)", alignItems: "start" }}>
+        <section className="grid-2" style={{ gap: "var(--s-9)", marginBottom: "var(--s-10)", alignItems: "start" }}>
           <div>
             <p className="t-d4" style={{ marginBottom: "var(--s-5)" }}>
               The policy.{" "}
