@@ -1,3 +1,10 @@
+const PORTRAITS = [
+  { src: "/assets/bad-drawings/portrait-j-wine.png", label: "She didn't want wine. She wanted control." },
+  { src: null, label: "third date, wrong restaurant" },
+  { src: null, label: "the group chat i go quiet in" },
+  { src: null, label: "airport bar, delayed flight" },
+];
+
 const EXAMPLES = [
   { moment: "the work happy hour where i became too honest", verdict: "painfully accurate" },
   { moment: "third date energy, wrong restaurant choice", verdict: "this is too real" },
@@ -41,9 +48,8 @@ export default function HomePage() {
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "0 var(--margin)" }}>
 
         {/* ── HERO ── */}
-        <section style={{ paddingTop: "var(--s-8)", paddingBottom: "var(--s-10)", position: "relative", borderBottom: "2px solid var(--ink)" }}>
+        <section style={{ paddingTop: "var(--s-8)", paddingBottom: "var(--s-10)", position: "relative" }}>
           <div className="tape tape-green tape-l3" style={{ position: "absolute", top: 0, right: 120 }} />
-          <div className="tape tape-black tape-r2" style={{ position: "absolute", bottom: -4, left: "30%" }} />
 
           <h1 className="shout" style={{ marginBottom: "var(--s-6)", maxWidth: "90%" }}>
             Bad drawings of{" "}
@@ -56,15 +62,17 @@ export default function HomePage() {
             <span style={{ fontStyle: "italic" }}>Forward accordingly.</span>
           </p>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--s-5)", flexWrap: "wrap" }}>
-            <a href="/play" className="btn btn-lg btn-red">
-              Get a Party Trick <span className="arrow">→</span>
-            </a>
-            <a href="/play" className="btn btn-lg">
-              Start a Party <span className="arrow">→</span>
-            </a>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "var(--s-5)", flexWrap: "wrap" }}>
+              <a href="/play" className="btn btn-lg btn-red">
+                Get a Party Trick <span className="arrow">→</span>
+              </a>
+              <a href="/play" className="btn btn-lg">
+                Start a Party <span className="arrow">→</span>
+              </a>
+            </div>
             <p className="scrawl scrawl-sm" style={{ transform: "rotate(-1deg)", display: "inline-block", fontSize: 20, margin: 0 }}>
-              First one's free. The rest cost a little. Worth it.
+              First one's free. The rest cost a little. <span style={{ color: "#0044ff" }}>Worth it.</span>
             </p>
           </div>
         </section>
@@ -81,6 +89,100 @@ export default function HomePage() {
                 <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)", lineHeight: 1.6 }}>{desc}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* ── PORTRAITS ── */}
+        <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)" }}>
+          <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-7)" }}>[ A RECORD OF MOMENTS, MISREAD CORRECTLY ]</p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "var(--s-7)", alignItems: "start" }}>
+            {PORTRAITS.map(({ src, label }, i) => {
+              const tilts = ["-1.5deg", "2deg", "-2.5deg", "1deg"];
+              const tapes = [
+                "/assets/tape-green-1.png",
+                "/assets/tape-red-1.png",
+                "/assets/tape-blue-1.png",
+                "/assets/tape-green-2.png",
+              ];
+              const tapeRotations = ["-8deg", "5deg", "-4deg", "7deg"];
+              return (
+                <div
+                  key={label}
+                  className="polaroid-tf02"
+                  style={{ transform: `rotate(${tilts[i]})`, width: "100%" }}
+                >
+                  <img
+                    src={tapes[i]}
+                    alt=""
+                    style={{
+                      position: "absolute",
+                      top: -18,
+                      left: "50%",
+                      transform: `translateX(-50%) rotate(${tapeRotations[i]})`,
+                      width: 160,
+                      opacity: 0.9,
+                      pointerEvents: "none",
+                      zIndex: 2,
+                    }}
+                  />
+                  {src ? (
+                    <img src={src} alt={label} style={{ display: "block", width: "100%", aspectRatio: "3/4", objectFit: "cover" }} />
+                  ) : (
+                    <div style={{ width: "100%", aspectRatio: "3/4", background: "repeating-linear-gradient(135deg, rgba(0,0,0,0.04) 0 6px, transparent 6px 12px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-micro)", color: "var(--ink-faint)", letterSpacing: "0.1em", textTransform: "uppercase" }}>yours here</span>
+                    </div>
+                  )}
+                  <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>{label}</p>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ── PARTY MODE CALLOUT ── */}
+        <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "center" }}>
+          <div>
+            <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ BETTER WITH PEOPLE ]</p>
+            <h2 className="t-d2" style={{ marginBottom: "var(--s-5)" }}>Pass the phone.</h2>
+            <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-body)", lineHeight: 1.6, marginBottom: "var(--s-7)", color: "var(--ink-soft)" }}>
+              Party Mode unlocks for one person and everyone plays. Take turns. Judge each other.
+              Try to figure out who the portrait actually got right.
+            </p>
+            <a href="/play" className="btn btn-lg btn-red">
+              Start a Party <span className="arrow">→</span>
+            </a>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
+            <div className="polaroid" style={{ width: "100%" }}>
+              <div className="ph" style={{ height: 120, background: "var(--accent-deep)", justifyContent: "center", flexDirection: "row", padding: "0 var(--s-5)", alignItems: "center", gap: "var(--s-3)" }}>
+                <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color: "var(--paper)", letterSpacing: "0.03em" }}>QUICK PARTY</span>
+                <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color: "var(--paper)", opacity: 0.6 }}>$6.32</span>
+              </div>
+              <div style={{ position: "relative" }}>
+                <img src="/assets/site-imgs/fast-party.png" alt="Quick Party example" style={{ display: "block", width: "100%", objectFit: "cover" }} />
+                <div style={{ position: "absolute", bottom: "var(--s-5)", left: "var(--s-5)", right: "var(--s-5)" }}>
+                  <a href="/play" className="btn btn-lg" style={{ display: "block", textAlign: "center" }}>
+                    Start Your 5 Minute Party <span className="arrow">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="polaroid polaroid-tilt-r" style={{ width: "100%" }}>
+              <div className="ph" style={{ height: 120, background: "var(--red)", justifyContent: "center", flexDirection: "row", padding: "0 var(--s-5)", alignItems: "center", gap: "var(--s-3)" }}>
+                <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color: "var(--ink)", letterSpacing: "0.03em" }}>REAL PARTY</span>
+                <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color: "var(--ink)", opacity: 0.6 }}>$8.32</span>
+              </div>
+              <div style={{ position: "relative" }}>
+                <img src="/assets/site-imgs/bachelorette-party.png" alt="Real Party example" style={{ display: "block", width: "100%", objectFit: "cover" }} />
+                <div style={{ position: "absolute", bottom: "var(--s-5)", left: "var(--s-5)", right: "var(--s-5)" }}>
+                  <a href="/play" className="btn btn-lg btn-red" style={{ display: "block", textAlign: "center" }}>
+                    Start Your 15 Minute Party <span className="arrow">→</span>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -117,35 +219,6 @@ export default function HomePage() {
                 >
                   "{verdict}"
                 </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── PARTY MODE CALLOUT ── */}
-        <section style={{ paddingTop: "var(--s-9)", paddingBottom: "var(--s-10)", borderBottom: "2px solid var(--ink)", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "center" }}>
-          <div>
-            <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ BETTER WITH PEOPLE ]</p>
-            <h2 className="t-d2" style={{ marginBottom: "var(--s-5)" }}>Pass the phone.</h2>
-            <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-body)", lineHeight: 1.6, marginBottom: "var(--s-7)", color: "var(--ink-soft)" }}>
-              Party Mode unlocks for one person and everyone plays. Take turns. Judge each other.
-              Try to figure out who the portrait actually got right.
-            </p>
-            <a href="/play" className="btn btn-lg btn-red">
-              Start a Party <span className="arrow">→</span>
-            </a>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-4)" }}>
-            {[
-              { label: "QUICK PARTY", detail: "5 min · $6.32", bg: "var(--accent-deep)", color: "var(--paper)" },
-              { label: "REAL PARTY", detail: "15 min · $8.32", bg: "var(--red)", color: "var(--ink)" },
-            ].map(({ label, detail, bg, color }) => (
-              <div key={label} className="polaroid" style={{ width: "100%" }}>
-                <div className="ph" style={{ height: 120, background: bg, justifyContent: "space-between", flexDirection: "row", padding: "0 var(--s-5)", alignItems: "center" }}>
-                  <span style={{ fontFamily: "var(--display-bebas)", fontSize: 36, color, letterSpacing: "0.03em" }}>{label}</span>
-                  <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color, opacity: 0.8 }}>{detail}</span>
-                </div>
               </div>
             ))}
           </div>

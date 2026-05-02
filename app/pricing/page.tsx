@@ -44,27 +44,40 @@ export default function PricingPage() {
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "var(--s-5) var(--margin) 0" }}>
 
         {/* ── [01] HERO ── */}
-        <section style={{ marginBottom: "var(--s-10)", position: "relative", paddingTop: "var(--s-8)", paddingBottom: "var(--s-9)" }}>
+        <section style={{ marginBottom: "var(--s-10)", position: "relative", paddingTop: "var(--s-8)", paddingBottom: "var(--s-9)", borderBottom: "2px solid var(--ink)" }}>
           <div className="tape tape-green tape-l3" style={{ position: "absolute", top: 0, right: 80 }} />
           <div className="tape tape-black tape-r2" style={{ position: "absolute", bottom: 0, left: "20%" }} />
 
-          <h1 className="shout" style={{ marginBottom: "var(--s-5)", maxWidth: "80%" }}>
-            Pick Your Version{" "}
-            <span style={{ color: "var(--red)" }}>of the Night</span>
-          </h1>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--s-10)", alignItems: "end" }}>
+            <div>
+              <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ PRICING ]</p>
+              <h1 className="shout" style={{ marginBottom: "var(--s-5)" }}>
+                Pick Your Version{" "}
+                <span style={{ color: "var(--red)" }}>of the Night</span>
+              </h1>
+              <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-body)", lineHeight: 1.6, color: "var(--ink-soft)" }}>
+                Play solo, or start a party. It only gets worse{" "}
+                <span style={{ fontStyle: "italic" }}>(in a good way).</span>
+              </p>
+            </div>
 
-          <p style={{ fontFamily: "var(--mono)", fontSize: 28, lineHeight: 1.45, marginBottom: "var(--s-7)", maxWidth: 680 }}>
-            Play solo, or start a party. It only gets worse{" "}
-            <span style={{ fontStyle: "italic" }}>(in a good way).</span>
-          </p>
-
-          <div style={{ display: "flex", gap: "var(--s-4)", flexWrap: "wrap" }}>
-            <a href="/play" className="btn btn-lg btn-red">
-              Start a Party <span className="arrow">→</span>
-            </a>
-            <a href="/play" className="btn btn-lg">
-              Try It Solo <span className="arrow">→</span>
-            </a>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-3)", paddingBottom: "var(--s-2)" }}>
+              {[
+                { label: "Free", detail: "1 Party Trick · low-res · watermark" },
+                { label: "From $4.32", detail: "Solo packs · 5 or 15 Tricks" },
+                { label: "From $6.32", detail: "Party Mode · 5 or 15 minutes" },
+                { label: "From $10/mo", detail: "Subscription · 30–250 Tricks" },
+              ].map(({ label, detail }) => (
+                <div key={label} style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: "var(--s-4)", alignItems: "baseline", borderTop: "1px solid var(--ink-faint)", paddingTop: "var(--s-3)" }}>
+                  <span style={{ fontFamily: "var(--display-bebas)", fontSize: "var(--t-d4)", lineHeight: 1 }}>{label}</span>
+                  <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)" }}>{detail}</span>
+                </div>
+              ))}
+              <div style={{ display: "flex", gap: "var(--s-3)", paddingTop: "var(--s-5)" }}>
+                <a href="/play" className="btn btn-lg btn-red">Start a Party <span className="arrow">→</span></a>
+                <a href="/play" className="btn btn-lg">Try It Solo <span className="arrow">→</span></a>
+              </div>
+            </div>
           </div>
         </section>
 
