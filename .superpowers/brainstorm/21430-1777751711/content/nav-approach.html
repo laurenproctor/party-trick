@@ -1,0 +1,54 @@
+<h2>Mobile Nav: Which approach?</h2>
+<p class="subtitle">The current nav overflows on phones. Pick the pattern that fits the brand.</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Hamburger menu</h3>
+      <p>Logo on left, ☰ icon on right. Tap to open a full-screen or dropdown nav overlay. Clean, familiar, hides all links behind one tap.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Mobile nav — collapsed</div>
+        <div class="mockup-body" style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0a0a0a;color:#fff;font-family:monospace">
+          <span style="font-size:20px;font-weight:bold">p<span style="color:#00d647">ART</span>y Trick</span>
+          <span style="font-size:22px">☰</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Scrolling nav strip</h3>
+      <p>Logo on top row, links scroll horizontally below it. No hidden state — all links visible, just compact. Feels more like a band merch site than an app.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Mobile nav — always visible</div>
+        <div class="mockup-body" style="background:#0a0a0a;color:#fff;font-family:monospace;padding:10px 16px">
+          <div style="font-size:20px;font-weight:bold;margin-bottom:6px">p<span style="color:#00d647">ART</span>y Trick</div>
+          <div style="display:flex;gap:16px;overflow-x:auto;font-size:13px;padding-bottom:4px;white-space:nowrap">
+            <span style="border-bottom:2px solid #00d647">Play</span>
+            <span>Pricing</span>
+            <span>How It Works</span>
+            <span>Sign In</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Logo + CTA only</h3>
+      <p>On mobile, collapse the nav to just the logo and one primary CTA button ("Play" or "Start"). All other nav links move to a minimal footer. Maximizes space for content.</p>
+      <div class="mockup" style="margin-top:12px">
+        <div class="mockup-header">Mobile nav — minimal</div>
+        <div class="mockup-body" style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0a0a0a;color:#fff;font-family:monospace">
+          <span style="font-size:20px;font-weight:bold">p<span style="color:#00d647">ART</span>y Trick</span>
+          <span style="background:#00d647;color:#0a0a0a;padding:6px 14px;font-size:13px;font-weight:bold">Play →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

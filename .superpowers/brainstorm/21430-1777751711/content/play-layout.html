@@ -1,0 +1,58 @@
+<h2>Mobile /play layout</h2>
+<p class="subtitle">Desktop shows input + result side by side. On mobile, how should they stack?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Input first, result below</h3>
+      <p>Scroll down to see the result after generating. Natural flow — fill in, tap generate, scroll to see output.</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Mobile /play</div>
+        <div class="mockup-body" style="background:#f0f0ec;font-family:monospace;font-size:12px;padding:12px;display:flex;flex-direction:column;gap:10px">
+          <div style="background:#0a0a0a;color:#fff;padding:10px;font-size:11px">[ WHO IS THIS? ]<br><strong style="font-size:16px">Record or type</strong></div>
+          <div style="border:2px solid #0a0a0a;padding:10px;min-height:60px;font-size:11px;color:#666">Tap to record audio...</div>
+          <div style="background:#0a0a0a;color:#00d647;padding:10px;text-align:center;font-weight:bold">Make it weird →</div>
+          <div style="border:2px dashed #ccc;padding:10px;min-height:80px;font-size:11px;color:#999;text-align:center">Result appears here ↓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Result takes over screen</h3>
+      <p>After generating, the result slides up and fills the screen. Input collapses to a small "try again" bar at the bottom. Maximizes the reveal moment.</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Mobile /play — after generation</div>
+        <div class="mockup-body" style="background:#f0f0ec;font-family:monospace;font-size:12px;padding:12px;display:flex;flex-direction:column;gap:10px">
+          <div style="border:2px solid #0a0a0a;padding:10px;min-height:120px;font-size:11px;background:#fff;display:flex;align-items:center;justify-content:center;color:#666">[generated image fills here]</div>
+          <div style="background:#0a0a0a;color:#fff;padding:8px 10px;font-size:11px;display:flex;justify-content:space-between">
+            <span>Make it worse →</span>
+            <span>Go deeper →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Tabbed: Input / Result</h3>
+      <p>Two tabs at the top — "Setup" and "Result". Tap between them. Clear separation, no scrolling needed.</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Mobile /play — tabbed</div>
+        <div class="mockup-body" style="background:#f0f0ec;font-family:monospace;font-size:12px;padding:12px">
+          <div style="display:flex;gap:0;margin-bottom:10px">
+            <div style="flex:1;background:#0a0a0a;color:#fff;padding:8px;text-align:center;font-size:11px;font-weight:bold">Setup</div>
+            <div style="flex:1;background:#ddd;color:#666;padding:8px;text-align:center;font-size:11px">Result</div>
+          </div>
+          <div style="border:2px solid #0a0a0a;padding:10px;min-height:60px;font-size:11px;color:#666">Audio input + options...</div>
+          <div style="background:#0a0a0a;color:#00d647;padding:10px;text-align:center;font-weight:bold;margin-top:10px">Make it weird →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

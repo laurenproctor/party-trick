@@ -1,0 +1,18 @@
+{"type":"server-started","port":63606,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:63606","screen_dir":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content","state_dir":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/state"}
+{"type":"screen-added","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/nav-approach.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/nav-approach.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/nav-approach.html"}
+{"type":"screen-added","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/nav-combo.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/nav-combo.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/nav-combo.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/nav-combo.html"}
+{"source":"user-event","type":"click","text":"✓\n    Looks rightMove on to the next design decision","choice":"yes","id":null,"timestamp":1777751854919}
+{"type":"screen-added","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/play-layout.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/play-layout.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/play-layout.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/play-layout.html"}
+{"type":"screen-added","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/waiting.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/waiting.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/waiting.html"}
+{"type":"screen-updated","file":"/Users/laurenproctor/Documents/Claude Code/Party Trick/.superpowers/brainstorm/21430-1777751711/content/waiting.html"}
+{"type":"server-stopped","reason":"idle timeout"}
