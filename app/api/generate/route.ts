@@ -61,21 +61,21 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  let moment: string;
+  let scenePacket: ScenePacket;
   try {
     const body = await req.json();
-    moment = typeof body.moment === "string" ? body.moment.trim() : "";
+    if (body.scenePacket) {
+      scenePacket = body.scenePacket as ScenePacket;
+    } else {
+      const moment = typeof body.moment === "string" ? body.moment.trim() : "";
+      if (!moment) return NextResponse.json({ error: "moment_required" }, { status: 400 });
+      scenePacket = momentToScenePacket(moment);
+    }
   } catch {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
-  if (!moment) {
-    return NextResponse.json({ error: "moment_required" }, { status: 400 });
-  }
-
   console.log("play_submitted");
-
-  const scenePacket = momentToScenePacket(moment);
   const sessionId = randomUUID();
 
   const result = await generateImageFromScenePacket({
