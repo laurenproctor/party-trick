@@ -18,6 +18,16 @@ const FAQ = [
   ["Can I share these?", "You probably will."],
 ];
 
+async function handleBuy(priceId: string) {
+  const res = await fetch("/api/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ priceId }),
+  });
+  const { url } = await res.json();
+  window.location.href = url;
+}
+
 export default function PricingPage() {
   return (
     <>
@@ -126,42 +136,51 @@ export default function PricingPage() {
 
           <div className="grid-2" style={{ gap: "var(--s-6)" }}>
 
-            {/* Quick Tricks */}
+            {/* 2 Tricks pack */}
             <div className="card">
               <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ QUICK TRICKS ]</p>
               <div style={{ marginBottom: "var(--s-5)" }}>
                 <span style={{ fontFamily: "var(--display-bebas)", fontSize: "var(--t-d3)", lineHeight: 1 }}>$4.32</span>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)", marginLeft: "var(--s-3)" }}>5 Party Tricks</span>
+                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)", marginLeft: "var(--s-3)" }}>2 Party Tricks</span>
               </div>
               <ul style={{ listStyle: "none", padding: 0, margin: "0 0 var(--s-6)", display: "flex", flexDirection: "column", gap: "var(--s-2)" }}>
-                {["See different versions of the same moment", "Find the one that actually hits", "Same engine as Party Mode"].map((item) => (
+                {["See different versions of the same moment", "Find the one that actually hits", "No clock, no pressure"].map((item) => (
                   <li key={item} style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", display: "flex", gap: "var(--s-2)" }}>
                     <span style={{ color: "var(--red)" }}>→</span> {item}
                   </li>
                 ))}
               </ul>
-              <a href="/play" className="btn btn-lg" style={{ display: "inline-block" }}>
-                Get 5 Tricks <span className="arrow">→</span>
-              </a>
+              <button
+                onClick={() => handleBuy(process.env.NEXT_PUBLIC_STRIPE_PRICE_2_TRICKS!)}
+                className="btn btn-lg"
+                style={{ display: "inline-block" }}
+              >
+                Get 2 Tricks <span className="arrow">→</span>
+              </button>
             </div>
 
-            {/* Deep Cuts */}
-            <div className="card">
-              <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ DEEP CUTS ]</p>
+            {/* 4-minute session */}
+            <div className="card" style={{ position: "relative" }}>
+              <div className="card-stamp">MOST FUN</div>
+              <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-4)" }}>[ 4-MINUTE SESSION ]</p>
               <div style={{ marginBottom: "var(--s-5)" }}>
-                <span style={{ fontFamily: "var(--display-bebas)", fontSize: "var(--t-d3)", lineHeight: 1 }}>$8.32</span>
-                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)", marginLeft: "var(--s-3)" }}>15 Party Tricks</span>
+                <span style={{ fontFamily: "var(--display-bebas)", fontSize: "var(--t-d3)", lineHeight: 1 }}>$4.32</span>
+                <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-soft)", marginLeft: "var(--s-3)" }}>unlimited for 4 min</span>
               </div>
               <ul style={{ listStyle: "none", padding: 0, margin: "0 0 var(--s-6)", display: "flex", flexDirection: "column", gap: "var(--s-2)" }}>
-                {["Push the joke further", "Try different interpretations", "This is where it gets specific"].map((item) => (
+                {["Go as many times as you want", "Pass the phone, do it together", "This is where it gets specific"].map((item) => (
                   <li key={item} style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", display: "flex", gap: "var(--s-2)" }}>
                     <span style={{ color: "var(--red)" }}>→</span> {item}
                   </li>
                 ))}
               </ul>
-              <a href="/play" className="btn btn-lg" style={{ display: "inline-block" }}>
-                Get 15 Tricks <span className="arrow">→</span>
-              </a>
+              <button
+                onClick={() => handleBuy(process.env.NEXT_PUBLIC_STRIPE_PRICE_SESSION!)}
+                className="btn btn-lg btn-red"
+                style={{ display: "inline-block" }}
+              >
+                Start 4-Min Session <span className="arrow">→</span>
+              </button>
             </div>
 
           </div>

@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
 import { generateImageFromScenePacket } from "@/lib/image/orchestrator";
 import { sessions } from "@/lib/db/memory";
 import type { Session } from "@/lib/db/memory";
 import type { ScenePacket } from "@/lib/image/types";
 import { randomUUID } from "crypto";
+
+type UserMeta = { pt_credits?: number; pt_session_expires?: number };
 
 const FREE_COOKIE = "pt_free_used";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365; // 1 year
@@ -44,6 +47,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "free_used" }, { status: 403 });
   }
 
+  // Block authenticated users with no active entitlement
+  let meta: UserMeta = {};
+  if (userId) {
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    meta = (user.publicMetadata ?? {}) as UserMeta;
+    const hasSession = (meta.pt_session_expires ?? 0) > Date.now();
+    const hasCredits = (meta.pt_credits ?? 0) > 0;
+    if (!hasSession && !hasCredits) {
+      console.log("play_blocked_no_access");
+      return NextResponse.json({ error: "no_access" }, { status: 403 });
+    }
+  }
+
   let moment: string;
   try {
     const body = await req.json();
@@ -81,6 +98,17 @@ export async function POST(req: NextRequest) {
   sessions.set(sessionId, session);
 
   console.log("play_generated");
+
+  // Decrement credits if that was the access path (not a timed session)
+  if (userId) {
+    const hasSession = (meta.pt_session_expires ?? 0) > Date.now();
+    if (!hasSession && (meta.pt_credits ?? 0) > 0) {
+      const client = await clerkClient();
+      await client.users.updateUserMetadata(userId, {
+        publicMetadata: { pt_credits: (meta.pt_credits ?? 1) - 1 },
+      });
+    }
+  }
 
   const response = NextResponse.json({ imageUrl: result.imageUrl });
 

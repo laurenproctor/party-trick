@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import WatermarkCanvas from "./WatermarkCanvas";
 import SiteNav from "../components/SiteNav";
@@ -17,11 +18,22 @@ const LOCKED_BUTTONS: { label: string; reason: GateReason }[] = [
 
 export default function PlayPage() {
   const { isLoaded } = useUser();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [state, setState] = useState<PageState>("input");
   const [moment, setMoment] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [gate, setGate] = useState<GateReason | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("success") === "1") {
+      setShowSuccess(true);
+      router.replace("/play");
+      setTimeout(() => setShowSuccess(false), 5000);
+    }
+  }, [searchParams, router]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -61,6 +73,12 @@ export default function PlayPage() {
   return (
     <>
       <SiteNav page="PLAY" activeLink="play" />
+
+      {showSuccess && (
+        <div style={{ background: "var(--red)", color: "#fff", fontFamily: "var(--mono)", fontSize: "var(--t-small)", padding: "var(--s-3) var(--margin)", textAlign: "center", fontWeight: 700, letterSpacing: "0.05em" }}>
+          You&apos;re in. Go.
+        </div>
+      )}
 
       <main style={{ maxWidth: "var(--max-w)", margin: "0 auto", padding: "var(--s-8) var(--margin) var(--s-10)" }}>
 
