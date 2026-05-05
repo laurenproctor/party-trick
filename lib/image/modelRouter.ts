@@ -5,7 +5,7 @@ import type { Style } from "./styles";
 export type ProviderName = "replicate" | "openai";
 
 const MODE_PROVIDER_MAP: Record<VariationMode, ProviderName> = {
-  default_read: "replicate",
+  default_read: "openai",
   truer_read: "openai",
   weirder_read: "replicate",
   roast_harder: "replicate",

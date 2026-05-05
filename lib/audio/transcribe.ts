@@ -30,6 +30,7 @@ export async function transcribeAudio(
     detect_language: true,
   });
 
+  console.log("[transcribe] raw type:", typeof raw, "keys:", raw ? Object.keys(raw as object) : "null/undefined");
   const result = raw as unknown as TranscriptResult;
   const channel = result.results.channels[0]?.alternatives?.[0];
   const utterances = result.results.utterances ?? [];

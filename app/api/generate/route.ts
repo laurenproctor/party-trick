@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { clerkClient } from "@clerk/nextjs/server";
+
+export const maxDuration = 120;
 import { generateImageFromScenePacket } from "@/lib/image/orchestrator";
 import { sessions } from "@/lib/db/memory";
 import type { Session } from "@/lib/db/memory";

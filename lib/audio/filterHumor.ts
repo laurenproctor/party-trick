@@ -54,7 +54,39 @@ HARD RULES:
 - Do NOT include protected traits or sensitive attributes
 - Keep language specific, not generic
 
-Return ONLY valid JSON. No markdown. No explanation. No extra text.`;
+Return ONLY valid JSON matching this exact schema. No markdown. No explanation. No extra text.
+
+{
+  "core_insight": {
+    "dominant_trait": "string",
+    "contradiction": "string",
+    "read": "string — one sentence: Person who [behavior], but actually [truth]",
+    "confidence": 0.0
+  },
+  "tone": {
+    "style": "subtle | sharp | absurd",
+    "intensity": "low | medium | high"
+  },
+  "selection_reasoning": {
+    "why_this_trait": "string",
+    "why_this_contradiction": "string",
+    "discarded_signals": ["string"]
+  },
+  "visual_spec": {
+    "setting": "string",
+    "scene_summary": "string",
+    "main_character": {
+      "role": "string",
+      "pose": "string",
+      "expression": "string"
+    },
+    "exaggeration": {
+      "target": "string",
+      "method": "string"
+    },
+    "key_elements": ["string"]
+  }
+}`;
 
 export async function filterHumor(intel: AudioIntelligence): Promise<HumorFilter> {
   // Pass only the sections the prompt needs — strips noise from Pass 1
@@ -78,5 +110,11 @@ export async function filterHumor(intel: AudioIntelligence): Promise<HumorFilter
     ],
   });
 
-  return JSON.parse(completion.choices[0].message.content!) as HumorFilter;
+  const raw = JSON.parse(completion.choices[0].message.content!);
+  // If GPT wraps everything under a top-level key, unwrap it
+  const keys = Object.keys(raw);
+  if (keys.length === 1 && typeof raw[keys[0]] === "object" && raw[keys[0]].core_insight) {
+    return raw[keys[0]] as HumorFilter;
+  }
+  return raw as HumorFilter;
 }
