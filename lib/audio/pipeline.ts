@@ -3,15 +3,18 @@ import { extractIntelligence } from "./extractIntelligence";
 import { filterHumor } from "./filterHumor";
 import { generateImageSpecs } from "./generateImageSpecs";
 import { pickTopTwoSpecs } from "./selectImageSpecs";
-import { imageSpecToScene } from "./imageSpecToScene";
+import { imageSpecToPrompt } from "./imageSpecToPrompt";
+import { generateComparisonImages } from "../image/generateComparisonImages";
 import type { AudioIntelligence, HumorFilter, ImageSpec } from "./types";
-import type { ScenePacket } from "../image/types";
+import type { ComparisonResult } from "../image/generateComparisonImages";
+import type { ImagePrompt } from "./imageSpecToPrompt";
 
 export type PipelineResult = {
   intelligence: AudioIntelligence;
   humorFilter: HumorFilter;
   imageSpecs: ImageSpec[];
-  scenes: [ScenePacket, ScenePacket];
+  prompts: ImagePrompt[];
+  comparison: ComparisonResult;
 };
 
 export async function runAudioIntelligencePipeline(
@@ -25,8 +28,10 @@ export async function runAudioIntelligencePipeline(
   const imageSpecs = await generateImageSpecs(humorFilter);
 
   const [specA, specB] = pickTopTwoSpecs(imageSpecs);
-  const sceneA = imageSpecToScene(specA, humorFilter.core_insight.read);
-  const sceneB = imageSpecToScene(specB, humorFilter.core_insight.read);
+  const prompts = await imageSpecToPrompt([specA, specB]);
 
-  return { intelligence, humorFilter, imageSpecs, scenes: [sceneA, sceneB] };
+  // Same prompt → two models → comparison. No variation.
+  const comparison = await generateComparisonImages(prompts[0].prompt);
+
+  return { intelligence, humorFilter, imageSpecs, prompts, comparison };
 }

@@ -8,6 +8,7 @@ import AudioRecorder from "./AudioRecorder";
 import SiteNav from "../components/SiteNav";
 import SignUpGate, { type GateReason } from "./SignUpGate";
 import type { AudioIntelligence, HumorFilter, ImageSpec } from "@/lib/audio/types";
+import type { ComparisonResult } from "@/lib/image/generateComparisonImages";
 
 export default function PlayPage() {
   return (
@@ -42,7 +43,7 @@ function PlayPageInner() {
   const [state, setState] = useState<PageState>("input");
   const [inputMode, setInputMode] = useState<InputMode>("record");
   const [moment, setMoment] = useState("");
-  const [imageUrls, setImageUrls] = useState<[string, string] | null>(null);
+  const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [audioIntelligence, setAudioIntelligence] = useState<AudioIntelligence | null>(null);
   const [humorFilter, setHumorFilter] = useState<HumorFilter | null>(null);
   const [imageSpecs, setImageSpecs] = useState<ImageSpec[] | null>(null);
@@ -86,14 +87,12 @@ function PlayPageInner() {
     return () => clearInterval(interval);
   }, [state]);
 
-  function onPipelineComplete(urls: [string, string]) {
-    setImageUrls(urls);
+  function onPipelineComplete(result: ComparisonResult) {
+    setComparison(result);
     pipelineDoneRef.current = true;
-    // If we're already past beat 4, transition immediately
     if (beatRef.current >= 4) {
       setTimeout(() => setState("result"), 1800);
     }
-    // Otherwise the beat timer will catch it when it reaches beat 4
   }
 
   async function runAudioPipeline(blob: Blob, durationSeconds: number) {
@@ -112,20 +111,11 @@ function PlayPageInner() {
       });
       if (analyzeRes.status === 403) { setState("locked"); return; }
       if (!analyzeRes.ok) throw new Error("analysis failed");
-      const { intelligence, humorFilter: hf, imageSpecs: specs, scenes } = await analyzeRes.json();
+      const { intelligence, humorFilter: hf, imageSpecs: specs, comparison: comp } = await analyzeRes.json();
       if (intelligence) setAudioIntelligence(intelligence);
       if (hf) setHumorFilter(hf);
       if (specs) setImageSpecs(specs);
-
-      const [genResA, genResB] = await Promise.all([
-        fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenePacket: scenes[0] }) }),
-        fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenePacket: scenes[1] }) }),
-      ]);
-      if (genResA.status === 403 || genResB.status === 403) { setState("locked"); return; }
-      if (!genResA.ok || !genResB.ok) throw new Error("generation failed");
-
-      const [{ imageUrl: urlA }, { imageUrl: urlB }] = await Promise.all([genResA.json(), genResB.json()]);
-      onPipelineComplete([urlA, urlB]);
+      onPipelineComplete(comp);
     } catch {
       setError("Something went wrong. Try again.");
       setState("input");
@@ -301,7 +291,7 @@ function PlayPageInner() {
         )}
 
         {/* ── RESULT STATE ── */}
-        {state === "result" && imageUrls && (
+        {state === "result" && comparison && (
           <div className="grid-2" style={{ gap: "var(--s-10)", alignItems: "start" }}>
             <div>
               <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ FRESH READ ]</p>
@@ -440,15 +430,16 @@ function PlayPageInner() {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-7)" }}>
+              <p className="t-micro" style={{ color: "var(--ink-faint)", letterSpacing: "0.12em" }}>SAME PROMPT — TWO MODELS</p>
               <div className="polaroid-tf02" style={{ transform: "rotate(-1.5deg)", width: "100%", position: "relative" }}>
                 <img src="/assets/tape-red-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(4deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
-                <WatermarkCanvas imageUrl={imageUrls[0]} />
-                <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>read #1</p>
+                <WatermarkCanvas imageUrl={comparison.openai.url} />
+                <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>{comparison.openai.label}</p>
               </div>
               <div className="polaroid-tf02" style={{ transform: "rotate(1deg)", width: "100%", position: "relative" }}>
                 <img src="/assets/tape-black-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(-3deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
-                <WatermarkCanvas imageUrl={imageUrls[1]} />
-                <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>read #2</p>
+                <WatermarkCanvas imageUrl={comparison.replicate.url} />
+                <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>{comparison.replicate.label}</p>
               </div>
             </div>
           </div>
