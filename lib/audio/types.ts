@@ -121,3 +121,36 @@ export type AudioIntelligence = {
     notes: string;
   };
 };
+
+// Pass 2 — Selective Humor Filter output
+export type HumorFilter = {
+  core_insight: {
+    dominant_trait: string;
+    contradiction: string;
+    read: string;
+    confidence: number;
+  };
+  tone: {
+    style: "subtle" | "sharp" | "absurd";
+    intensity: "low" | "medium" | "high";
+  };
+  selection_reasoning: {
+    why_this_trait: string;
+    why_this_contradiction: string;
+    discarded_signals: string[];
+  };
+  visual_spec: {
+    setting: string;
+    scene_summary: string;
+    main_character: {
+      role: string;
+      pose: string;
+      expression: string;
+    };
+    exaggeration: {
+      target: string;
+      method: string;
+    };
+    key_elements: string[];
+  };
+};

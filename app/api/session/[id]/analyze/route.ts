@@ -18,7 +18,7 @@ export async function POST(
   const mimeType = file.type || "audio/wav";
   const durationSeconds = Number(formData.get("duration") ?? 0);
 
-  const { intelligence, scenePacket } = await runAudioIntelligencePipeline(
+  const { intelligence, humorFilter, scenePacket } = await runAudioIntelligencePipeline(
     buffer,
     mimeType,
     durationSeconds
@@ -27,5 +27,5 @@ export async function POST(
   session.scenePacket = scenePacket;
   sessions.set(id, session);
 
-  return NextResponse.json({ intelligence, scenePacket });
+  return NextResponse.json({ intelligence, humorFilter, scenePacket });
 }

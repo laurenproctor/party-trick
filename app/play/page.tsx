@@ -7,6 +7,7 @@ import WatermarkCanvas from "./WatermarkCanvas";
 import AudioRecorder from "./AudioRecorder";
 import SiteNav from "../components/SiteNav";
 import SignUpGate, { type GateReason } from "./SignUpGate";
+import type { AudioIntelligence, HumorFilter } from "@/lib/audio/types";
 
 export default function PlayPage() {
   return (
@@ -42,6 +43,9 @@ function PlayPageInner() {
   const [inputMode, setInputMode] = useState<InputMode>("record");
   const [moment, setMoment] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [audioIntelligence, setAudioIntelligence] = useState<AudioIntelligence | null>(null);
+  const [humorFilter, setHumorFilter] = useState<HumorFilter | null>(null);
+  const [accordionOpen, setAccordionOpen] = useState<"intelligence" | "humor" | null>(null);
   const [gate, setGate] = useState<GateReason | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -107,7 +111,9 @@ function PlayPageInner() {
       });
       if (analyzeRes.status === 403) { setState("locked"); return; }
       if (!analyzeRes.ok) throw new Error("analysis failed");
-      const { scenePacket } = await analyzeRes.json();
+      const { intelligence, humorFilter: hf, scenePacket } = await analyzeRes.json();
+      if (intelligence) setAudioIntelligence(intelligence);
+      if (hf) setHumorFilter(hf);
 
       const genRes = await fetch("/api/generate", {
         method: "POST",
@@ -325,6 +331,49 @@ function PlayPageInner() {
               <p className="scrawl scrawl-sm" style={{ transform: "rotate(-1deg)", display: "inline-block", fontSize: 18, marginTop: "var(--s-5)", color: "var(--ink-soft)" }}>
                 or it disappears when you close this tab
               </p>
+
+              {/* Intelligence accordion — only shown for audio recordings */}
+              {(audioIntelligence || humorFilter) && (
+                <div style={{ marginTop: "var(--s-7)", borderTop: "1px solid var(--ink-faint)", paddingTop: "var(--s-5)" }}>
+                  <p className="t-cap" style={{ color: "var(--ink-faint)", marginBottom: "var(--s-3)" }}>[ UNDER THE HOOD ]</p>
+
+                  {humorFilter && (
+                    <div style={{ marginBottom: "var(--s-2)" }}>
+                      <button
+                        type="button"
+                        onClick={() => setAccordionOpen(accordionOpen === "humor" ? null : "humor")}
+                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}
+                      >
+                        <span>Pass 2 — Selective Humor Filter</span>
+                        <span style={{ color: "var(--red)" }}>{accordionOpen === "humor" ? "▲" : "▼"}</span>
+                      </button>
+                      {accordionOpen === "humor" && (
+                        <pre style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 11, lineHeight: 1.6, overflowX: "auto", margin: 0, color: "var(--ink-soft)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                          {JSON.stringify(humorFilter, null, 2)}
+                        </pre>
+                      )}
+                    </div>
+                  )}
+
+                  {audioIntelligence && (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => setAccordionOpen(accordionOpen === "intelligence" ? null : "intelligence")}
+                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}
+                      >
+                        <span>Pass 1 — Audio Intelligence</span>
+                        <span style={{ color: "var(--red)" }}>{accordionOpen === "intelligence" ? "▲" : "▼"}</span>
+                      </button>
+                      {accordionOpen === "intelligence" && (
+                        <pre style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 11, lineHeight: 1.6, overflowX: "auto", margin: 0, color: "var(--ink-soft)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                          {JSON.stringify(audioIntelligence, null, 2)}
+                        </pre>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="polaroid-tf02" style={{ transform: "rotate(-1.5deg)", width: "100%", position: "relative" }}>
