@@ -154,3 +154,24 @@ export type HumorFilter = {
     key_elements: string[];
   };
 };
+
+export type ImageSpec = {
+  setting: string;
+  time_of_day: "day" | "night" | "unclear";
+  character: {
+    role: string;
+    action: string;
+    expression: string;
+  };
+  props: string[];
+  exaggeration: {
+    target: string;
+    method: "scale" | "repetition" | "contrast" | "metaphor";
+    description: string;
+  };
+  composition: {
+    focus: "single_subject";
+    framing: "medium_shot";
+  };
+  tone: "subtle" | "sharp" | "absurd";
+};

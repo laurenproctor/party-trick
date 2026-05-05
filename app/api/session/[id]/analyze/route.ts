@@ -19,10 +19,10 @@ export async function POST(
   const mimeType = file.type || "audio/wav";
   const durationSeconds = Number(formData.get("duration") ?? 0);
 
-  let intelligence, humorFilter, scenePacket;
+  let intelligence, humorFilter, imageSpecs, scenes;
   try {
     console.log("[analyze] starting pipeline, buffer size:", buffer.length, "mime:", mimeType, "duration:", durationSeconds);
-    ({ intelligence, humorFilter, scenePacket } = await runAudioIntelligencePipeline(
+    ({ intelligence, humorFilter, imageSpecs, scenes } = await runAudioIntelligencePipeline(
       buffer,
       mimeType,
       durationSeconds
@@ -34,5 +34,5 @@ export async function POST(
     return NextResponse.json({ error: "pipeline_failed", detail: err instanceof Error ? err.message : String(err) }, { status: 500 });
   }
 
-  return NextResponse.json({ intelligence, humorFilter, scenePacket });
+  return NextResponse.json({ intelligence, humorFilter, imageSpecs, scenes });
 }

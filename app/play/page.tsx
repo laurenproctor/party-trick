@@ -7,7 +7,7 @@ import WatermarkCanvas from "./WatermarkCanvas";
 import AudioRecorder from "./AudioRecorder";
 import SiteNav from "../components/SiteNav";
 import SignUpGate, { type GateReason } from "./SignUpGate";
-import type { AudioIntelligence, HumorFilter } from "@/lib/audio/types";
+import type { AudioIntelligence, HumorFilter, ImageSpec } from "@/lib/audio/types";
 
 export default function PlayPage() {
   return (
@@ -42,10 +42,11 @@ function PlayPageInner() {
   const [state, setState] = useState<PageState>("input");
   const [inputMode, setInputMode] = useState<InputMode>("record");
   const [moment, setMoment] = useState("");
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [imageUrls, setImageUrls] = useState<[string, string] | null>(null);
   const [audioIntelligence, setAudioIntelligence] = useState<AudioIntelligence | null>(null);
   const [humorFilter, setHumorFilter] = useState<HumorFilter | null>(null);
-  const [accordionOpen, setAccordionOpen] = useState<"intelligence" | "humor" | "transcript" | null>(null);
+  const [imageSpecs, setImageSpecs] = useState<ImageSpec[] | null>(null);
+  const [accordionOpen, setAccordionOpen] = useState<"intelligence" | "humor" | "transcript" | "imagespecs" | "imageprompts" | null>(null);
   const [gate, setGate] = useState<GateReason | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -85,8 +86,8 @@ function PlayPageInner() {
     return () => clearInterval(interval);
   }, [state]);
 
-  function onPipelineComplete(url: string) {
-    setImageUrl(url);
+  function onPipelineComplete(urls: [string, string]) {
+    setImageUrls(urls);
     pipelineDoneRef.current = true;
     // If we're already past beat 4, transition immediately
     if (beatRef.current >= 4) {
@@ -111,20 +112,20 @@ function PlayPageInner() {
       });
       if (analyzeRes.status === 403) { setState("locked"); return; }
       if (!analyzeRes.ok) throw new Error("analysis failed");
-      const { intelligence, humorFilter: hf, scenePacket } = await analyzeRes.json();
+      const { intelligence, humorFilter: hf, imageSpecs: specs, scenes } = await analyzeRes.json();
       if (intelligence) setAudioIntelligence(intelligence);
       if (hf) setHumorFilter(hf);
+      if (specs) setImageSpecs(specs);
 
-      const genRes = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ scenePacket }),
-      });
-      if (genRes.status === 403) { setState("locked"); return; }
-      if (!genRes.ok) throw new Error("generation failed");
+      const [genResA, genResB] = await Promise.all([
+        fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenePacket: scenes[0] }) }),
+        fetch("/api/generate", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ scenePacket: scenes[1] }) }),
+      ]);
+      if (genResA.status === 403 || genResB.status === 403) { setState("locked"); return; }
+      if (!genResA.ok || !genResB.ok) throw new Error("generation failed");
 
-      const { imageUrl: url } = await genRes.json();
-      onPipelineComplete(url);
+      const [{ imageUrl: urlA }, { imageUrl: urlB }] = await Promise.all([genResA.json(), genResB.json()]);
+      onPipelineComplete([urlA, urlB]);
     } catch {
       setError("Something went wrong. Try again.");
       setState("input");
@@ -300,7 +301,7 @@ function PlayPageInner() {
         )}
 
         {/* ── RESULT STATE ── */}
-        {state === "result" && imageUrl && (
+        {state === "result" && imageUrls && (
           <div className="grid-2" style={{ gap: "var(--s-10)", alignItems: "start" }}>
             <div>
               <p className="t-cap" style={{ color: "var(--red)", marginBottom: "var(--s-5)" }}>[ FRESH READ ]</p>
@@ -337,20 +338,46 @@ function PlayPageInner() {
                 <div style={{ marginTop: "var(--s-7)", borderTop: "1px solid var(--ink-faint)", paddingTop: "var(--s-5)" }}>
                   <p className="t-cap" style={{ color: "var(--ink-faint)", marginBottom: "var(--s-3)" }}>[ UNDER THE HOOD ]</p>
 
-                  {audioIntelligence?.transcript?.full_text && (
+                  {imageSpecs && (
                     <div style={{ marginBottom: "var(--s-2)" }}>
                       <button
                         type="button"
-                        onClick={() => setAccordionOpen(accordionOpen === "transcript" ? null : "transcript")}
+                        onClick={() => setAccordionOpen(accordionOpen === "imageprompts" ? null : "imageprompts")}
                         style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}
                       >
-                        <span>Transcript</span>
-                        <span style={{ color: "var(--red)" }}>{accordionOpen === "transcript" ? "▲" : "▼"}</span>
+                        <span>Image Prompts — All 5 Specs</span>
+                        <span style={{ color: "var(--red)" }}>{accordionOpen === "imageprompts" ? "▲" : "▼"}</span>
                       </button>
-                      {accordionOpen === "transcript" && (
-                        <div style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 13, lineHeight: 1.7, margin: 0, color: "var(--ink-soft)" }}>
-                          {audioIntelligence.transcript.full_text}
+                      {accordionOpen === "imageprompts" && (
+                        <div style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 12, lineHeight: 1.7, color: "var(--ink-soft)" }}>
+                          {imageSpecs.map((spec, i) => (
+                            <div key={i} style={{ marginBottom: i < imageSpecs.length - 1 ? "var(--s-5)" : 0, paddingBottom: i < imageSpecs.length - 1 ? "var(--s-5)" : 0, borderBottom: i < imageSpecs.length - 1 ? "1px solid var(--ink-faint)" : "none" }}>
+                              <p style={{ fontWeight: 700, color: "var(--red)", marginBottom: "var(--s-2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Spec {i + 1} — {spec.exaggeration.method} / {spec.tone}</p>
+                              <p style={{ marginBottom: 4 }}><strong>Scene:</strong> {spec.character.action} in {spec.setting}</p>
+                              <p style={{ marginBottom: 4 }}><strong>Character:</strong> {spec.character.role} — {spec.character.expression}</p>
+                              <p style={{ marginBottom: 4 }}><strong>Props:</strong> {spec.props.join(", ")}</p>
+                              <p style={{ marginBottom: 0 }}><strong>Exaggeration:</strong> {spec.exaggeration.description} (target: {spec.exaggeration.target})</p>
+                            </div>
+                          ))}
                         </div>
+                      )}
+                    </div>
+                  )}
+
+                  {imageSpecs && (
+                    <div style={{ marginBottom: "var(--s-2)" }}>
+                      <button
+                        type="button"
+                        onClick={() => setAccordionOpen(accordionOpen === "imagespecs" ? null : "imagespecs")}
+                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}
+                      >
+                        <span>Pass 3 — Image Specs</span>
+                        <span style={{ color: "var(--red)" }}>{accordionOpen === "imagespecs" ? "▲" : "▼"}</span>
+                      </button>
+                      {accordionOpen === "imagespecs" && (
+                        <pre style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 11, lineHeight: 1.6, overflowX: "auto", margin: 0, color: "var(--ink-soft)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                          {JSON.stringify(imageSpecs, null, 2)}
+                        </pre>
                       )}
                     </div>
                   )}
@@ -374,7 +401,7 @@ function PlayPageInner() {
                   )}
 
                   {audioIntelligence && (
-                    <div>
+                    <div style={{ marginBottom: "var(--s-2)" }}>
                       <button
                         type="button"
                         onClick={() => setAccordionOpen(accordionOpen === "intelligence" ? null : "intelligence")}
@@ -390,14 +417,39 @@ function PlayPageInner() {
                       )}
                     </div>
                   )}
+
+                  {audioIntelligence?.transcript?.full_text && (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => setAccordionOpen(accordionOpen === "transcript" ? null : "transcript")}
+                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}
+                      >
+                        <span>Transcript</span>
+                        <span style={{ color: "var(--red)" }}>{accordionOpen === "transcript" ? "▲" : "▼"}</span>
+                      </button>
+                      {accordionOpen === "transcript" && (
+                        <div style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 13, lineHeight: 1.7, margin: 0, color: "var(--ink-soft)" }}>
+                          {audioIntelligence.transcript.full_text}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
 
-            <div className="polaroid-tf02" style={{ transform: "rotate(-1.5deg)", width: "100%", position: "relative" }}>
-              <img src="/assets/tape-red-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(4deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
-              <WatermarkCanvas imageUrl={imageUrl} />
-              <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>the free version</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-7)" }}>
+              <div className="polaroid-tf02" style={{ transform: "rotate(-1.5deg)", width: "100%", position: "relative" }}>
+                <img src="/assets/tape-red-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(4deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
+                <WatermarkCanvas imageUrl={imageUrls[0]} />
+                <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>read #1</p>
+              </div>
+              <div className="polaroid-tf02" style={{ transform: "rotate(1deg)", width: "100%", position: "relative" }}>
+                <img src="/assets/tape-black-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(-3deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
+                <WatermarkCanvas imageUrl={imageUrls[1]} />
+                <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>read #2</p>
+              </div>
             </div>
           </div>
         )}
@@ -428,16 +480,38 @@ function PlayPageInner() {
                 <div style={{ marginTop: "var(--s-7)", borderTop: "1px solid var(--ink-faint)", paddingTop: "var(--s-5)" }}>
                   <p className="t-cap" style={{ color: "var(--ink-faint)", marginBottom: "var(--s-3)" }}>[ UNDER THE HOOD ]</p>
 
-                  {audioIntelligence?.transcript?.full_text && (
+                  {imageSpecs && (
                     <div style={{ marginBottom: "var(--s-2)" }}>
-                      <button type="button" onClick={() => setAccordionOpen(accordionOpen === "transcript" ? null : "transcript")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}>
-                        <span>Transcript</span>
-                        <span style={{ color: "var(--red)" }}>{accordionOpen === "transcript" ? "▲" : "▼"}</span>
+                      <button type="button" onClick={() => setAccordionOpen(accordionOpen === "imageprompts" ? null : "imageprompts")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}>
+                        <span>Image Prompts — All 5 Specs</span>
+                        <span style={{ color: "var(--red)" }}>{accordionOpen === "imageprompts" ? "▲" : "▼"}</span>
                       </button>
-                      {accordionOpen === "transcript" && (
-                        <div style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 13, lineHeight: 1.7, color: "var(--ink-soft)" }}>
-                          {audioIntelligence.transcript.full_text}
+                      {accordionOpen === "imageprompts" && (
+                        <div style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 12, lineHeight: 1.7, color: "var(--ink-soft)" }}>
+                          {imageSpecs.map((spec, i) => (
+                            <div key={i} style={{ marginBottom: i < imageSpecs.length - 1 ? "var(--s-5)" : 0, paddingBottom: i < imageSpecs.length - 1 ? "var(--s-5)" : 0, borderBottom: i < imageSpecs.length - 1 ? "1px solid var(--ink-faint)" : "none" }}>
+                              <p style={{ fontWeight: 700, color: "var(--red)", marginBottom: "var(--s-2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Spec {i + 1} — {spec.exaggeration.method} / {spec.tone}</p>
+                              <p style={{ marginBottom: 4 }}><strong>Scene:</strong> {spec.character.action} in {spec.setting}</p>
+                              <p style={{ marginBottom: 4 }}><strong>Character:</strong> {spec.character.role} — {spec.character.expression}</p>
+                              <p style={{ marginBottom: 4 }}><strong>Props:</strong> {spec.props.join(", ")}</p>
+                              <p style={{ marginBottom: 0 }}><strong>Exaggeration:</strong> {spec.exaggeration.description} (target: {spec.exaggeration.target})</p>
+                            </div>
+                          ))}
                         </div>
+                      )}
+                    </div>
+                  )}
+
+                  {imageSpecs && (
+                    <div style={{ marginBottom: "var(--s-2)" }}>
+                      <button type="button" onClick={() => setAccordionOpen(accordionOpen === "imagespecs" ? null : "imagespecs")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}>
+                        <span>Pass 3 — Image Specs</span>
+                        <span style={{ color: "var(--red)" }}>{accordionOpen === "imagespecs" ? "▲" : "▼"}</span>
+                      </button>
+                      {accordionOpen === "imagespecs" && (
+                        <pre style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 11, lineHeight: 1.6, overflowX: "auto", margin: 0, color: "var(--ink-soft)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                          {JSON.stringify(imageSpecs, null, 2)}
+                        </pre>
                       )}
                     </div>
                   )}
@@ -457,7 +531,7 @@ function PlayPageInner() {
                   )}
 
                   {audioIntelligence && (
-                    <div>
+                    <div style={{ marginBottom: "var(--s-2)" }}>
                       <button type="button" onClick={() => setAccordionOpen(accordionOpen === "intelligence" ? null : "intelligence")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}>
                         <span>Pass 1 — Audio Intelligence</span>
                         <span style={{ color: "var(--red)" }}>{accordionOpen === "intelligence" ? "▲" : "▼"}</span>
@@ -466,6 +540,20 @@ function PlayPageInner() {
                         <pre style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 11, lineHeight: 1.6, overflowX: "auto", margin: 0, color: "var(--ink-soft)", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                           {JSON.stringify(audioIntelligence, null, 2)}
                         </pre>
+                      )}
+                    </div>
+                  )}
+
+                  {audioIntelligence?.transcript?.full_text && (
+                    <div>
+                      <button type="button" onClick={() => setAccordionOpen(accordionOpen === "transcript" ? null : "transcript")} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}>
+                        <span>Transcript</span>
+                        <span style={{ color: "var(--red)" }}>{accordionOpen === "transcript" ? "▲" : "▼"}</span>
+                      </button>
+                      {accordionOpen === "transcript" && (
+                        <div style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 13, lineHeight: 1.7, color: "var(--ink-soft)" }}>
+                          {audioIntelligence.transcript.full_text}
+                        </div>
                       )}
                     </div>
                   )}

@@ -1,14 +1,17 @@
 import { transcribeAudio } from "./transcribe";
 import { extractIntelligence } from "./extractIntelligence";
 import { filterHumor } from "./filterHumor";
-import { intelligenceToScene } from "./intelligenceToScene";
-import type { AudioIntelligence, HumorFilter } from "./types";
+import { generateImageSpecs } from "./generateImageSpecs";
+import { pickTopTwoSpecs } from "./selectImageSpecs";
+import { imageSpecToScene } from "./imageSpecToScene";
+import type { AudioIntelligence, HumorFilter, ImageSpec } from "./types";
 import type { ScenePacket } from "../image/types";
 
 export type PipelineResult = {
   intelligence: AudioIntelligence;
   humorFilter: HumorFilter;
-  scenePacket: ScenePacket;
+  imageSpecs: ImageSpec[];
+  scenes: [ScenePacket, ScenePacket];
 };
 
 export async function runAudioIntelligencePipeline(
@@ -19,6 +22,11 @@ export async function runAudioIntelligencePipeline(
   const transcript = await transcribeAudio(audioBuffer, mimeType);
   const intelligence = await extractIntelligence(transcript, durationSeconds);
   const humorFilter = await filterHumor(intelligence);
-  const scenePacket = intelligenceToScene(humorFilter);
-  return { intelligence, humorFilter, scenePacket };
+  const imageSpecs = await generateImageSpecs(humorFilter);
+
+  const [specA, specB] = pickTopTwoSpecs(imageSpecs);
+  const sceneA = imageSpecToScene(specA, humorFilter.core_insight.read);
+  const sceneB = imageSpecToScene(specB, humorFilter.core_insight.read);
+
+  return { intelligence, humorFilter, imageSpecs, scenes: [sceneA, sceneB] };
 }
