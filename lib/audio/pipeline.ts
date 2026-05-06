@@ -17,6 +17,19 @@ export type PipelineResult = {
   comparison: ComparisonResult;
 };
 
+export async function runTextPipeline(moment: string): Promise<PipelineResult> {
+  const transcript = { full_text: moment, segments: [], overall_confidence: 1 };
+  const intelligence = await extractIntelligence(transcript, 0);
+  const humorFilter = await filterHumor(intelligence);
+  const imageSpecs = await generateImageSpecs(humorFilter);
+
+  const [specA, specB] = pickTopTwoSpecs(imageSpecs);
+  const prompts = await imageSpecToPrompt([specA, specB]);
+  const comparison = await generateComparisonImages(prompts[0].prompt);
+
+  return { intelligence, humorFilter, imageSpecs, prompts, comparison };
+}
+
 export async function runAudioIntelligencePipeline(
   audioBuffer: Buffer,
   mimeType: string,

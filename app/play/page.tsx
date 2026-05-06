@@ -9,6 +9,7 @@ import SiteNav from "../components/SiteNav";
 import SignUpGate, { type GateReason } from "./SignUpGate";
 import type { AudioIntelligence, HumorFilter, ImageSpec } from "@/lib/audio/types";
 import type { ComparisonResult } from "@/lib/image/generateComparisonImages";
+import type { ImagePrompt } from "@/lib/audio/imageSpecToPrompt";
 
 export default function PlayPage() {
   return (
@@ -47,6 +48,7 @@ function PlayPageInner() {
   const [audioIntelligence, setAudioIntelligence] = useState<AudioIntelligence | null>(null);
   const [humorFilter, setHumorFilter] = useState<HumorFilter | null>(null);
   const [imageSpecs, setImageSpecs] = useState<ImageSpec[] | null>(null);
+  const [prompts, setPrompts] = useState<ImagePrompt[] | null>(null);
   const [accordionOpen, setAccordionOpen] = useState<"intelligence" | "humor" | "transcript" | "imagespecs" | "imageprompts" | null>(null);
   const [gate, setGate] = useState<GateReason | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -109,12 +111,12 @@ function PlayPageInner() {
         method: "POST",
         body: formData,
       });
-      if (analyzeRes.status === 403) { setState("locked"); return; }
       if (!analyzeRes.ok) throw new Error("analysis failed");
-      const { intelligence, humorFilter: hf, imageSpecs: specs, comparison: comp } = await analyzeRes.json();
+      const { intelligence, humorFilter: hf, imageSpecs: specs, prompts: pts, comparison: comp } = await analyzeRes.json();
       if (intelligence) setAudioIntelligence(intelligence);
       if (hf) setHumorFilter(hf);
       if (specs) setImageSpecs(specs);
+      if (pts) setPrompts(pts);
       onPipelineComplete(comp);
     } catch {
       setError("Something went wrong. Try again.");
@@ -142,11 +144,16 @@ function PlayPageInner() {
         body: JSON.stringify({ moment: moment.trim() }),
       });
 
-      if (res.status === 403) { setState("locked"); return; }
+
       if (!res.ok) throw new Error("generation failed");
 
-      const { imageUrl: url } = await res.json();
-      onPipelineComplete(url);
+      const { intelligence: intel, humorFilter: hf, imageSpecs: specs, prompts: pts, comparison: comp, error: apiError, detail } = await res.json();
+      if (apiError) throw new Error(detail ?? apiError);
+      if (intel) setAudioIntelligence(intel);
+      if (hf) setHumorFilter(hf);
+      if (specs) setImageSpecs(specs);
+      if (pts) setPrompts(pts);
+      onPipelineComplete(comp);
     } catch {
       setError("Something went wrong. Try again.");
       setState("input");
@@ -323,30 +330,33 @@ function PlayPageInner() {
                 or it disappears when you close this tab
               </p>
 
-              {/* Intelligence accordion — only shown for audio recordings */}
-              {(audioIntelligence || humorFilter) && (
+              {/* Intelligence accordion — always shown when result is available */}
+              {comparison && (
                 <div style={{ marginTop: "var(--s-7)", borderTop: "1px solid var(--ink-faint)", paddingTop: "var(--s-5)" }}>
                   <p className="t-cap" style={{ color: "var(--ink-faint)", marginBottom: "var(--s-3)" }}>[ UNDER THE HOOD ]</p>
 
-                  {imageSpecs && (
+                  {!prompts && !imageSpecs && !humorFilter && !audioIntelligence && (
+                    <p style={{ fontFamily: "var(--mono)", fontSize: "var(--t-small)", color: "var(--ink-faint)", lineHeight: 1.6 }}>
+                      Switch to <strong>Record it</strong> mode to see the full pipeline — audio intelligence, humor filter, image specs, and prompts.
+                    </p>
+                  )}
+
+                  {prompts && (
                     <div style={{ marginBottom: "var(--s-2)" }}>
                       <button
                         type="button"
                         onClick={() => setAccordionOpen(accordionOpen === "imageprompts" ? null : "imageprompts")}
                         style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", background: "none", border: "1px solid var(--ink-faint)", padding: "var(--s-3) var(--s-4)", fontFamily: "var(--mono)", fontSize: "var(--t-small)", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--ink-soft)", cursor: "pointer" }}
                       >
-                        <span>Image Prompts — All 5 Specs</span>
+                        <span>Pass 4 — Image Prompts</span>
                         <span style={{ color: "var(--red)" }}>{accordionOpen === "imageprompts" ? "▲" : "▼"}</span>
                       </button>
                       {accordionOpen === "imageprompts" && (
                         <div style={{ background: "var(--paper)", border: "1px solid var(--ink-faint)", borderTop: "none", padding: "var(--s-4)", fontFamily: "var(--mono)", fontSize: 12, lineHeight: 1.7, color: "var(--ink-soft)" }}>
-                          {imageSpecs.map((spec, i) => (
-                            <div key={i} style={{ marginBottom: i < imageSpecs.length - 1 ? "var(--s-5)" : 0, paddingBottom: i < imageSpecs.length - 1 ? "var(--s-5)" : 0, borderBottom: i < imageSpecs.length - 1 ? "1px solid var(--ink-faint)" : "none" }}>
-                              <p style={{ fontWeight: 700, color: "var(--red)", marginBottom: "var(--s-2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Spec {i + 1} — {spec.exaggeration.method} / {spec.tone}</p>
-                              <p style={{ marginBottom: 4 }}><strong>Scene:</strong> {spec.character.action} in {spec.setting}</p>
-                              <p style={{ marginBottom: 4 }}><strong>Character:</strong> {spec.character.role} — {spec.character.expression}</p>
-                              <p style={{ marginBottom: 4 }}><strong>Props:</strong> {spec.props.join(", ")}</p>
-                              <p style={{ marginBottom: 0 }}><strong>Exaggeration:</strong> {spec.exaggeration.description} (target: {spec.exaggeration.target})</p>
+                          {prompts.map((p, i) => (
+                            <div key={i} style={{ marginBottom: i < prompts.length - 1 ? "var(--s-4)" : 0, paddingBottom: i < prompts.length - 1 ? "var(--s-4)" : 0, borderBottom: i < prompts.length - 1 ? "1px solid var(--ink-faint)" : "none" }}>
+                              <p style={{ fontWeight: 700, color: "var(--red)", marginBottom: "var(--s-2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Prompt {i + 1}</p>
+                              <p style={{ margin: 0 }}>{p.prompt}</p>
                             </div>
                           ))}
                         </div>
@@ -431,15 +441,27 @@ function PlayPageInner() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--s-7)" }}>
               <p className="t-micro" style={{ color: "var(--ink-faint)", letterSpacing: "0.12em" }}>SAME PROMPT — TWO MODELS</p>
-              <div className="polaroid-tf02" style={{ transform: "rotate(-1.5deg)", width: "100%", position: "relative" }}>
-                <img src="/assets/tape-red-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(4deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
-                <WatermarkCanvas imageUrl={comparison.openai.url} />
-                <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>{comparison.openai.label}</p>
+              <div>
+                <div className="polaroid-tf02" style={{ transform: "rotate(-1.5deg)", width: "100%", position: "relative" }}>
+                  <img src="/assets/tape-red-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(4deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
+                  <WatermarkCanvas imageUrl={comparison.openai.url} />
+                  <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>{comparison.caption}</p>
+                </div>
+                <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-faint)", textTransform: "uppercase", letterSpacing: "0.1em", textAlign: "center", marginTop: "var(--s-3)" }}>{comparison.openai.label}</p>
               </div>
-              <div className="polaroid-tf02" style={{ transform: "rotate(1deg)", width: "100%", position: "relative" }}>
-                <img src="/assets/tape-black-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(-3deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
-                <WatermarkCanvas imageUrl={comparison.replicate.url} />
-                <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>{comparison.replicate.label}</p>
+              <div>
+                <div className="polaroid-tf02" style={{ transform: "rotate(1deg)", width: "100%", position: "relative" }}>
+                  <img src="/assets/tape-black-1.png" alt="" style={{ position: "absolute", top: -18, left: "50%", transform: "translateX(-50%) rotate(-3deg)", width: 160, opacity: 0.9, pointerEvents: "none", zIndex: 2 }} />
+                  {comparison.replicate.url ? (
+                    <WatermarkCanvas imageUrl={comparison.replicate.url} />
+                  ) : (
+                    <div style={{ width: "100%", aspectRatio: "1/1", background: "repeating-linear-gradient(135deg, rgba(0,0,0,0.04) 0 6px, transparent 6px 12px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <span style={{ fontFamily: "var(--mono)", fontSize: "var(--t-micro)", color: "var(--ink-faint)", letterSpacing: "0.1em", textTransform: "uppercase" }}>unavailable</span>
+                    </div>
+                  )}
+                  <p style={{ fontFamily: "var(--hand)", fontSize: 18, lineHeight: 1.3, textAlign: "center", margin: "10px 0 4px", color: "var(--ink)" }}>{comparison.caption}</p>
+                </div>
+                <p style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--ink-faint)", textTransform: "uppercase", letterSpacing: "0.1em", textAlign: "center", marginTop: "var(--s-3)" }}>{comparison.replicate.label}</p>
               </div>
             </div>
           </div>

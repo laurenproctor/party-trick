@@ -243,19 +243,23 @@ export async function imageSpecToPrompt(specs: ImageSpec[]): Promise<ImagePrompt
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: JSON.stringify(specs) },
     ],
-    response_format: { type: "json_object" },
     temperature: 0,
   });
 
   const raw = completion.choices[0]?.message?.content;
   if (!raw) throw new Error("No response from image prompt translator");
 
-  const parsed = JSON.parse(raw);
+  // Extract JSON array from raw text (handles markdown fences and bare text)
+  const match = raw.match(/\[[\s\S]*\]/);
+  if (!match) {
+    console.error("[imageSpecToPrompt] no JSON array found in:", raw.slice(0, 300));
+    throw new Error("No JSON array in image prompt translator response");
+  }
 
-  // Handle both { prompts: [...] } and [...] response shapes
-  const arr: ImagePrompt[] = Array.isArray(parsed) ? parsed : (parsed.prompts ?? parsed.data ?? []);
+  const arr: ImagePrompt[] = JSON.parse(match[0]);
 
   if (!arr.length || !arr[0]?.prompt) {
+    console.error("[imageSpecToPrompt] empty or bad array:", JSON.stringify(arr).slice(0, 300));
     throw new Error("Invalid response shape from image prompt translator");
   }
 
