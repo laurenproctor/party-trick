@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<style>
+@keyframes dotPulse {
+  0%, 85%, 100% { transform: scale(1); }
+  90% { transform: scale(1.15); }
+}
+@keyframes ringPulse {
+  0% { r: 4; opacity: 0.6; }
+  70% { r: 8; opacity: 0; }
+  100% { r: 8; opacity: 0; }
+}
+.dot { fill: #22c55e; transform-origin: center; animation: dotPulse 3.2s infinite; }
+.ring { fill: none; stroke: #22c55e; stroke-width: 2; opacity: 0; animation: ringPulse 3.2s infinite; }
+</style>
+<polygon fill="#2563eb" points="32,4 60,60 4,60"/>
+<circle class="ring" cx="32" cy="6" r="4"/>
+<circle class="dot" cx="32" cy="6" r="4"/>
+</svg>

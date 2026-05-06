@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<style>
+@keyframes fastPulse {
+  0%, 80%, 100% { transform: scale(1); }
+  85% { transform: scale(1.25); }
+}
+.dot { fill: #22c55e; transform-origin: center; animation: fastPulse 1.2s infinite; }
+</style>
+<polygon fill="#2563eb" points="32,4 60,60 4,60"/>
+<circle class="dot" cx="32" cy="6" r="4"/>
+</svg>

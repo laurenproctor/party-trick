@@ -10,6 +10,7 @@ import SignUpGate, { type GateReason } from "./SignUpGate";
 import type { AudioIntelligence, HumorFilter, ImageSpec } from "@/lib/audio/types";
 import type { ComparisonResult } from "@/lib/image/generateComparisonImages";
 import type { ImagePrompt } from "@/lib/audio/imageSpecToPrompt";
+import { setFaviconState } from "@/lib/faviconState";
 
 export default function PlayPage() {
   return (
@@ -93,7 +94,11 @@ function PlayPageInner() {
     setComparison(result);
     pipelineDoneRef.current = true;
     if (beatRef.current >= 4) {
-      setTimeout(() => setState("result"), 1800);
+      setTimeout(() => {
+        setState("result");
+        setFaviconState("reveal");
+        setTimeout(() => setFaviconState("idle"), 2000);
+      }, 1800);
     }
   }
 
@@ -121,12 +126,14 @@ function PlayPageInner() {
     } catch {
       setError("Something went wrong. Try again.");
       setState("input");
+      setFaviconState("idle");
     }
   }
 
   function handleRecordingComplete(blob: Blob, durationSeconds: number) {
     setState("loading");
     setError(null);
+    setFaviconState("active");
     runAudioPipeline(blob, durationSeconds);
   }
 
